@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { CharacterClass } from "@shared/enums/CharacterClass";
 import { PLAYER_CONFIGS } from "../data";
+import { MapGenerator, type MapNode } from "../systems/map";
 import type { CardInstance } from "../systems/cards";
 import type { RelicInstance } from "../systems/relics";
 
@@ -19,6 +20,8 @@ export interface RunState {
   relics: RelicInstance[];
   potions: PotionInstance[];
   currentFloor: number;
+  mapNodes: MapNode[];
+  mapFloors: number;
   inBattle: boolean;
 }
 
@@ -37,6 +40,7 @@ interface GameStore {
   addPotion: (potion: PotionInstance) => void;
   removePotion: (index: number) => void;
   setFloor: (floor: number) => void;
+  setMapNodes: (nodes: MapNode[]) => void;
   setInBattle: (val: boolean) => void;
   reset: () => void;
 }
@@ -46,6 +50,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   startRun: (characterClass, deck, relic) => {
     const config = PLAYER_CONFIGS[characterClass];
+    const map = new MapGenerator().generate();
     set({
       run: {
         characterClass,
@@ -56,6 +61,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
         relics: [relic],
         potions: [],
         currentFloor: 0,
+        mapNodes: map.nodes,
+        mapFloors: map.floors,
         inBattle: false,
       },
     });
@@ -141,6 +148,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const run = get().run;
     if (!run) return;
     set({ run: { ...run, currentFloor: floor } });
+  },
+
+  setMapNodes: (nodes) => {
+    const run = get().run;
+    if (!run) return;
+    set({ run: { ...run, mapNodes: nodes } });
   },
 
   setInBattle: (val) => {

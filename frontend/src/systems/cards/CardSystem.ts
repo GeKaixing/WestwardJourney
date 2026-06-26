@@ -24,6 +24,7 @@ export interface PlayCardContext {
   drawCards: (count: number) => void;
   gainEnergy: (amount: number) => void;
   exhaustCard: (cardId: string) => void;
+  healPlayer: (amount: number) => void;
 }
 
 export interface CardEffectResult {
@@ -81,15 +82,10 @@ export class CardSystem {
     if (!config) throw new Error(`Card config not found: ${card.configId}`);
 
     const result: CardEffectResult = {};
+    const effects = card.upgraded && config.secondaryEffects ? config.secondaryEffects : config.effects;
 
-    for (const effect of config.effects) {
+    for (const effect of effects) {
       this.resolveEffect(effect, context, result);
-    }
-
-    if (config.secondaryEffects) {
-      for (const effect of config.secondaryEffects) {
-        this.resolveEffect(effect, context, result);
-      }
     }
 
     if (config.exhaust) {
@@ -176,7 +172,7 @@ export class CardSystem {
       }
 
       case "heal": {
-        context.addBlock(context.playerId, -value);
+        context.healPlayer(value);
         break;
       }
 

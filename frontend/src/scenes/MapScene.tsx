@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { MapNodeType } from "@shared/enums/MapNodeType";
@@ -42,24 +42,33 @@ export function MapScene() {
   const navigate = useNavigate();
   const run = useGameStore((s) => s.run);
   const setFloor = useGameStore((s) => s.setFloor);
+  const setMapNodes = useGameStore((s) => s.setMapNodes);
   const generator = useMemo(() => new MapGenerator(), []);
-  const [mapData] = useState(() => generator.generate());
-  const [nodes, setNodes] = useState(mapData.nodes);
   const [selectedIntro, setSelectedIntro] = useState<string | null>(null);
+  const nodes = run?.mapNodes ?? [];
+  const mapFloors = run?.mapFloors ?? 0;
+
+  useEffect(() => {
+    if (!run) navigate("/select");
+  }, [run, navigate]);
 
   const floors = useMemo(() => {
     const groups: MapNode[][] = [];
-    for (let f = 0; f < mapData.floors; f++) {
+    for (let f = 0; f < mapFloors; f++) {
       groups.push(nodes.filter((n) => n.floor === f));
     }
     return groups;
-  }, [nodes, mapData.floors]);
+  }, [nodes, mapFloors]);
 
   const handleNodeClick = (node: MapNode) => {
     if (!node.available || node.visited) return;
 
-    generator.visitNode(nodes, node.id);
-    setNodes([...nodes]);
+    const nextNodes = nodes.map((entry) => ({
+      ...entry,
+      connections: [...entry.connections],
+    }));
+    generator.visitNode(nextNodes, node.id);
+    setMapNodes(nextNodes);
     setFloor(node.floor);
     setSelectedIntro(NODE_INTROS[node.type]);
 
@@ -81,21 +90,21 @@ export function MapScene() {
   };
 
   if (!run) {
-    navigate("/select");
     return null;
   }
 
   return (
     <div className="flex min-h-screen flex-col items-center bg-dark-900 p-4">
-      <div className="mb-2 flex w-full max-w-md items-center justify-between text-xs text-gray-500">
+      <div className="mb-4 flex w-full max-w-3xl items-center justify-between rounded-lg border border-gray-800 bg-dark-800/70 px-4 py-3 text-xs text-gray-400">
         <span className="flex items-center gap-2">
           <span className="h-2 w-2 rounded-full bg-green-500" />
-          第 {run.currentFloor} 层
+          当前第 {run.currentFloor} 层
         </span>
         <span className="flex items-center gap-3">
           <span>❤️ {run.currentHealth}/{run.maxHealth}</span>
           <span>💰 {run.gold}</span>
           <span>🎒 {run.deck.length}</span>
+          <span>🏺 {run.relics.length}</span>
         </span>
       </div>
 
@@ -111,23 +120,28 @@ export function MapScene() {
         </motion.p>
       )}
 
-      <div className="flex max-h-[70vh] flex-col gap-1 overflow-y-auto px-4">
+      <div className="mb-3 grid grid-cols-4 gap-2 text-[11px] text-gray-500 sm:grid-cols-8">
+        {Object.entries(NODE_LABELS).map(([type, label]) => (
+          <span key={type} className={`rounded border px-2 py-1 text-center ${NODE_COLORS[type as MapNodeType]}`}>
+            {label} {type}
+          </span>
+        ))}
+      </div>
+
+      <div className="flex max-h-[70vh] flex-col-reverse gap-2 overflow-y-auto rounded-xl border border-gray-800 bg-dark-950/40 px-4 py-3">
         {floors.map((floorNodes) => (
-          <div key={floorNodes[0]?.floor ?? 0} className="flex items-center gap-2">
+          <div key={floorNodes[0]?.floor ?? 0} className="flex items-center gap-3">
             <span className="w-6 text-right text-xs text-gray-600">
               {floorNodes[0]?.floor}
             </span>
-            <svg width="32" height="32" className="shrink-0">
-              <line x1="0" y1="16" x2="32" y2="16" stroke="#1a1a2e" strokeWidth="1" />
-            </svg>
-            <div className="flex gap-3">
+            <div className="grid min-w-64 grid-cols-4 gap-5">
               {floorNodes.map((node) => {
                 const colors = NODE_COLORS[node.type];
                 const isFuture = !node.visited && !node.available;
                 return (
                   <motion.button
                     key={node.id}
-                    className={`flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm font-bold transition-all ${
+                    className={`relative flex h-12 w-12 items-center justify-center rounded-full border-2 text-sm font-bold transition-all ${
                       isFuture ? "border-gray-800 bg-dark-800 text-gray-700" : colors
                     } ${
                       node.available && !node.visited
@@ -140,6 +154,11 @@ export function MapScene() {
                     title={node.type}
                   >
                     {NODE_LABELS[node.type]}
+                    {node.visited && (
+                      <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-green-600 text-[9px] text-white">
+                        ✓
+                      </span>
+                    )}
                   </motion.button>
                 );
               })}

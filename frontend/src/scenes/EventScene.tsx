@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { EVENT_CONFIGS, CARD_CONFIGS, RELIC_CONFIGS } from "../data";
@@ -20,7 +20,7 @@ export function EventScene() {
   const event = EVENT_CONFIGS[Math.floor(Math.random() * EVENT_CONFIGS.length)];
   if (!event) return null;
 
-  let instanceCounter = 0;
+  const instanceCounter = useRef(0);
   const handleChoice = (choice: EventChoice) => {
     for (const effect of choice.effects) {
       switch (effect.effectType) {
@@ -42,7 +42,7 @@ export function EventScene() {
           const card = pool[Math.floor(Math.random() * pool.length)];
           if (card) {
             addCardToDeck({
-              instanceId: `event_card_${instanceCounter++}_${Date.now()}`,
+              instanceId: `event_card_${instanceCounter.current++}_${Date.now()}`,
               configId: card.id,
               upgraded: false,
               cost: card.cost,
@@ -82,7 +82,7 @@ export function EventScene() {
               const newCard = newCardPool[Math.floor(Math.random() * newCardPool.length)];
               if (newCard) {
                 addCardToDeck({
-                  instanceId: `transform_${instanceCounter++}_${Date.now()}`,
+                  instanceId: `transform_${instanceCounter.current++}_${Date.now()}`,
                   configId: newCard.id,
                   upgraded: false,
                   cost: newCard.cost,

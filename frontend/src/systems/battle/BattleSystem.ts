@@ -1,5 +1,6 @@
 import { BuffType } from "@shared/enums/BuffType";
-import { CardSystem, type PlayCardContext } from "../cards/CardSystem";
+import type { EnemyAction, EnemyConfig } from "@shared/types/EnemyConfig";
+import { CardSystem, type CardInstance, type PlayCardContext } from "../cards/CardSystem";
 import { BuffSystem } from "../buffs/BuffSystem";
 import { ActionQueue, ActionPriority } from "../actions/ActionQueue";
 import { TurnManager, TurnPhase, type TurnEvents } from "../turn/TurnManager";
@@ -19,15 +20,19 @@ export interface CombatantState {
 export interface EnemyState extends CombatantState {
   intent?: string;
   intentValue?: number;
+  intentType?: "attack" | "block" | "buff" | "debuff" | "unknown";
+  actionId?: string;
+  actions?: EnemyAction[];
+  intentPattern?: EnemyConfig["intentPattern"];
 }
 
 export interface BattleState {
   player: CombatantState;
   enemies: EnemyState[];
-  hand: string[];
-  drawPile: string[];
-  discardPile: string[];
-  exhaustPile: string[];
+  hand: CardInstance[];
+  drawPile: CardInstance[];
+  discardPile: CardInstance[];
+  exhaustPile: CardInstance[];
   phase: TurnPhase;
   turnNumber: number;
 }
@@ -46,10 +51,10 @@ export class BattleSystem {
 
   private player!: CombatantState;
   private enemies: EnemyState[] = [];
-  private hand: string[] = [];
-  private drawPile: string[] = [];
-  private discardPile: string[] = [];
-  private exhaustPile: string[] = [];
+  private hand: CardInstance[] = [];
+  private drawPile: CardInstance[] = [];
+  private discardPile: CardInstance[] = [];
+  private exhaustPile: CardInstance[] = [];
 
   private callbacks?: BattleCallbacks;
 
@@ -67,15 +72,17 @@ export class BattleSystem {
 
   private createTurnEvents(): TurnEvents {
     return {
-      onTurnStart: (turnNumber) => {
+      onTurnStart: (_turnNumber) => {
         this.player.energy = 3;
-        if (turnNumber > 1) {
-          this.relicSystem.triggerEvent(
-            "turn_start",
-            { playerId: this.player.id, event: "turn_start" },
-            this.createRelicContext(),
-          );
+        this.player.block = 0;
+        for (const enemy of this.enemies) {
+          enemy.block = 0;
         }
+        this.relicSystem.triggerEvent(
+          "turn_start",
+          { playerId: this.player.id, event: "turn_start" },
+          this.createRelicContext(),
+        );
         this.emitState();
       },
 
@@ -127,15 +134,15 @@ export class BattleSystem {
   }
 
   initBattle(
-    playerConfig: { id: string; name: string; maxHealth: number; deck: string[] },
-    enemyConfigs: Array<{ id: string; name: string; health: number }>,
+    playerConfig: { id: string; name: string; health: number; maxHealth: number; deck: CardInstance[] },
+    enemyConfigs: EnemyConfig[],
     callbacks: BattleCallbacks,
   ): void {
     this.callbacks = callbacks;
     this.player = {
       id: playerConfig.id,
       name: playerConfig.name,
-      health: playerConfig.maxHealth,
+      health: playerConfig.health,
       maxHealth: playerConfig.maxHealth,
       block: 0,
       energy: 3,
@@ -148,10 +155,12 @@ export class BattleSystem {
       name: ec.name,
       health: ec.health,
       maxHealth: ec.health,
-      block: 0,
+      block: ec.block ?? 0,
       energy: 0,
       isPlayer: false,
       isAlive: true,
+      actions: ec.actions,
+      intentPattern: ec.intentPattern,
     }));
 
     this.drawPile = [...playerConfig.deck];
@@ -159,6 +168,7 @@ export class BattleSystem {
     this.hand = [];
     this.discardPile = [];
     this.exhaustPile = [];
+    this.rollEnemyIntents();
 
     this.relicSystem.triggerEvent(
       "battle_start",
@@ -176,17 +186,17 @@ export class BattleSystem {
   playCard(cardInstanceId: string, targetIds: string[]): void {
     if (this.turnManager.currentPhase !== TurnPhase.MainPhase) return;
 
-    const handIndex = this.hand.indexOf(cardInstanceId);
+    const handIndex = this.hand.findIndex((card) => card.instanceId === cardInstanceId);
     if (handIndex === -1) return;
 
-    const cardInstance = this.cardSystem.createInstance("placeholder");
+    const cardInstance = this.hand[handIndex]!;
     if (!this.cardSystem.canPlay(cardInstance, this.player.energy)) return;
 
     this.actionQueue.enqueue({
       priority: ActionPriority.Card,
       execute: async () => {
         this.hand.splice(handIndex, 1);
-        this.discardPile.push(cardInstanceId);
+        this.discardPile.push(cardInstance);
         this.player.energy -= cardInstance.cost;
 
         await this.cardSystem.playCard(cardInstance, this.createPlayContext(targetIds));
@@ -200,6 +210,7 @@ export class BattleSystem {
       sourceId: this.player.id,
       label: `Play card ${cardInstanceId}`,
     });
+    void this.actionQueue.processAll();
   }
 
   endTurn(): void {
@@ -221,6 +232,9 @@ export class BattleSystem {
       drawCards: (count) => this.drawCards(count),
       gainEnergy: (amount) => { this.player.energy += amount; },
       exhaustCard: (cardId) => this.exhaustCard(cardId),
+      healPlayer: (amount) => {
+        this.player.health = Math.min(this.player.maxHealth, this.player.health + amount);
+      },
     };
   }
 
@@ -287,47 +301,63 @@ export class BattleSystem {
   }
 
   private exhaustCard(cardId: string): void {
-    const handIndex = this.hand.indexOf(cardId);
+    const handIndex = this.hand.findIndex((card) => card.instanceId === cardId);
     if (handIndex !== -1) {
-      this.hand.splice(handIndex, 1);
-      this.exhaustPile.push(cardId);
+      const [card] = this.hand.splice(handIndex, 1);
+      if (card) this.exhaustPile.push(card);
       return;
     }
-    const drawIndex = this.drawPile.indexOf(cardId);
+    const drawIndex = this.drawPile.findIndex((card) => card.instanceId === cardId);
     if (drawIndex !== -1) {
-      this.drawPile.splice(drawIndex, 1);
-      this.exhaustPile.push(cardId);
+      const [card] = this.drawPile.splice(drawIndex, 1);
+      if (card) this.exhaustPile.push(card);
       return;
     }
-    const discardIndex = this.discardPile.indexOf(cardId);
+    const discardIndex = this.discardPile.findIndex((card) => card.instanceId === cardId);
     if (discardIndex !== -1) {
-      this.discardPile.splice(discardIndex, 1);
-      this.exhaustPile.push(cardId);
+      const [card] = this.discardPile.splice(discardIndex, 1);
+      if (card) this.exhaustPile.push(card);
     }
   }
 
   private executeEnemyIntents(): void {
     for (const enemy of this.enemies) {
       if (!enemy.isAlive) continue;
-      const damage = Math.floor(Math.random() * 10) + 5;
-      const blocked = Math.min(this.player.block, damage);
-      this.player.block -= blocked;
-      this.player.health -= damage - blocked;
+      const action = enemy.actions?.find((entry) => entry.id === enemy.actionId);
+      if (!action) continue;
 
-      if (this.buffSystem.hasBuff(this.player.id, BuffType.Thorns)) {
-        const thornDamage = this.buffSystem.getBuffStacks(this.player.id, BuffType.Thorns);
-        enemy.health -= thornDamage;
-        if (enemy.health <= 0) {
-          enemy.health = 0;
-          enemy.isAlive = false;
+      for (const effect of action.effects) {
+        switch (effect.effectType) {
+          case "damage":
+            this.dealDamageToPlayer(enemy, effect.value ?? 0);
+            break;
+          case "block":
+            enemy.block += effect.value ?? 0;
+            break;
+          case "buff":
+            if (effect.buffType) {
+              this.buffSystem.addBuff(
+                enemy.id,
+                effect.buffType as BuffType,
+                effect.buffAmount ?? effect.value ?? 1,
+                effect.buffDuration ?? 99,
+                enemy.id,
+              );
+            }
+            break;
+          case "debuff":
+            if (effect.buffType) {
+              this.buffSystem.addBuff(
+                this.player.id,
+                effect.buffType as BuffType,
+                effect.buffAmount ?? effect.value ?? 1,
+                effect.buffDuration ?? 1,
+                enemy.id,
+              );
+            }
+            break;
         }
       }
-
-      this.relicSystem.triggerEvent(
-        "damage_taken",
-        { playerId: this.player.id, event: "damage_taken", value: damage, targetId: enemy.id },
-        this.createRelicContext(),
-      );
 
       if (this.player.health <= 0) {
         this.player.health = 0;
@@ -336,7 +366,74 @@ export class BattleSystem {
         return;
       }
     }
+    this.rollEnemyIntents();
     this.emitState();
+  }
+
+  private dealDamageToPlayer(enemy: EnemyState, amount: number): void {
+    let finalDamage = amount;
+    if (this.buffSystem.hasBuff(enemy.id, BuffType.Strength)) {
+      finalDamage += this.buffSystem.getBuffStacks(enemy.id, BuffType.Strength);
+    }
+    if (this.buffSystem.hasBuff(enemy.id, BuffType.Weak)) {
+      finalDamage = Math.floor(finalDamage * 0.75);
+    }
+
+    const blocked = Math.min(this.player.block, finalDamage);
+    this.player.block -= blocked;
+    this.player.health -= finalDamage - blocked;
+
+    if (this.buffSystem.hasBuff(this.player.id, BuffType.Thorns)) {
+      const thornDamage = this.buffSystem.getBuffStacks(this.player.id, BuffType.Thorns);
+      enemy.health -= thornDamage;
+      if (enemy.health <= 0) {
+        enemy.health = 0;
+        enemy.isAlive = false;
+      }
+    }
+
+    this.relicSystem.triggerEvent(
+      "damage_taken",
+      { playerId: this.player.id, event: "damage_taken", value: finalDamage, targetId: enemy.id },
+      this.createRelicContext(),
+    );
+  }
+
+  private rollEnemyIntents(): void {
+    for (const enemy of this.enemies) {
+      if (!enemy.isAlive || !enemy.actions?.length || !enemy.intentPattern?.length) continue;
+      const available = enemy.intentPattern.filter((intent) => {
+        const turn = this.turnManager.currentTurn;
+        return (intent.minTurn == null || turn >= intent.minTurn) && (intent.maxTurn == null || turn <= intent.maxTurn);
+      });
+      const pool = available.length > 0 ? available : enemy.intentPattern;
+      const totalWeight = pool.reduce((sum, intent) => sum + intent.weight, 0);
+      let roll = Math.random() * totalWeight;
+      const picked = pool.find((intent) => {
+        roll -= intent.weight;
+        return roll <= 0;
+      }) ?? pool[0];
+      const action = enemy.actions.find((entry) => entry.id === picked?.actionId) ?? enemy.actions[0];
+      if (!action) continue;
+      enemy.actionId = action.id;
+      enemy.intent = action.name;
+      enemy.intentValue = this.getIntentValue(action);
+      enemy.intentType = this.getIntentType(action);
+    }
+  }
+
+  private getIntentValue(action: EnemyAction): number | undefined {
+    const primary = action.effects.find((effect) => effect.effectType === "damage" || effect.effectType === "block");
+    return primary?.value;
+  }
+
+  private getIntentType(action: EnemyAction): EnemyState["intentType"] {
+    const effectTypes = action.effects.map((effect) => effect.effectType);
+    if (effectTypes.includes("damage")) return "attack";
+    if (effectTypes.includes("block")) return "block";
+    if (effectTypes.includes("buff")) return "buff";
+    if (effectTypes.includes("debuff")) return "debuff";
+    return "unknown";
   }
 
   private checkBattleEnd(): void {

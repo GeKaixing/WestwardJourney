@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CARD_CONFIGS, RELIC_CONFIGS, POTION_CONFIGS } from "../data";
@@ -14,6 +14,7 @@ export function RewardScene() {
   const addRelic = useGameStore((s) => s.addRelic);
   const addPotion = useGameStore((s) => s.addPotion);
   const [phase, setPhase] = useState<"gold" | "cards" | "done">("gold");
+  const instanceCounter = useRef(0);
 
   const cardOptions = useMemo(() => {
     const shuffled = [...CARD_CONFIGS].sort(() => Math.random() - 0.5);
@@ -35,12 +36,11 @@ export function RewardScene() {
     return null;
   }, []);
 
-  let instanceCounter = 0;
   const handleCardSelect = (configId: string) => {
     const config = CARD_CONFIGS.find((c) => c.id === configId);
     if (config) {
       addCardToDeck({
-        instanceId: `reward_card_${instanceCounter++}_${Date.now()}`,
+        instanceId: `reward_card_${instanceCounter.current++}_${Date.now()}`,
         configId,
         upgraded: false,
         cost: config.cost,

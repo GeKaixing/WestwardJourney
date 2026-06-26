@@ -1,0 +1,19 @@
+{
+  "name": "westward-journey",
+  "private": true,
+  "scripts": {
+    "dev": "npm run dev -w frontend",
+    "build": "npm run build -w frontend",
+    "lint": "tsc -b --dry",
+    "typecheck": "npm run lint",
+    "backend:dev": "npm run dev -w backend",
+    "backend:build": "npm run build -w backend",
+    "prisma:generate": "npm run prisma:generate -w backend",
+    "prisma:migrate": "npm run prisma:migrate -w backend"
+  },
+  "workspaces": [
+    "frontend",
+    "backend",
+    "shared"
+  ]
+}

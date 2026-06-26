@@ -1,0 +1,128 @@
+import { CharacterClass } from "@shared/enums/CharacterClass";
+import type { PlayerConfig } from "@shared/types/PlayerConfig";
+
+export const PLAYER_CONFIGS: Record<CharacterClass, PlayerConfig> = {
+  [CharacterClass.SunWukong]: {
+    characterClass: CharacterClass.SunWukong,
+    displayName: "孙悟空",
+    description: "齐天大圣。擅长高爆发攻击和连击，拥有独一无二的金箍棒和分身术。",
+    stats: {
+      maxHealth: 75,
+      startingGold: 99,
+      baseEnergy: 3,
+      handSize: 5,
+    },
+    startingDeck: [
+      "strike",
+      "strike",
+      "strike",
+      "strike",
+      "strike",
+      "defend",
+      "defend",
+      "defend",
+      "defend",
+      "somersault_cloud",
+    ],
+    startingRelic: "golden_circlet",
+  },
+
+  [CharacterClass.TangSanzang]: {
+    characterClass: CharacterClass.TangSanzang,
+    displayName: "唐三藏",
+    description: "金蝉子转世。擅长治疗、护盾和咒语加持，引领团队走向胜利。",
+    stats: {
+      maxHealth: 65,
+      startingGold: 150,
+      baseEnergy: 3,
+      handSize: 5,
+    },
+    startingDeck: [
+      "strike",
+      "strike",
+      "strike",
+      "defend",
+      "defend",
+      "defend",
+      "defend",
+      "blessing",
+      "meditation",
+      "sutra_shield",
+    ],
+    startingRelic: "monk_robe",
+  },
+
+  [CharacterClass.ZhuBajie]: {
+    characterClass: CharacterClass.ZhuBajie,
+    displayName: "猪八戒",
+    description: "天蓬元帅转世。皮糙肉厚，擅长格挡和嘲讽，用九齿钉耙撕裂敌人。",
+    stats: {
+      maxHealth: 90,
+      startingGold: 50,
+      baseEnergy: 3,
+      handSize: 5,
+    },
+    startingDeck: [
+      "strike",
+      "strike",
+      "strike",
+      "strike",
+      "defend",
+      "defend",
+      "defend",
+      "defend",
+      "rake_strike",
+      "taunt",
+    ],
+    startingRelic: "nine_tooth_rake",
+  },
+
+  [CharacterClass.ShaWujing]: {
+    characterClass: CharacterClass.ShaWujing,
+    displayName: "沙悟净",
+    description: "卷帘大将转世。平衡型战士，利用流沙之力削弱敌人，稳固防守。",
+    stats: {
+      maxHealth: 80,
+      startingGold: 75,
+      baseEnergy: 3,
+      handSize: 5,
+    },
+    startingDeck: [
+      "strike",
+      "strike",
+      "strike",
+      "strike",
+      "defend",
+      "defend",
+      "defend",
+      "defend",
+      "quicksand",
+      "spirit_pearl",
+    ],
+    startingRelic: "demon_skull_necklace",
+  },
+
+  [CharacterClass.WhiteDragonHorse]: {
+    characterClass: CharacterClass.WhiteDragonHorse,
+    displayName: "白龙马",
+    description: "西海龙王三太子。兼具速度与力量，通过高速移动积累优势，龙息焚毁一切。",
+    stats: {
+      maxHealth: 70,
+      startingGold: 100,
+      baseEnergy: 4,
+      handSize: 4,
+    },
+    startingDeck: [
+      "strike",
+      "strike",
+      "strike",
+      "defend",
+      "defend",
+      "defend",
+      "dragon_charge",
+      "wind_step",
+      "dragon_breath",
+    ],
+    startingRelic: "dragon_scale",
+  },
+};

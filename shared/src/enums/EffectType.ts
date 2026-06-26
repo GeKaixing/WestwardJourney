@@ -1,0 +1,16 @@
+export enum EffectType {
+  Damage = "damage",
+  Block = "block",
+  Buff = "buff",
+  Debuff = "debuff",
+  Heal = "heal",
+  DrawCard = "draw_card",
+  Discard = "discard",
+  Exhaust = "exhaust",
+  Energy = "energy",
+  Summon = "summon",
+  Transform = "transform",
+  AoeDamage = "aoe_damage",
+  RepeatNextTurn = "repeat_next_turn",
+  CostReduction = "cost_reduction",
+}

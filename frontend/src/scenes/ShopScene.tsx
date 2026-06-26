@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CARD_CONFIGS, RELIC_CONFIGS, POTION_CONFIGS } from "../data";
 import { useGameStore } from "../store";
+import { GiCoins, GiHealthPotion, GiCampfire, GiCardRandom, GiExitDoor } from "react-icons/gi";
 
 interface ShopItem {
   id: string;
@@ -94,11 +95,18 @@ export function ShopScene() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center bg-dark-900 p-8">
-      <motion.h1 initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-2 font-display text-2xl text-gold-400">
-        商铺
-      </motion.h1>
-      <p className="mb-8 text-sm text-gray-500">💰 {run?.gold ?? 0} 金币</p>
+    <div className="relative flex min-h-screen flex-col items-center p-12 bg-dark-950 font-sans text-gray-200 select-none">
+      <div className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none opacity-40 grayscale" style={{ backgroundImage: "url('/kraft-paper.jpg')" }}></div>
+      <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.9)] pointer-events-none z-0"></div>
+
+      <div className="relative z-10 flex w-full max-w-5xl flex-col items-center">
+        <motion.h1 initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-4 font-display text-5xl text-gold-500 drop-shadow-lg">
+          神秘商铺
+        </motion.h1>
+        <div className="mb-10 flex items-center gap-2 rounded-full bg-black/60 px-6 py-2 shadow-inner border border-gold-900/50">
+          <GiCoins className="text-3xl text-gold-400" />
+          <span className="text-2xl font-bold text-white">{run?.gold ?? 0}</span>
+        </div>
 
       {msg && (
         <motion.p
@@ -113,39 +121,55 @@ export function ShopScene() {
       <div className="flex max-w-2xl flex-wrap justify-center gap-4">
         {items.map((item, i) => {
           const isSold = sold.has(item.id);
-          const typeColor =
-            item.type === "card" ? "border-blue-700" : item.type === "relic" ? "border-purple-700" : "border-cyan-700";
+          const Icon = item.type === "card" ? GiCardRandom : item.type === "relic" ? GiCampfire : GiHealthPotion;
+          const colorClass = item.type === "card" ? "text-blue-900" : item.type === "relic" ? "text-orange-900" : "text-green-900";
+          const canAfford = (run?.gold ?? 0) >= item.price;
+          
           return (
             <motion.button
               key={item.id}
-              className={`flex w-44 flex-col items-center rounded-xl border-2 bg-dark-800 p-4 text-center transition-all ${
-                isSold ? "border-gray-700 opacity-40" : typeColor + " hover:border-gold-500"
+              className={`relative flex w-56 h-72 flex-col items-center justify-between rounded-xl shadow-2xl p-6 text-center transition-all bg-cover bg-center border-2 ${
+                isSold ? "border-amber-900/30 opacity-30 grayscale cursor-not-allowed" : 
+                canAfford ? "border-amber-900/80 cursor-pointer hover:border-gold-500 hover:shadow-[0_0_20px_rgba(250,204,21,0.5)]" : 
+                "border-amber-900/50 cursor-pointer"
               }`}
-              initial={{ opacity: 0, y: 20 }}
+              style={{ backgroundImage: "url('/kraft-paper.jpg')" }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.05 * i }}
-              whileHover={isSold ? {} : { scale: 1.05 }}
+              transition={{ delay: 0.1 * i, type: "spring" }}
+              whileHover={isSold ? {} : { scale: 1.05, y: -5 }}
               whileTap={isSold ? {} : { scale: 0.95 }}
               onClick={() => handleBuy(item)}
               disabled={isSold}
             >
-              <p className="text-sm font-bold text-gray-200">{item.name}</p>
-              <p className="mt-1 text-xs text-gray-400">{item.description}</p>
-              <p className={`mt-2 text-xs ${(run?.gold ?? 0) >= item.price ? "text-gold-400" : "text-red-400"}`}>
-                💰 {item.price}
-              </p>
-              {isSold && <p className="mt-1 text-[10px] text-gray-600">已售</p>}
+              <div className="flex flex-col items-center w-full">
+                <Icon className={`text-6xl drop-shadow-md ${colorClass} mb-4`} />
+                <h3 className="text-xl font-bold text-amber-950 leading-tight mb-2">{item.name}</h3>
+                <p className="text-sm font-medium text-amber-900/80 leading-snug line-clamp-3">{item.description}</p>
+              </div>
+              
+              <div className={`flex items-center gap-2 px-4 py-1 rounded-full bg-black/80 shadow-md ${!canAfford && !isSold ? "text-red-500" : "text-gold-400"}`}>
+                <GiCoins className="text-xl" />
+                <span className="font-bold text-lg">{item.price}</span>
+              </div>
+              
+              {isSold && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-xl backdrop-blur-sm">
+                  <span className="transform -rotate-12 border-4 border-red-800 text-red-800 px-4 py-1 text-3xl font-black rounded-lg">售罄</span>
+                </div>
+              )}
             </motion.button>
           );
         })}
       </div>
 
       <button
-        className="mt-10 rounded border border-gray-600 px-6 py-2 text-sm text-gray-400 hover:bg-dark-700"
+        className="mt-16 flex items-center gap-2 rounded-lg border-2 border-gray-600 bg-black/50 px-8 py-3 text-lg font-bold text-gray-300 transition-colors hover:bg-gray-800 hover:text-white"
         onClick={() => navigate("/map")}
       >
-        离开
+        <GiExitDoor className="text-2xl" /> 离开商店
       </button>
+      </div>
     </div>
   );
 }

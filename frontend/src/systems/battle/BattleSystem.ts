@@ -13,6 +13,7 @@ export interface CombatantState {
   maxHealth: number;
   block: number;
   energy: number;
+  maxEnergy: number;
   isPlayer: boolean;
   isAlive: boolean;
 }
@@ -73,10 +74,14 @@ export class BattleSystem {
   private createTurnEvents(): TurnEvents {
     return {
       onTurnStart: (_turnNumber) => {
-        this.player.energy = 3;
-        this.player.block = 0;
+        this.player.energy = this.player.maxEnergy;
+        if (!this.buffSystem.hasBuff(this.player.id, BuffType.Barricade)) {
+          this.player.block = 0;
+        }
         for (const enemy of this.enemies) {
-          enemy.block = 0;
+          if (!this.buffSystem.hasBuff(enemy.id, BuffType.Barricade)) {
+            enemy.block = 0;
+          }
         }
         this.relicSystem.triggerEvent(
           "turn_start",
@@ -134,7 +139,7 @@ export class BattleSystem {
   }
 
   initBattle(
-    playerConfig: { id: string; name: string; health: number; maxHealth: number; deck: CardInstance[] },
+    playerConfig: { id: string; name: string; health: number; maxHealth: number; deck: CardInstance[], baseEnergy?: number },
     enemyConfigs: EnemyConfig[],
     callbacks: BattleCallbacks,
   ): void {
@@ -145,7 +150,8 @@ export class BattleSystem {
       health: playerConfig.health,
       maxHealth: playerConfig.maxHealth,
       block: 0,
-      energy: 3,
+      energy: playerConfig.baseEnergy ?? 3,
+      maxEnergy: playerConfig.baseEnergy ?? 3,
       isPlayer: true,
       isAlive: true,
     };
@@ -157,6 +163,7 @@ export class BattleSystem {
       maxHealth: ec.health,
       block: ec.block ?? 0,
       energy: 0,
+      maxEnergy: 0,
       isPlayer: false,
       isAlive: true,
       actions: ec.actions,
@@ -165,6 +172,17 @@ export class BattleSystem {
 
     this.drawPile = [...playerConfig.deck];
     this.shuffleArray(this.drawPile);
+    const innateCards: CardInstance[] = [];
+    this.drawPile = this.drawPile.filter((card) => {
+      const config = this.cardSystem.getConfig(card.configId);
+      if (config?.innate) {
+        innateCards.push(card);
+        return false;
+      }
+      return true;
+    });
+    this.drawPile.push(...innateCards);
+
     this.hand = [];
     this.discardPile = [];
     this.exhaustPile = [];
@@ -296,8 +314,22 @@ export class BattleSystem {
   }
 
   private discardHand(): void {
-    this.discardPile.push(...this.hand);
-    this.hand = [];
+    const toDiscard: CardInstance[] = [];
+    const toRetain: CardInstance[] = [];
+    
+    for (const card of this.hand) {
+      const config = this.cardSystem.getConfig(card.configId);
+      if (config?.ethereal) {
+        this.exhaustPile.push(card);
+      } else if (config?.retain) {
+        toRetain.push(card);
+      } else {
+        toDiscard.push(card);
+      }
+    }
+    
+    this.discardPile.push(...toDiscard);
+    this.hand = toRetain;
   }
 
   private exhaustCard(cardId: string): void {
@@ -417,14 +449,26 @@ export class BattleSystem {
       if (!action) continue;
       enemy.actionId = action.id;
       enemy.intent = action.name;
-      enemy.intentValue = this.getIntentValue(action);
+      enemy.intentValue = this.getIntentValue(action, enemy);
       enemy.intentType = this.getIntentType(action);
     }
   }
 
-  private getIntentValue(action: EnemyAction): number | undefined {
+  private getIntentValue(action: EnemyAction, enemy?: EnemyState): number | undefined {
     const primary = action.effects.find((effect) => effect.effectType === "damage" || effect.effectType === "block");
-    return primary?.value;
+    if (!primary || primary.effectType !== "damage" || !enemy) return primary?.value;
+    
+    let finalDamage = primary.value ?? 0;
+    if (this.buffSystem.hasBuff(enemy.id, BuffType.Strength)) {
+      finalDamage += this.buffSystem.getBuffStacks(enemy.id, BuffType.Strength);
+    }
+    if (this.buffSystem.hasBuff(enemy.id, BuffType.Weak)) {
+      finalDamage = Math.floor(finalDamage * 0.75);
+    }
+    if (this.buffSystem.hasBuff(this.player.id, BuffType.Vulnerable)) {
+      finalDamage = Math.floor(finalDamage * 1.5);
+    }
+    return finalDamage;
   }
 
   private getIntentType(action: EnemyAction): EnemyState["intentType"] {

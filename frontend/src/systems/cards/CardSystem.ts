@@ -120,6 +120,10 @@ export class CardSystem {
         let block = value;
         const dexterity = context.buffSystem.getBuffStacks(context.playerId, BuffType.Dexterity);
         block += dexterity;
+        const frailStacks = context.buffSystem.getBuffStacks(context.playerId, BuffType.Frail);
+        if (frailStacks > 0) {
+            block = Math.floor(block * 0.75);
+        }
         context.addBlock(context.playerId, block);
         result.block = (result.block ?? 0) + block;
         break;

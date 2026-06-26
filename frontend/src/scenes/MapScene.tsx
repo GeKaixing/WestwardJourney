@@ -1,30 +1,61 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, ReactNode } from "react";
+import {
+  GiGoblinHead,
+  GiOgre,
+  GiTripleSkulls,
+  GiCampfire,
+  GiScales,
+  GiCardRandom,
+  GiChest,
+  GiRollingDices,
+  GiHearts,
+  GiCoins,
+  GiHealthPotion,
+  GiCompass,
+  GiHourglass,
+  GiTreasureMap,
+  GiPokerHand,
+  GiCog,
+} from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import clsx from "clsx";
 import { MapNodeType } from "@shared/enums/MapNodeType";
 import { MapGenerator, type MapNode } from "../systems/map";
 import { useGameStore } from "../store";
+import { PLAYER_CONFIGS, RELIC_CONFIGS } from "../data";
 
 const NODE_LABELS: Record<MapNodeType, string> = {
-  [MapNodeType.Monster]: "妖",
-  [MapNodeType.Elite]: "将",
-  [MapNodeType.Boss]: "王",
-  [MapNodeType.Rest]: "憩",
-  [MapNodeType.Shop]: "商",
-  [MapNodeType.Event]: "遇",
-  [MapNodeType.Treasure]: "宝",
-  [MapNodeType.Mystery]: "？",
+  [MapNodeType.Monster]: "敌人",
+  [MapNodeType.Elite]: "精英",
+  [MapNodeType.Boss]: "首领",
+  [MapNodeType.Rest]: "休息",
+  [MapNodeType.Shop]: "商人",
+  [MapNodeType.Event]: "事件",
+  [MapNodeType.Treasure]: "宝箱",
+  [MapNodeType.Mystery]: "未知",
+};
+
+const NODE_ICONS: Record<MapNodeType, ReactNode> = {
+  [MapNodeType.Monster]: <GiGoblinHead />,
+  [MapNodeType.Elite]: <GiOgre />,
+  [MapNodeType.Boss]: <GiTripleSkulls />,
+  [MapNodeType.Rest]: <GiCampfire />,
+  [MapNodeType.Shop]: <GiScales />,
+  [MapNodeType.Event]: <GiCardRandom />,
+  [MapNodeType.Treasure]: <GiChest />,
+  [MapNodeType.Mystery]: <GiRollingDices />,
 };
 
 const NODE_COLORS: Record<MapNodeType, string> = {
-  [MapNodeType.Monster]: "border-red-600 text-red-400 bg-red-950/40",
-  [MapNodeType.Elite]: "border-orange-500 text-orange-400 bg-orange-950/40",
-  [MapNodeType.Boss]: "border-purple-500 text-purple-400 bg-purple-950/40",
-  [MapNodeType.Rest]: "border-green-500 text-green-400 bg-green-950/40",
-  [MapNodeType.Shop]: "border-yellow-500 text-yellow-400 bg-yellow-950/40",
-  [MapNodeType.Event]: "border-cyan-500 text-cyan-400 bg-cyan-950/40",
-  [MapNodeType.Treasure]: "border-pink-500 text-pink-400 bg-pink-950/40",
-  [MapNodeType.Mystery]: "border-gray-400 text-gray-300 bg-gray-800/40",
+  [MapNodeType.Monster]: "text-[#3e2723]",
+  [MapNodeType.Elite]: "text-red-900",
+  [MapNodeType.Boss]: "text-red-950 scale-125",
+  [MapNodeType.Rest]: "text-green-900",
+  [MapNodeType.Shop]: "text-purple-900",
+  [MapNodeType.Event]: "text-blue-900",
+  [MapNodeType.Treasure]: "text-yellow-800",
+  [MapNodeType.Mystery]: "text-teal-900",
 };
 
 const NODE_INTROS: Record<MapNodeType, string> = {
@@ -93,79 +124,171 @@ export function MapScene() {
     return null;
   }
 
+  const playerConfig = PLAYER_CONFIGS[run.characterClass];
+
   return (
-    <div className="flex min-h-screen flex-col items-center bg-dark-900 p-4">
-      <div className="mb-4 flex w-full max-w-3xl items-center justify-between rounded-lg border border-gray-800 bg-dark-800/70 px-4 py-3 text-xs text-gray-400">
-        <span className="flex items-center gap-2">
-          <span className="h-2 w-2 rounded-full bg-green-500" />
-          当前第 {run.currentFloor} 层
-        </span>
-        <span className="flex items-center gap-3">
-          <span>❤️ {run.currentHealth}/{run.maxHealth}</span>
-          <span>💰 {run.gold}</span>
-          <span>🎒 {run.deck.length}</span>
-          <span>🏺 {run.relics.length}</span>
-        </span>
-      </div>
-
-      <h1 className="mb-1 font-display text-2xl text-gold-400">西行之路</h1>
-      {selectedIntro && (
-        <motion.p
-          className="mb-4 text-sm text-gray-400"
-          initial={{ opacity: 0, y: 5 }}
-          animate={{ opacity: 1, y: 0 }}
-          key={selectedIntro}
-        >
-          {selectedIntro}
-        </motion.p>
-      )}
-
-      <div className="mb-3 grid grid-cols-4 gap-2 text-[11px] text-gray-500 sm:grid-cols-8">
-        {Object.entries(NODE_LABELS).map(([type, label]) => (
-          <span key={type} className={`rounded border px-2 py-1 text-center ${NODE_COLORS[type as MapNodeType]}`}>
-            {label} {type}
-          </span>
-        ))}
-      </div>
-
-      <div className="flex max-h-[70vh] flex-col-reverse gap-2 overflow-y-auto rounded-xl border border-gray-800 bg-dark-950/40 px-4 py-3">
-        {floors.map((floorNodes) => (
-          <div key={floorNodes[0]?.floor ?? 0} className="flex items-center gap-3">
-            <span className="w-6 text-right text-xs text-gray-600">
-              {floorNodes[0]?.floor}
-            </span>
-            <div className="grid min-w-64 grid-cols-4 gap-5">
-              {floorNodes.map((node) => {
-                const colors = NODE_COLORS[node.type];
-                const isFuture = !node.visited && !node.available;
-                return (
-                  <motion.button
-                    key={node.id}
-                    className={`relative flex h-12 w-12 items-center justify-center rounded-full border-2 text-sm font-bold transition-all ${
-                      isFuture ? "border-gray-800 bg-dark-800 text-gray-700" : colors
-                    } ${
-                      node.available && !node.visited
-                        ? "cursor-pointer shadow-lg shadow-gold-500/20"
-                        : "cursor-default"
-                    } ${node.visited ? "opacity-60" : ""}`}
-                    whileHover={node.available && !node.visited ? { scale: 1.15 } : {}}
-                    whileTap={node.available && !node.visited ? { scale: 0.9 } : {}}
-                    onClick={() => handleNodeClick(node)}
-                    title={node.type}
-                  >
-                    {NODE_LABELS[node.type]}
-                    {node.visited && (
-                      <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-green-600 text-[9px] text-white">
-                        ✓
-                      </span>
-                    )}
-                  </motion.button>
-                );
-              })}
+    <div className="relative flex h-screen w-full flex-col items-center overflow-hidden bg-dark-950 font-sans text-gray-200 select-none">
+      
+      {/* Full-width Header */}
+      <div className="absolute left-0 right-0 top-0 z-50 flex h-14 w-full items-center justify-between bg-[#1e262f] px-6 text-sm shadow-md border-b border-black/50">
+        {/* Top Left: Name, HP, Gold, Relics, Potions */}
+        <div className="flex items-center gap-6 pointer-events-auto">
+          <div className="flex items-center gap-4">
+            <span className="font-bold text-gray-200">{playerConfig?.displayName ?? "未知"}</span>
+            <div className="flex items-center gap-1 font-bold text-red-400">
+              <GiHearts className="text-xl" /> {run.currentHealth}/{run.maxHealth}
+            </div>
+            <div className="flex items-center gap-1 font-bold text-yellow-400">
+              <GiCoins className="text-xl" /> {run.gold}
             </div>
           </div>
-        ))}
+          
+          <div className="flex gap-1 border-l border-gray-600/50 pl-4">
+             {/* Relics */}
+             {run.relics.map((r, i) => {
+               const config = RELIC_CONFIGS.find(rc => rc.id === r.configId);
+               return (
+                 <div key={i} className="flex h-8 w-8 items-center justify-center cursor-help transition-transform hover:scale-110 text-xl text-orange-500" title={config?.name}>
+                   <GiCampfire />
+                 </div>
+               );
+             })}
+          </div>
+
+          <div className="flex gap-2 border-l border-gray-600/50 pl-4">
+            {/* Potions */}
+            {run.potions.length > 0 ? run.potions.map((p, i) => (
+              <div key={i} className="flex h-8 w-8 items-center justify-center cursor-help transition-transform hover:scale-110 text-xl text-green-400" title={p.name}>
+                <GiHealthPotion />
+              </div>
+            )) : (
+              // Empty potion slots placeholders
+              <>
+                <div className="h-8 w-8 rounded bg-black/20 border border-gray-600/50 border-dashed opacity-50"></div>
+                <div className="h-8 w-8 rounded bg-black/20 border border-gray-600/50 border-dashed opacity-50"></div>
+                <div className="h-8 w-8 rounded bg-black/20 border border-gray-600/50 border-dashed opacity-50"></div>
+              </>
+            )}
+          </div>
+        </div>
+        
+        {/* Top Right: Floor, Time, Map, Deck, Settings */}
+        <div className="flex items-center gap-6 pointer-events-auto text-gray-300">
+          <div className="flex items-center gap-4 font-bold">
+            <span className="flex items-center gap-1 text-green-400"><GiCompass className="text-xl" /> {run.currentFloor}</span>
+            <span className="flex items-center gap-1"><GiHourglass className="text-xl text-yellow-500" /> 00:00</span>
+          </div>
+          
+          <div className="flex items-center gap-5 border-l border-gray-600/50 pl-4">
+            <button className="flex items-center hover:text-white transition-colors text-2xl" title="地图">
+              <GiTreasureMap />
+            </button>
+            <button 
+              className="flex items-center gap-1 hover:text-white transition-colors font-bold" 
+              title="牌组"
+              onClick={() => navigate("/deck")}
+            >
+               <GiPokerHand className="text-2xl" /> <span className="text-base">{run.deck.length}</span>
+            </button>
+            <button 
+              className="flex items-center hover:text-white transition-colors text-2xl" 
+              title="设置"
+              onClick={() => navigate("/settings")}
+            >
+              <GiCog />
+            </button>
+          </div>
+        </div>
       </div>
+
+      {/* Intro Text */}
+      <div className="absolute top-20 z-40 text-center pointer-events-none">
+        <h1 className="font-display text-4xl text-gold-500 drop-shadow-md">西行之路</h1>
+        {selectedIntro && (
+          <motion.p
+            className="mt-2 text-lg text-gray-300 drop-shadow"
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            key={selectedIntro}
+          >
+            {selectedIntro}
+          </motion.p>
+        )}
+      </div>
+
+      {/* Right Legend */}
+      <div 
+        className="absolute right-12 top-1/2 z-40 -translate-y-1/2 w-48 rounded-md p-4 text-amber-950 shadow-2xl border-2 border-amber-900/50 transform rotate-1 pointer-events-none bg-cover bg-center"
+        style={{ backgroundImage: "url('/kraft-paper.jpg')" }}
+      >
+        <h3 className="mb-4 text-center font-display text-2xl font-bold border-b border-amber-900/30 pb-2">图例</h3>
+        <div className="flex flex-col gap-3 font-bold">
+          {Object.entries(NODE_LABELS).map(([type, label]) => (
+            <div key={type} className="flex items-center gap-3">
+              <span className={clsx("flex w-8 justify-center text-xl drop-shadow-[0_0_5px_rgba(255,255,255,0.8)]", NODE_COLORS[type as MapNodeType])}>{NODE_ICONS[type as MapNodeType]}</span>
+              <span className="text-lg">{label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Scrollable Map Container */}
+      <div className="relative z-10 mt-36 mb-10 h-full w-full max-w-3xl overflow-hidden rounded-lg shadow-2xl">
+         {/* Parchment background */}
+         <div className="absolute inset-0 bg-cover bg-center pointer-events-none opacity-90" style={{ backgroundImage: "url('/kraft-paper.jpg')" }}></div>
+         <div className="absolute inset-0 shadow-[inset_0_0_50px_rgba(0,0,0,0.5)] pointer-events-none"></div>
+         
+         <div className="relative flex h-full flex-col-reverse overflow-y-auto px-16 py-12 [&::-webkit-scrollbar]:hidden">
+            {floors.map((floorNodes) => (
+              <div key={floorNodes[0]?.floor ?? 0} className="flex min-h-[100px] w-full items-center justify-center relative">
+                
+                {/* Floor Number Indicator */}
+                <span className="absolute left-0 text-sm font-bold text-[#6b4729] opacity-50 pointer-events-none">
+                  层 {floorNodes[0]?.floor}
+                </span>
+
+                <div className="flex w-full justify-around items-center px-12">
+                  {floorNodes.map((node) => {
+                    const isFuture = !node.visited && !node.available;
+                    const isAvailable = node.available && !node.visited;
+                    
+                    return (
+                      <motion.button
+                        key={node.id}
+                        className={clsx(
+                          "relative flex h-14 w-14 items-center justify-center text-4xl transition-all drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]",
+                          NODE_COLORS[node.type],
+                          isFuture ? "opacity-40 grayscale" : "opacity-100",
+                          node.visited ? "opacity-30 grayscale" : "",
+                          isAvailable ? "cursor-pointer drop-shadow-[0_0_15px_rgba(250,204,21,1)] scale-110" : "cursor-default"
+                        )}
+                        whileHover={isAvailable ? { scale: 1.3, y: -5 } : {}}
+                        whileTap={isAvailable ? { scale: 0.95 } : {}}
+                        onClick={() => handleNodeClick(node)}
+                        title={NODE_LABELS[node.type]}
+                      >
+                        {NODE_ICONS[node.type]}
+                        
+                        {/* Selected Indicator */}
+                        {isAvailable && (
+                          <div className="absolute -inset-2 rounded-full border-2 border-dashed border-gold-600 animate-spin-slow opacity-50 pointer-events-none"></div>
+                        )}
+                        
+                        {/* Visited Checkmark */}
+                        {node.visited && (
+                          <span className="absolute right-0 top-0 flex h-5 w-5 items-center justify-center rounded-full bg-green-600 text-xs text-white shadow-md ring-2 ring-[#cba474]">
+                            ✓
+                          </span>
+                        )}
+                      </motion.button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+         </div>
+      </div>
+
     </div>
   );
 }

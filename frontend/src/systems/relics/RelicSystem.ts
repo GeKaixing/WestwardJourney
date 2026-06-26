@@ -58,13 +58,14 @@ export class RelicSystem {
     const config = this.configs.get(configId);
     if (!config) return;
 
-    const playerRelics = this.relics.get(playerId) ?? [];
+    let playerRelics = this.relics.get(playerId) ?? [];
     if (config.unique && playerRelics.some((r) => r.configId === configId)) return;
 
     if (config.replaces) {
       const replaced = playerRelics.find((r) => r.configId === config.replaces);
       if (replaced) {
         this.removeRelic(playerId, config.replaces);
+        playerRelics = this.relics.get(playerId) ?? [];
       }
     }
 

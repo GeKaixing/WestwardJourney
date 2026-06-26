@@ -1,4 +1,26 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, ReactNode } from "react";
+import {
+  GiMonkey,
+  GiMonkFace,
+  GiPigFace,
+  GiBarbarian,
+  GiHorseHead,
+  GiRobber,
+  GiOgre,
+  GiScorpion,
+  GiSwordClash,
+  GiShield,
+  GiMagicSwirl,
+  GiHearts,
+  GiCoins,
+  GiCampfire,
+  GiHealthPotion,
+  GiCompass,
+  GiHourglass,
+  GiTreasureMap,
+  GiPokerHand,
+  GiCog,
+} from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { BattleSystem, type BattleState } from "../systems/battle";
@@ -39,60 +61,28 @@ function CardView({
   disabled: boolean;
   onClick: () => void;
 }) {
-  const [hovered, setHovered] = useState(false);
-
   return (
-    <>
-      <motion.button
-        className={`shrink-0 rounded-lg border-2 transition-colors ${
-          disabled ? "border-gray-700 opacity-50" : "border-transparent"
-        }`}
-        whileHover={disabled ? {} : { y: -12, scale: 1.08 }}
-        whileTap={disabled ? {} : { scale: 0.95 }}
-        onHoverStart={() => setHovered(true)}
-        onHoverEnd={() => setHovered(false)}
-        onClick={onClick}
-        disabled={disabled}
-      >
-        {imageUrl ? (
-          <img
-            src={imageUrl}
-            alt={card.configId}
-            className="h-36 w-auto rounded-lg"
-            draggable={false}
-          />
-        ) : (
-          <div className="flex h-36 w-[100px] items-center justify-center rounded-lg bg-dark-800">
-            <span className="animate-pulse text-xs text-gray-600">...</span>
-          </div>
-        )}
-      </motion.button>
-
-      {/* Hover popup — larger card preview */}
-      <AnimatePresence>
-        {hovered && imageUrl && !disabled && (
-          <motion.div
-            className="pointer-events-none fixed z-50"
-            initial={{ opacity: 0, scale: 0.8, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            style={{
-              left: "50%",
-              top: "35%",
-              transform: "translateX(-50%)",
-            }}
-          >
-            <img
-              src={imageUrl}
-              alt={card.configId}
-              className="h-auto w-[220px] drop-shadow-2xl"
-              draggable={false}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+    <motion.button
+      className={`shrink-0 rounded-lg border-2 transition-colors ${
+        disabled ? "border-gray-700 opacity-50" : "border-transparent"
+      }`}
+      whileTap={disabled ? {} : { scale: 0.95 }}
+      onClick={onClick}
+      disabled={disabled}
+    >
+      {imageUrl ? (
+        <img
+          src={imageUrl}
+          alt={card.configId}
+          className="h-36 w-auto rounded-lg"
+          draggable={false}
+        />
+      ) : (
+        <div className="flex h-36 w-[100px] items-center justify-center rounded-lg bg-dark-800">
+          <span className="animate-pulse text-xs text-gray-600">...</span>
+        </div>
+      )}
+    </motion.button>
   );
 }
 
@@ -224,151 +214,242 @@ export function BattleScene() {
   const defaultTarget = aliveEnemies[0];
   const phaseLabel = ["回合开始", "抽牌", "行动", "回合结束", "敌方行动", "清理"][battleState.phase] ?? "行动";
 
-  const characterEmojis: Record<string, string> = {
-    sun_wukong: "🐵",
-    tang_sanzang: "🙏",
-    zhu_bajie: "🐷",
-    sha_wujing: "👨‍🦲",
-    white_dragon_horse: "🐴",
+  const characterEmojis: Record<string, ReactNode> = {
+    sun_wukong: <GiMonkey />,
+    tang_sanzang: <GiMonkFace />,
+    zhu_bajie: <GiPigFace />,
+    sha_wujing: <GiBarbarian />,
+    white_dragon_horse: <GiHorseHead />,
   };
-  const enemyEmojis: Record<string, string> = {
-    mountain_bandit: "🗡️",
-    bandit_leader: "👹",
-    yaoguai_scorpion: "🦂",
+  const enemyEmojis: Record<string, ReactNode> = {
+    mountain_bandit: <GiRobber />,
+    bandit_leader: <GiOgre />,
+    yaoguai_scorpion: <GiScorpion />,
   };
-  const playerEmoji = run ? characterEmojis[run.characterClass] ?? "🐵" : "🐵";
+  const playerEmoji = run ? characterEmojis[run.characterClass] ?? <GiMonkey /> : <GiMonkey />;
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-dark-900 to-dark-800">
-      {/* Top bar */}
-      <div className="flex items-center justify-center gap-6 border-b border-gray-800 bg-dark-950/60 px-4 py-2 text-xs text-gray-400">
-        <motion.span key={`draw-${battleState.drawPile.length}`} initial={{ scale: 1.3 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 300, damping: 15 }}>
-          抽牌堆 {battleState.drawPile.length}
-        </motion.span>
-        <span className="font-bold text-gold-400">第 {battleState.turnNumber} 回合 · {phaseLabel}</span>
-        <motion.span key={`discard-${battleState.discardPile.length}`} initial={{ scale: 1.3 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 300, damping: 15 }}>
-          弃牌堆 {battleState.discardPile.length}
-        </motion.span>
-        <span>消耗 {battleState.exhaustPile.length}</span>
+    <div className="relative flex h-screen w-full flex-col overflow-hidden bg-dark-900 font-sans text-gray-200 select-none">
+      {/* Background */}
+      <div 
+        className="absolute inset-0 z-0 bg-cover bg-center"
+        style={{ backgroundImage: "url('/battle-bg.png')" }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-dark-950 opacity-70" />
       </div>
 
-      {/* Battle area */}
-      <div className="flex flex-1 items-start justify-between gap-8 px-8 py-6">
-        {/* Player side — left */}
-        <div className="flex w-48 flex-col items-center">
-           <div className="flex h-28 w-28 items-center justify-center rounded-full bg-yellow-950 text-4xl ring-2 ring-yellow-700">
+      {/* Full-width Header */}
+      <div className="absolute left-0 right-0 top-0 z-50 flex h-14 w-full items-center justify-between bg-[#1e262f] px-6 text-sm shadow-md border-b border-black/50">
+        {/* Top Left: Name, HP, Gold, Relics, Potions */}
+        <div className="flex items-center gap-6 pointer-events-auto">
+          <div className="flex items-center gap-4">
+            <span className="font-bold text-gray-200">{player.name}</span>
+            <div className="flex items-center gap-1 font-bold text-red-400">
+              <GiHearts className="text-xl" /> {player.health}/{player.maxHealth}
+            </div>
+            <div className="flex items-center gap-1 font-bold text-yellow-400">
+              <GiCoins className="text-xl" /> {run?.gold ?? 0}
+            </div>
+          </div>
+          
+          <div className="flex gap-1 border-l border-gray-600/50 pl-4">
+             {/* Relics */}
+             {run?.relics.map((r, i) => {
+               const config = RELIC_CONFIGS.find(rc => rc.id === r.configId);
+               return (
+                 <div key={i} className="flex h-8 w-8 items-center justify-center cursor-help transition-transform hover:scale-110 text-xl text-orange-500" title={config?.name}>
+                   <GiCampfire />
+                 </div>
+               );
+             })}
+          </div>
+
+          <div className="flex gap-2 border-l border-gray-600/50 pl-4">
+            {/* Potions */}
+            {(run?.potions?.length ?? 0) > 0 ? run!.potions.map((p, i) => (
+              <div key={i} className="flex h-8 w-8 items-center justify-center cursor-help transition-transform hover:scale-110 text-xl text-green-400" title={p.name}>
+                <GiHealthPotion />
+              </div>
+            )) : (
+              // Empty potion slots placeholders
+              <>
+                <div className="h-8 w-8 rounded bg-black/20 border border-gray-600/50 border-dashed opacity-50"></div>
+                <div className="h-8 w-8 rounded bg-black/20 border border-gray-600/50 border-dashed opacity-50"></div>
+                <div className="h-8 w-8 rounded bg-black/20 border border-gray-600/50 border-dashed opacity-50"></div>
+              </>
+            )}
+          </div>
+        </div>
+        
+        {/* Top Right: Floor, Time, Map, Deck, Settings */}
+        <div className="flex items-center gap-6 pointer-events-auto text-gray-300">
+          <div className="flex items-center gap-4 font-bold">
+            <span className="flex items-center gap-1 text-green-400"><GiCompass className="text-xl" /> {run?.currentFloor ?? 0}</span>
+            <span className="flex items-center gap-1"><GiHourglass className="text-xl text-yellow-500" /> 00:00</span>
+          </div>
+          
+          <div className="flex items-center gap-5 border-l border-gray-600/50 pl-4">
+            <button className="flex items-center hover:text-white transition-colors text-2xl" title="地图">
+              <GiTreasureMap />
+            </button>
+            <button className="flex items-center gap-1 hover:text-white transition-colors font-bold" title="牌组">
+               <GiPokerHand className="text-2xl" /> <span className="text-base">{run?.deck.length ?? 0}</span>
+            </button>
+            <button className="flex items-center hover:text-white transition-colors text-2xl" title="设置">
+              <GiCog />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Battle Area */}
+      <div className="relative z-10 flex flex-1 w-full items-center justify-between px-32 pb-32 pt-16">
+        
+        {/* Player Character */}
+        <div className="relative flex flex-col items-center">
+          <div className="flex h-56 w-56 items-center justify-center text-9xl drop-shadow-[0_10px_25px_rgba(0,0,0,0.5)] filter transition-transform hover:scale-105">
             {playerEmoji}
           </div>
-          <p className="mt-2 text-sm font-bold text-yellow-400">{player.name}</p>
-          <div className="mt-2 w-full">
-            <HealthBar current={player.health} max={player.maxHealth} color="bg-green-500" />
-            <p className="mt-0.5 text-center text-xs text-gray-400">
+          {/* HP Bar */}
+          <div className="mt-4 w-40">
+            <HealthBar current={player.health} max={player.maxHealth} color="bg-red-500" />
+            <p className="mt-1 text-center text-sm font-bold text-white drop-shadow-md">
               {player.health}/{player.maxHealth}
             </p>
           </div>
-          <div className="mt-3 flex gap-3 text-xs text-gray-300">
-            <span>⚡ {player.energy}/{baseEnergy}</span>
-            {player.block > 0 && <span className="text-blue-400">🛡 {player.block}</span>}
-          </div>
+          {/* Block */}
+          {player.block > 0 && (
+            <div className="absolute -bottom-10 flex h-14 w-14 items-center justify-center rounded-full bg-blue-900/90 font-bold text-xl text-white ring-2 ring-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.5)] z-20">
+              {player.block}
+            </div>
+          )}
         </div>
 
-        {/* Enemy side — right */}
-        <div className="flex flex-wrap justify-end gap-5">
+        {/* Enemies */}
+        <div className="flex gap-20">
           {enemies.map((enemy) => (
-            <div key={enemy.id} className={`flex w-48 flex-col items-center rounded-lg border bg-dark-900/50 p-3 ${enemy.isAlive ? "border-red-950" : "border-gray-800 opacity-50"}`}>
-              <div className="flex h-24 w-24 items-center justify-center rounded-full bg-red-950 text-3xl ring-2 ring-red-700">
-                {enemyEmojis[enemy.id] ?? "👹"}
-              </div>
-              <p className="mt-2 text-sm font-bold text-red-400">{enemy.name}</p>
-              {enemy.intent && (
-                <span className={`mt-2 rounded px-3 py-1 text-xs ${
-                  enemy.intentType === "attack"
-                    ? "bg-red-900/60 text-red-300"
-                    : enemy.intentType === "block"
-                      ? "bg-blue-900/60 text-blue-300"
-                      : "bg-purple-900/60 text-purple-300"
-                }`}>
-                  {enemy.intentType === "attack" ? "⚔️" : enemy.intentType === "block" ? "🛡" : "✦"} {enemy.intent}
-                  {enemy.intentValue != null ? ` ${enemy.intentValue}` : ""}
-                </span>
-              )}
-              <div className="mt-2 w-full">
-                <HealthBar current={enemy.health} max={enemy.maxHealth} color="bg-red-500" />
-                <p className="mt-0.5 text-center text-xs text-gray-400">
-                  {enemy.health}/{enemy.maxHealth}
-                </p>
-              </div>
-              {enemy.block > 0 && enemy.isAlive && (
-                <span className="mt-1 rounded bg-blue-900 px-2 py-0.5 text-xs text-blue-300">
-                  🛡 {enemy.block}
-                </span>
-              )}
+            <div key={enemy.id} className={`relative flex flex-col items-center transition-all duration-500 ${enemy.isAlive ? "" : "opacity-0 scale-90"}`}>
+               {/* Intent */}
+               {enemy.intent && enemy.isAlive && (
+                  <div className="absolute -top-16 flex flex-col items-center z-20">
+                    <span className="text-4xl drop-shadow-lg filter">
+                       {enemy.intentType === "attack" ? <GiSwordClash className="text-red-500" /> : enemy.intentType === "block" ? <GiShield className="text-blue-400" /> : <GiMagicSwirl className="text-purple-400" />}
+                    </span>
+                    {enemy.intentValue != null && (
+                      <span className="font-bold text-white drop-shadow-md bg-black/60 px-2 rounded-full -mt-2 text-sm border border-gray-600/50">
+                        {enemy.intentValue}
+                      </span>
+                    )}
+                  </div>
+               )}
+               
+               {/* Character */}
+               <div className="flex h-48 w-48 items-center justify-center text-8xl drop-shadow-[0_10px_25px_rgba(0,0,0,0.5)] filter transition-transform hover:scale-105 text-gray-400">
+                  {enemyEmojis[enemy.id] ?? <GiOgre />}
+               </div>
+               
+               {/* HP Bar */}
+               <div className="mt-4 w-32">
+                 <HealthBar current={enemy.health} max={enemy.maxHealth} color="bg-red-500" />
+                 <p className="mt-1 text-center text-sm font-bold text-white drop-shadow-md">
+                   {enemy.health}/{enemy.maxHealth}
+                 </p>
+               </div>
+
+               {/* Block */}
+               {enemy.block > 0 && enemy.isAlive && (
+                 <div className="absolute -bottom-8 -right-4 flex h-12 w-12 items-center justify-center rounded-full bg-blue-900/90 font-bold text-white ring-2 ring-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.5)] z-20">
+                   {enemy.block}
+                 </div>
+               )}
             </div>
           ))}
         </div>
       </div>
 
-      {/* Potion bar */}
-      {run && run.potions.length > 0 && (
-        <div className="flex justify-center gap-2 border-t border-gray-800 px-4 py-2">
-          {run.potions.map((potion, i) => (
-            <button
-              key={i}
-              className="rounded bg-cyan-900/40 px-3 py-1 text-xs text-cyan-300 transition-colors hover:bg-cyan-800/50"
-              title={potion.description}
-            >
-              🧪 {potion.name}
-            </button>
-          ))}
+      {/* Bottom HUD */}
+      <div className="absolute bottom-0 left-0 right-0 z-30 h-72 pointer-events-none">
+        
+        {/* Energy Orb (Bottom Left) */}
+        <div className="pointer-events-auto absolute bottom-10 left-10 flex h-20 w-20 items-center justify-center rounded-full bg-orange-950/90 ring-2 ring-orange-500 shadow-[0_0_30px_rgba(249,115,22,0.4)] z-40 transform transition-transform hover:scale-105">
+          <span className="font-display text-3xl font-bold text-orange-400 drop-shadow-lg">
+            {player.energy}/{baseEnergy}
+          </span>
         </div>
-      )}
 
-      {/* Hand cards */}
-      <div className="flex min-h-[180px] items-center justify-center gap-3 overflow-x-auto border-t border-gray-800 bg-dark-950/40 px-4 py-4">
-        <AnimatePresence mode="popLayout">
-          {battleState.hand.map((card) => (
-            <motion.div
-              key={card.instanceId}
-              layout
-              initial={{ opacity: 0, y: -80, scale: 0.5 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, x: 150, scale: 0.4, transition: { duration: 0.15 } }}
-              transition={{ type: "spring", stiffness: 400, damping: 28 }}
-            >
-              <CardView
-                card={card}
-                imageUrl={cardImages[card.instanceId]}
-                disabled={card.cost > player.energy || !defaultTarget}
-                onClick={() => {
-                  const config = CARD_CONFIGS.find((entry) => entry.id === card.configId);
-                  const targets = config?.targetType === "all_enemies"
-                    ? aliveEnemies.map((enemy) => enemy.id)
-                    : defaultTarget ? [defaultTarget.id] : [];
-                  if (targets.length > 0) battleSystem.playCard(card.instanceId, targets);
-                }}
-              />
-            </motion.div>
-          ))}
-        </AnimatePresence>
-        {battleState.hand.length === 0 && (
-          <motion.span
-            className="py-10 text-sm text-gray-500"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+        {/* Draw Pile (Bottom Left Corner) */}
+        <div className="pointer-events-auto absolute bottom-6 left-36 flex flex-col items-center gap-1 cursor-pointer group z-30">
+          <div className="flex h-16 w-12 items-center justify-center rounded bg-gray-300 text-gray-800 shadow-xl border-2 border-gray-400 font-bold text-3xl group-hover:-translate-y-1 transition-transform">
+             <GiPokerHand />
+          </div>
+          <span className="font-bold text-white drop-shadow-md text-base">{battleState.drawPile.length}</span>
+        </div>
+
+        {/* End Turn Button (Bottom Right) */}
+        <div className="pointer-events-auto absolute bottom-12 right-10 z-40">
+          <button
+            onClick={() => battleSystem.endTurn()}
+            className="flex h-12 w-32 items-center justify-center rounded-lg bg-sky-950 border-2 border-sky-600 text-lg font-bold text-sky-200 transition-all hover:bg-sky-900 hover:scale-105 hover:shadow-[0_0_20px_rgba(14,165,233,0.5)] shadow-lg"
           >
-            手牌为空
-          </motion.span>
-        )}
-      </div>
+            {phaseLabel === "行动" ? "结束回合" : phaseLabel}
+          </button>
+        </div>
 
-      {/* End turn button */}
-      <div className="flex justify-center border-t border-gray-800 px-4 py-2">
-        <button
-          className="rounded-lg border border-yellow-600 bg-yellow-950/30 px-10 py-2 text-sm text-yellow-400 transition-all hover:bg-yellow-900/50"
-          onClick={() => battleSystem.endTurn()}
-        >
-          结束回合
-        </button>
+        {/* Discard Pile (Bottom Right Corner) */}
+        <div className="pointer-events-auto absolute bottom-6 right-48 flex flex-col items-center gap-1 cursor-pointer group z-30">
+          <div className="flex h-16 w-12 items-center justify-center rounded bg-gray-800 text-gray-400 shadow-xl border-2 border-gray-600 font-bold text-3xl group-hover:-translate-y-1 transition-transform opacity-90">
+             <GiPokerHand />
+          </div>
+          <span className="font-bold text-white drop-shadow-md text-base">{battleState.discardPile.length}</span>
+        </div>
+
+        {/* Hand Cards */}
+        <div className="pointer-events-auto absolute bottom-6 left-1/2 flex -translate-x-1/2 items-end justify-center w-[50%] z-20">
+          <AnimatePresence mode="popLayout">
+            {battleState.hand.map((card, idx) => {
+              const total = battleState.hand.length;
+              const offset = idx - (total - 1) / 2;
+              const rotate = offset * 4; 
+              const yOffset = Math.abs(offset) * 6;
+              
+              return (
+                <motion.div
+                  key={card.instanceId}
+                  layout
+                  initial={{ opacity: 0, y: 150, scale: 0.3 }}
+                  animate={{ opacity: 1, y: yOffset, rotate: rotate, scale: 1 }}
+                  whileHover={card.cost > player.energy || !defaultTarget ? {} : { y: yOffset - 30, rotate: 0, scale: 1.15, zIndex: 50 }}
+                  exit={{ opacity: 0, y: -100, scale: 0.5, transition: { duration: 0.2 } }}
+                  transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                  style={{ zIndex: idx }}
+                  className="-mx-3"
+                >
+                  <CardView
+                    card={card}
+                    imageUrl={cardImages[card.instanceId]}
+                    disabled={card.cost > player.energy || !defaultTarget}
+                    onClick={() => {
+                      const config = CARD_CONFIGS.find((entry) => entry.id === card.configId);
+                      const targets = config?.targetType === "all_enemies"
+                        ? aliveEnemies.map((enemy) => enemy.id)
+                        : defaultTarget ? [defaultTarget.id] : [];
+                      if (targets.length > 0) battleSystem.playCard(card.instanceId, targets);
+                    }}
+                  />
+                </motion.div>
+              )
+            })}
+          </AnimatePresence>
+          {battleState.hand.length === 0 && (
+            <motion.span
+              className="absolute bottom-10 text-lg font-bold text-gray-500 drop-shadow"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+            >
+              手牌为空
+            </motion.span>
+          )}
+        </div>
       </div>
     </div>
   );

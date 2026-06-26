@@ -41,6 +41,22 @@ export const BUFF_CONFIGS: Record<BuffType, BuffConfig> = {
     stackBehavior: BuffStackBehavior.MaxRefresh,
     maxStacks: 1,
   },
+  [BuffType.Frail]: {
+    type: BuffType.Frail,
+    name: "脆弱",
+    description: "获得的格挡减少25%",
+    isDebuff: true,
+    stackBehavior: BuffStackBehavior.MaxRefresh,
+    maxStacks: 1,
+  },
+  [BuffType.Barricade]: {
+    type: BuffType.Barricade,
+    name: "壁垒",
+    description: "回合开始时，格挡不会重置",
+    isDebuff: false,
+    stackBehavior: BuffStackBehavior.MaxRefresh,
+    maxStacks: 1,
+  },
   [BuffType.Block]: {
     type: BuffType.Block,
     name: "格挡",

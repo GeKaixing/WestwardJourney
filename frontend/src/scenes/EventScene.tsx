@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { EVENT_CONFIGS, CARD_CONFIGS, RELIC_CONFIGS } from "../data";
 import { useGameStore } from "../store";
 import type { EventChoice } from "@shared/types/EventConfig";
+import { GiScrollUnfurled, GiExitDoor, GiGhost } from "react-icons/gi";
 
 export function EventScene() {
   const navigate = useNavigate();
@@ -99,15 +100,18 @@ export function EventScene() {
 
   if (done) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-dark-900">
-        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="text-center">
-          <p className="text-4xl">📜</p>
-          <p className="mt-4 font-display text-xl text-gold-400">继续前行</p>
+      <div className="relative flex min-h-screen flex-col items-center justify-center p-8 bg-dark-950 font-sans text-gray-200 select-none">
+        <div className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none opacity-40 grayscale" style={{ backgroundImage: "url('/kraft-paper.jpg')" }}></div>
+        <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.9)] pointer-events-none z-0"></div>
+        
+        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="relative z-10 flex flex-col items-center p-12 bg-black/60 rounded-xl border-2 border-gold-900/50 backdrop-blur-sm shadow-2xl">
+          <GiScrollUnfurled className="text-6xl text-gold-500 drop-shadow-md" />
+          <p className="mt-6 font-display text-3xl text-gold-400 drop-shadow">继续前行</p>
           <button
-            className="mt-6 rounded border border-gold-600 px-6 py-2 text-gold-400 hover:bg-gold-950"
+            className="mt-8 flex items-center gap-2 rounded-lg border-2 border-gray-500 px-8 py-3 text-lg font-bold text-gray-300 hover:bg-gray-800 hover:text-white transition-all hover:scale-105"
             onClick={() => navigate("/map")}
           >
-            离开
+            <GiExitDoor className="text-2xl" /> 离开
           </button>
         </motion.div>
       </div>
@@ -115,29 +119,36 @@ export function EventScene() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-dark-900 p-8">
+    <div className="relative flex min-h-screen flex-col items-center justify-center p-8 bg-dark-950 font-sans text-gray-200 select-none">
+      <div className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none opacity-40 grayscale" style={{ backgroundImage: "url('/kraft-paper.jpg')" }}></div>
+      <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.9)] pointer-events-none z-0"></div>
+      
       <motion.div
-        className="flex max-w-lg flex-col items-center"
-        initial={{ opacity: 0, y: 20 }}
+        className="relative z-10 flex w-full max-w-2xl flex-col items-center bg-black/60 p-10 rounded-2xl border-2 border-gold-900/50 shadow-2xl backdrop-blur-sm"
+        initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <p className="text-4xl">👻</p>
-        <h1 className="mt-4 font-display text-2xl text-gold-400">{event.title}</h1>
-        <p className="mt-4 text-center text-sm leading-relaxed text-gray-300">{event.description}</p>
-        <div className="mt-8 flex flex-col gap-3">
+        <GiGhost className="text-6xl text-purple-400 drop-shadow-lg" />
+        <h1 className="mt-6 font-display text-4xl text-gold-500 drop-shadow-md text-center">{event.title}</h1>
+        <div className="my-8 w-full max-w-xl text-center">
+           <p className="text-lg leading-relaxed text-gray-300 font-medium">
+             {event.description}
+           </p>
+        </div>
+        <div className="mt-4 flex w-full flex-col gap-4 items-center">
           {event.choices.map((choice, i) => (
             <motion.button
               key={i}
-              className="w-72 rounded-xl border-2 border-gray-600 bg-dark-800 p-4 text-left transition-all hover:border-gold-500"
-              initial={{ opacity: 0, x: -20 }}
+              className="w-full max-w-lg rounded-xl border-2 border-amber-900/50 bg-black/40 p-5 text-left transition-all hover:border-gold-500 hover:bg-black/80 hover:shadow-[0_0_15px_rgba(250,204,21,0.3)]"
+              initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.1 * i + 0.3 }}
-              whileHover={{ scale: 1.02 }}
+              transition={{ delay: 0.1 * i + 0.3, type: "spring" }}
+              whileHover={{ scale: 1.02, x: 10 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => handleChoice(choice)}
             >
-              <p className="font-bold text-gray-200">{choice.label}</p>
-              <p className="mt-1 text-xs text-gray-400">{choice.description}</p>
+              <p className="text-lg font-bold text-gold-200">{choice.label}</p>
+              <p className="mt-2 text-sm text-gray-400">{choice.description}</p>
             </motion.button>
           ))}
         </div>

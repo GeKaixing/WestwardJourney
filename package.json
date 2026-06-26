@@ -9,7 +9,8 @@
     "backend:dev": "npm run dev -w backend",
     "backend:build": "npm run build -w backend",
     "prisma:generate": "npm run prisma:generate -w backend",
-    "prisma:migrate": "npm run prisma:migrate -w backend"
+    "prisma:migrate": "npm run prisma:migrate -w backend",
+    "test": "npm run test -w frontend"
   },
   "workspaces": [
     "frontend",

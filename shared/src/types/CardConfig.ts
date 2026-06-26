@@ -26,5 +26,6 @@ export interface CardConfig {
   innate?: boolean;
   exhaust?: boolean;
   ethereal?: boolean;
+  retain?: boolean;
   upgradesTo?: string;
 }

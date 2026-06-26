@@ -7,6 +7,7 @@ import { CardSystem, type CardInstance } from "../systems/cards";
 import { RelicSystem } from "../systems/relics";
 import { CARD_CONFIGS, ENEMY_CONFIGS, PLAYER_CONFIGS, RELIC_CONFIGS } from "../data";
 import { useGameStore } from "../store";
+import { cardImageGenerator } from "../utils/cardImageGenerator";
 
 const buffSystem = new BuffSystem();
 const cardSystem = new CardSystem();
@@ -29,32 +30,69 @@ function HealthBar({ current, max, color }: { current: number; max: number; colo
 
 function CardView({
   card,
+  imageUrl,
   disabled,
   onClick,
 }: {
   card: CardInstance;
+  imageUrl: string | undefined;
   disabled: boolean;
   onClick: () => void;
 }) {
-  const config = CARD_CONFIGS.find((entry) => entry.id === card.configId);
-  const name = config?.name ?? card.configId;
-  const description = card.upgraded && config?.upgradedDescription ? config.upgradedDescription : config?.description;
-  const costColors = ["border-gray-500", "border-yellow-700", "border-yellow-500", "border-orange-500"];
-  const border = disabled ? "border-gray-700 opacity-50" : costColors[Math.min(card.cost, 3)] ?? "border-red-500";
+  const [hovered, setHovered] = useState(false);
+
   return (
-    <motion.button
-      className={`flex h-36 w-32 shrink-0 flex-col rounded-lg border-2 bg-dark-800 p-3 text-left transition-colors ${border}`}
-      whileHover={disabled ? {} : { y: -8, scale: 1.04 }}
-      whileTap={disabled ? {} : { scale: 0.96 }}
-      onClick={onClick}
-      disabled={disabled}
-    >
-      <span className="mb-2 flex h-6 w-6 items-center justify-center rounded-full bg-yellow-900 text-xs text-yellow-300">
-        {card.cost}
-      </span>
-      <span className="text-sm font-bold text-gray-100">{name}{card.upgraded ? "+" : ""}</span>
-      <span className="mt-2 line-clamp-3 text-[11px] leading-snug text-gray-400">{description}</span>
-    </motion.button>
+    <>
+      <motion.button
+        className={`shrink-0 rounded-lg border-2 transition-colors ${
+          disabled ? "border-gray-700 opacity-50" : "border-transparent"
+        }`}
+        whileHover={disabled ? {} : { y: -12, scale: 1.08 }}
+        whileTap={disabled ? {} : { scale: 0.95 }}
+        onHoverStart={() => setHovered(true)}
+        onHoverEnd={() => setHovered(false)}
+        onClick={onClick}
+        disabled={disabled}
+      >
+        {imageUrl ? (
+          <img
+            src={imageUrl}
+            alt={card.configId}
+            className="h-36 w-auto rounded-lg"
+            draggable={false}
+          />
+        ) : (
+          <div className="flex h-36 w-[100px] items-center justify-center rounded-lg bg-dark-800">
+            <span className="animate-pulse text-xs text-gray-600">...</span>
+          </div>
+        )}
+      </motion.button>
+
+      {/* Hover popup — larger card preview */}
+      <AnimatePresence>
+        {hovered && imageUrl && !disabled && (
+          <motion.div
+            className="pointer-events-none fixed z-50"
+            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 20 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            style={{
+              left: "50%",
+              top: "35%",
+              transform: "translateX(-50%)",
+            }}
+          >
+            <img
+              src={imageUrl}
+              alt={card.configId}
+              className="h-auto w-[220px] drop-shadow-2xl"
+              draggable={false}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 
@@ -76,6 +114,33 @@ export function BattleScene() {
   const battleSystem = useMemo(() => new BattleSystem(cardSystem, buffSystem, relicSystem), []);
 
   const [error, setError] = useState<string | null>(null);
+  const [cardImages, setCardImages] = useState<Record<string, string>>({});
+  const loadingCards = useRef<Set<string>>(new Set());
+
+  useEffect(() => {
+    if (!battleState) return;
+    let changed = false;
+    const next = { ...cardImages };
+
+    for (const card of battleState.hand) {
+      if (next[card.instanceId] || loadingCards.current.has(card.instanceId)) continue;
+
+      const config = CARD_CONFIGS.find((c) => c.id === card.configId);
+      if (!config) continue;
+
+      loadingCards.current.add(card.instanceId);
+      changed = true;
+
+      cardImageGenerator.getCardImageUrl(config, card.upgraded).then((url) => {
+        loadingCards.current.delete(card.instanceId);
+        setCardImages((prev) => ({ ...prev, [card.instanceId]: url }));
+      }).catch(() => {
+        loadingCards.current.delete(card.instanceId);
+      });
+    }
+
+    if (changed) setCardImages(next);
+  }, [battleState?.hand, cardImages]);
 
   useEffect(() => {
     const currentRun = runRef.current;
@@ -272,6 +337,7 @@ export function BattleScene() {
             >
               <CardView
                 card={card}
+                imageUrl={cardImages[card.instanceId]}
                 disabled={card.cost > player.energy || !defaultTarget}
                 onClick={() => {
                   const config = CARD_CONFIGS.find((entry) => entry.id === card.configId);

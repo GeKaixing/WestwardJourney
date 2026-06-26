@@ -1,0 +1,143 @@
+[
+  {
+    "id": "ADROIT",
+    "name": "伶俐",
+    "category": "ENCHANTMENT",
+    "description": "获得[blue]{Block:diff()}[/blue]点[gold]格挡[/gold]。",
+    "extraCardText": "获得{Block:diff()}点[gold]格挡[/gold]。"
+  },
+  {
+    "id": "CLONE",
+    "name": "克隆",
+    "category": "ENCHANTMENT",
+    "description": "这张牌能在[gold]休息处[/gold]被复制。"
+  },
+  {
+    "id": "CORRUPTED",
+    "name": "腐化",
+    "category": "ENCHANTMENT",
+    "description": "造成的伤害增加[blue]50%[/blue]，但会失去[blue]2[/blue]生命。",
+    "extraCardText": "失去2点生命。"
+  },
+  {
+    "id": "GLAM",
+    "name": "华彩",
+    "category": "ENCHANTMENT",
+    "description": "这张牌每场战斗能够[gold]重放[/gold]一次。"
+  },
+  {
+    "id": "GOOPY",
+    "name": "黏糊",
+    "category": "ENCHANTMENT",
+    "description": "这张牌获得[gold]消耗[/gold]。当被打出时，这张牌的[gold]格挡[/gold]值永久增加[blue]1[/blue]点。",
+    "extraCardText": "这张牌的[gold]格挡[/gold]值永久增加[blue]1[/blue]点。"
+  },
+  {
+    "id": "IMBUED",
+    "name": "注能",
+    "category": "ENCHANTMENT",
+    "description": "这张牌在每场战斗开始时自动打出。",
+    "extraCardText": "注能。"
+  },
+  {
+    "id": "INKY",
+    "name": "墨影",
+    "category": "ENCHANTMENT",
+    "description": "这张牌额外造成[blue]1[/blue]点伤害，并造成[blue]1[/blue]层[gold]虚弱[/gold]。",
+    "extraCardText": "{TargetType:choose(AllEnemies):对所有敌人|}造成[blue]1[/blue]层[gold]虚弱[/gold]。"
+  },
+  {
+    "id": "INSTINCT",
+    "name": "本能",
+    "category": "ENCHANTMENT",
+    "description": "这张牌的攻击伤害翻倍。"
+  },
+  {
+    "id": "MOMENTUM",
+    "name": "动量",
+    "category": "ENCHANTMENT",
+    "description": "在本场战斗中，每次打出就增加这张牌的攻击伤害[blue]{Amount}[/blue]点。",
+    "extraCardText": "在本场战斗中这张牌的伤害增加{Amount}点。"
+  },
+  {
+    "id": "NIMBLE",
+    "name": "灵巧",
+    "category": "ENCHANTMENT",
+    "description": "这张牌获得的[gold]格挡[/gold]值增加[blue]{Amount}[/blue]点。"
+  },
+  {
+    "id": "PERFECT_FIT",
+    "name": "完美契合",
+    "category": "ENCHANTMENT",
+    "description": "每当这张牌要被洗入[gold]抽牌堆[/gold]时，将其放在抽牌堆顶。",
+    "extraCardText": "完美契合。"
+  },
+  {
+    "id": "ROYALLY_APPROVED",
+    "name": "王室认证",
+    "category": "ENCHANTMENT",
+    "description": "这张牌拥有[gold]固有[/gold]和[gold]保留[/gold]。"
+  },
+  {
+    "id": "SHARP",
+    "name": "锋利",
+    "category": "ENCHANTMENT",
+    "description": "这张牌上的伤害值增加[blue]{Amount}[/blue]点。"
+  },
+  {
+    "id": "SLITHER",
+    "name": "蛇行",
+    "category": "ENCHANTMENT",
+    "description": "当你抽到这张牌时，使其费用在[blue]0[/blue]到[blue]3[/blue]之间随机变化。"
+  },
+  {
+    "id": "SLUMBERING_ESSENCE",
+    "name": "沉眠精华",
+    "category": "ENCHANTMENT",
+    "description": "回合结束时，如果这张牌在你的手牌中，则将其费用降低[blue]1[/blue]点，直到其被打出。"
+  },
+  {
+    "id": "SOULS_POWER",
+    "name": "灵魂之力",
+    "category": "ENCHANTMENT",
+    "description": "这张牌失去[gold]消耗[/gold]。"
+  },
+  {
+    "id": "SOWN",
+    "name": "播种",
+    "category": "ENCHANTMENT",
+    "description": "你在每场战斗中第一次打出这张牌时，获得{Amount:energyIcons()}。",
+    "extraCardText": "获得{Amount:energyIcons()}。"
+  },
+  {
+    "id": "SPIRAL",
+    "name": "涡旋",
+    "category": "ENCHANTMENT",
+    "description": "这张牌获得[gold]重放[/gold][blue]1[/blue]。"
+  },
+  {
+    "id": "STEADY",
+    "name": "稳定",
+    "category": "ENCHANTMENT",
+    "description": "这张牌获得[gold]保留[/gold]。"
+  },
+  {
+    "id": "SWIFT",
+    "name": "迅速",
+    "category": "ENCHANTMENT",
+    "description": "你第一次打出这张牌时，抽[blue]{Amount}[/blue]张牌。",
+    "extraCardText": "第一次打出时抽{Amount}张牌。"
+  },
+  {
+    "id": "TEZCATARAS_EMBER",
+    "name": "特兹卡塔拉的余烬",
+    "category": "ENCHANTMENT",
+    "description": "费用为[blue]0[/blue]，造成[blue]3[/blue] 点额外伤害，且获得[gold]永恒[/gold]。"
+  },
+  {
+    "id": "VIGOROUS",
+    "name": "活力",
+    "category": "ENCHANTMENT",
+    "description": "第一次打出这张牌时，造成[blue]{Amount}[/blue]点额外伤害。"
+  }
+]

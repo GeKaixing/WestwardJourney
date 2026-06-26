@@ -41,6 +41,15 @@ export function TitleScene() {
       >
         开始游戏
       </motion.button>
+      <motion.button
+        className="mt-8 rounded-lg border border-zinc-700 bg-zinc-800/50 px-6 py-3 text-sm text-zinc-300 transition-colors hover:border-amber-700 hover:text-amber-400"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.0 }}
+        onClick={() => navigate("/tools/diy-card")}
+      >
+        DIY 卡牌生成器
+      </motion.button>
     </div>
   );
 }

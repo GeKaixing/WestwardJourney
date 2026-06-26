@@ -1,0 +1,244 @@
+{
+  "backgrounds": [
+    {
+      "id": "bg_attack_colorless",
+      "file": "/diy-card-assets/backgrounds/bg_attack_colorless.png",
+      "width": 1024,
+      "height": 1024,
+      "resolution": "1024"
+    },
+    {
+      "id": "bg_attack_red",
+      "file": "/diy-card-assets/backgrounds/bg_attack_red.png",
+      "width": 1024,
+      "height": 1024,
+      "resolution": "1024"
+    },
+    {
+      "id": "bg_power_colorless",
+      "file": "/diy-card-assets/backgrounds/bg_power_colorless.png",
+      "width": 1024,
+      "height": 1024,
+      "resolution": "1024"
+    },
+    {
+      "id": "bg_skill_colorless",
+      "file": "/diy-card-assets/backgrounds/bg_skill_colorless.png",
+      "width": 1024,
+      "height": 1024,
+      "resolution": "1024"
+    },
+    {
+      "id": "bg_attack_green",
+      "file": "/diy-card-assets/backgrounds/bg_attack_green.png",
+      "width": 1024,
+      "height": 1024,
+      "resolution": "1024"
+    },
+    {
+      "id": "bg_attack_purple",
+      "file": "/diy-card-assets/backgrounds/bg_attack_purple.png",
+      "width": 1024,
+      "height": 1024,
+      "resolution": "1024"
+    },
+    {
+      "id": "bg_power_blue",
+      "file": "/diy-card-assets/backgrounds/bg_power_blue.png",
+      "width": 1024,
+      "height": 1024,
+      "resolution": "1024"
+    },
+    {
+      "id": "bg_power_green",
+      "file": "/diy-card-assets/backgrounds/bg_power_green.png",
+      "width": 1024,
+      "height": 1024,
+      "resolution": "1024"
+    },
+    {
+      "id": "bg_skill_green",
+      "file": "/diy-card-assets/backgrounds/bg_skill_green.png",
+      "width": 1024,
+      "height": 1024,
+      "resolution": "1024"
+    },
+    {
+      "id": "bg_attack_blue",
+      "file": "/diy-card-assets/backgrounds/bg_attack_blue.png",
+      "width": 1024,
+      "height": 1024,
+      "resolution": "1024"
+    },
+    {
+      "id": "bg_power_purple",
+      "file": "/diy-card-assets/backgrounds/bg_power_purple.png",
+      "width": 1024,
+      "height": 1024,
+      "resolution": "1024"
+    },
+    {
+      "id": "bg_power_red",
+      "file": "/diy-card-assets/backgrounds/bg_power_red.png",
+      "width": 1024,
+      "height": 1024,
+      "resolution": "1024"
+    },
+    {
+      "id": "bg_skill_blue",
+      "file": "/diy-card-assets/backgrounds/bg_skill_blue.png",
+      "width": 1024,
+      "height": 1024,
+      "resolution": "1024"
+    },
+    {
+      "id": "bg_skill_red",
+      "file": "/diy-card-assets/backgrounds/bg_skill_red.png",
+      "width": 1024,
+      "height": 1024,
+      "resolution": "1024"
+    },
+    {
+      "id": "bg_skill_purple",
+      "file": "/diy-card-assets/backgrounds/bg_skill_purple.png",
+      "width": 1024,
+      "height": 1024,
+      "resolution": "1024"
+    }
+  ],
+  "frames": [
+    {
+      "id": "frame_power_common",
+      "file": "/diy-card-assets/frames/frame_power_common.png",
+      "width": 1024,
+      "height": 1024,
+      "resolution": "1024"
+    },
+    {
+      "id": "frame_power_rare",
+      "file": "/diy-card-assets/frames/frame_power_rare.png",
+      "width": 1024,
+      "height": 1024,
+      "resolution": "1024"
+    },
+    {
+      "id": "frame_power_uncommon",
+      "file": "/diy-card-assets/frames/frame_power_uncommon.png",
+      "width": 1024,
+      "height": 1024,
+      "resolution": "1024"
+    },
+    {
+      "id": "frame_skill_common",
+      "file": "/diy-card-assets/frames/frame_skill_common.png",
+      "width": 1024,
+      "height": 1024,
+      "resolution": "1024"
+    },
+    {
+      "id": "frame_skill_uncommon",
+      "file": "/diy-card-assets/frames/frame_skill_uncommon.png",
+      "width": 1024,
+      "height": 1024,
+      "resolution": "1024"
+    },
+    {
+      "id": "frame_attack_common",
+      "file": "/diy-card-assets/frames/frame_attack_common.png",
+      "width": 1024,
+      "height": 1024,
+      "resolution": "1024"
+    },
+    {
+      "id": "frame_attack_rare",
+      "file": "/diy-card-assets/frames/frame_attack_rare.png",
+      "width": 1024,
+      "height": 1024,
+      "resolution": "1024"
+    },
+    {
+      "id": "frame_attack_uncommon",
+      "file": "/diy-card-assets/frames/frame_attack_uncommon.png",
+      "width": 1024,
+      "height": 1024,
+      "resolution": "1024"
+    },
+    {
+      "id": "frame_skill_rare",
+      "file": "/diy-card-assets/frames/frame_skill_rare.png",
+      "width": 1024,
+      "height": 1024,
+      "resolution": "1024"
+    }
+  ],
+  "banners": [
+    {
+      "id": "banner_common",
+      "file": "/diy-card-assets/banners/banner_common.png",
+      "width": 1024,
+      "height": 1024,
+      "resolution": "1024"
+    },
+    {
+      "id": "banner_rare",
+      "file": "/diy-card-assets/banners/banner_rare.png",
+      "width": 1024,
+      "height": 1024,
+      "resolution": "1024"
+    },
+    {
+      "id": "banner_uncommon",
+      "file": "/diy-card-assets/banners/banner_uncommon.png",
+      "width": 1024,
+      "height": 1024,
+      "resolution": "1024"
+    }
+  ],
+  "orbs": [
+    {
+      "id": "card_blue_orb",
+      "file": "/diy-card-assets/orbs/card_blue_orb.png",
+      "width": 164,
+      "height": 164,
+      "resolution": "1024"
+    },
+    {
+      "id": "card_colorless_orb",
+      "file": "/diy-card-assets/orbs/card_colorless_orb.png",
+      "width": 164,
+      "height": 164,
+      "resolution": "1024"
+    },
+    {
+      "id": "card_green_orb",
+      "file": "/diy-card-assets/orbs/card_green_orb.png",
+      "width": 164,
+      "height": 164,
+      "resolution": "1024"
+    },
+    {
+      "id": "card_purple_orb",
+      "file": "/diy-card-assets/orbs/card_purple_orb.png",
+      "width": 164,
+      "height": 164,
+      "resolution": "1024"
+    },
+    {
+      "id": "card_red_orb",
+      "file": "/diy-card-assets/orbs/card_red_orb.png",
+      "width": 164,
+      "height": 164,
+      "resolution": "1024"
+    }
+  ],
+  "fonts": [
+    {
+      "id": "Kreon-Bold",
+      "file": "/diy-card-assets/fonts/Kreon-Bold.ttf"
+    },
+    {
+      "id": "Kreon-Regular",
+      "file": "/diy-card-assets/fonts/Kreon-Regular.ttf"
+    }
+  ]
+}

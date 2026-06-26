@@ -7,6 +7,7 @@ import { RestScene } from "./scenes/RestScene";
 import { RewardScene } from "./scenes/RewardScene";
 import { ShopScene } from "./scenes/ShopScene";
 import { EventScene } from "./scenes/EventScene";
+import { DiyCardScene } from "./scenes/DiyCardScene";
 
 export function App() {
   return (
@@ -20,6 +21,7 @@ export function App() {
         <Route path="/reward" element={<RewardScene />} />
         <Route path="/shop" element={<ShopScene />} />
         <Route path="/event" element={<EventScene />} />
+        <Route path="/tools/diy-card" element={<DiyCardScene />} />
       </Routes>
     </div>
   );

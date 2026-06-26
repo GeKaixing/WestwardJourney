@@ -1,0 +1,901 @@
+[
+  {
+    "id": "ancient-darv",
+    "name": "达弗",
+    "category": "ANCIENT",
+    "key": "ANCIENT_DARV",
+    "description": "[gold]示例对话:[/gold]\n• 来来，这里有些被遗忘的宝石，拿一块去吧！\n• 今天我还挺忙的！\n那堆东西里有啥想要的你就自己拿了吧！！\n• 你这块大型垃圾还真是挺好看的，你知道吧？\n• 还在努力吶，我明白了……来看看能不能给你升个级呗！\n• 我其实一直留着你那位朋友的，呃……唔。\n当我没说，当我没说！！",
+    "descriptionPlain": "[gold]示例对话:[/gold]\n• 来来，这里有些被遗忘的宝石，拿一块去吧！\n• 今天我还挺忙的！\n那堆东西里有啥想要的你就自己拿了吧！！\n• 你这块大型垃圾还真是挺好看的，你知道吧？\n• 还在努力吶，我明白了……来看看能不能给你升个级呗！\n• 我其实一直留着你那位朋友的，呃……唔。\n当我没说，当我没说！！",
+    "tags": [
+      {
+        "kind": "epithet",
+        "text": "称号: 囤积者"
+      },
+      {
+        "kind": "title",
+        "text": "名称: 达弗"
+      }
+    ],
+    "options": [
+      {
+        "id": "dusty-tome",
+        "title": "尘封魔典",
+        "description": "拾起时，获得一张[gold]先古牌[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/dusty_tome.webp",
+        "href": "/zh/relics/dusty-tome"
+      },
+      {
+        "id": "astrolabe",
+        "title": "星盘",
+        "description": "拾起时，选择[blue]3[/blue]张牌进行[gold]变化[/gold]，然后将这些牌[gold]升级[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/astrolabe.webp",
+        "href": "/zh/relics/astrolabe"
+      },
+      {
+        "id": "black-star",
+        "title": "黑星",
+        "description": "[gold]精英[/gold]敌人在被打败时多掉落一件遗物。",
+        "image": "https://img.slaythespire2.gg/assets/relics/black_star.webp",
+        "href": "/zh/relics/black-star"
+      },
+      {
+        "id": "calling-bell",
+        "title": "召唤铃铛",
+        "description": "拾起时，获得一个独特的[red]诅咒[/red]和[blue]3[/blue]件[gold]遗物[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/calling_bell.webp",
+        "href": "/zh/relics/calling-bell"
+      },
+      {
+        "id": "empty-cage",
+        "title": "空鸟笼",
+        "description": "拾起时，选择移除[gold]牌组[/gold]中的[blue]2[/blue]张牌。",
+        "image": "https://img.slaythespire2.gg/assets/relics/empty_cage.webp",
+        "href": "/zh/relics/empty-cage"
+      },
+      {
+        "id": "pandoras-box",
+        "title": "潘多拉魔盒",
+        "description": "[gold]变化[/gold]所有“[gold]打击[/gold]”和“[gold]防御[/gold]”。",
+        "image": "https://img.slaythespire2.gg/assets/relics/pandoras_box.webp",
+        "href": "/zh/relics/pandoras-box"
+      },
+      {
+        "id": "runic-pyramid",
+        "title": "符文金字塔",
+        "description": "你在回合结束时不再自动丢弃所有[gold]手牌[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/runic_pyramid.webp",
+        "href": "/zh/relics/runic-pyramid"
+      },
+      {
+        "id": "snecko-eye",
+        "title": "异蛇之眼",
+        "description": "每回合多抽[blue]2[/blue]张牌。每场战斗开始时获得[red]混乱[/red]效果。",
+        "image": "https://img.slaythespire2.gg/assets/relics/snecko_eye.webp",
+        "href": "/zh/relics/snecko-eye"
+      },
+      {
+        "id": "ectoplasm",
+        "title": "灵体外质",
+        "description": "你不能再获得任何[gold]金币[/gold]。在回合开始时获得[energy:1]",
+        "image": "https://img.slaythespire2.gg/assets/relics/ectoplasm.webp",
+        "href": "/zh/relics/ectoplasm"
+      },
+      {
+        "id": "sozu",
+        "title": "添水",
+        "description": "你无法再获得药水。在每回合开始时获得[energy:1]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/sozu.webp",
+        "href": "/zh/relics/sozu"
+      },
+      {
+        "id": "philosophers-stone",
+        "title": "贤者之石",
+        "description": "在每回合开始时获得[energy:1]。所有敌人初始获得[blue]1[/blue]点[gold]力量[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/philosophers_stone.webp",
+        "href": "/zh/relics/philosophers-stone"
+      },
+      {
+        "id": "velvet-choker",
+        "title": "天鹅绒颈圈",
+        "description": "在每回合开始时获得[energy:1]。你每回合不能打出超过[blue]6[/blue]张牌。",
+        "image": "https://img.slaythespire2.gg/assets/relics/velvet_choker.webp",
+        "href": "/zh/relics/velvet-choker"
+      }
+    ],
+    "image": "https://img.slaythespire2.gg/assets/events/ancients/darv.webp"
+  },
+  {
+    "id": "ancient-neow",
+    "name": "涅奥",
+    "category": "ANCIENT",
+    "key": "ANCIENT_NEOW",
+    "description": "[gold]示例对话:[/gold]\n• [sine]...再次... ..问好.....[/sine]\n• [sine]...醒来...\n..醒来....[/sine]\n• [sine]..收下....这份....\n..祝福.. ...去吧......[/sine]\n• [sine]..我把你... ..带回... ..来了...[/sine]\n• [sine]...杀.. 死... [red][jitter]建筑师[/jitter][/red][/sine]",
+    "descriptionPlain": "[gold]示例对话:[/gold]\n• [sine]...再次... ..问好.....[/sine]\n• [sine]...醒来...\n..醒来....[/sine]\n• [sine]..收下....这份....\n..祝福.. ...去吧......[/sine]\n• [sine]..我把你... ..带回... ..来了...[/sine]\n• [sine]...杀.. 死... [red][jitter]建筑师[/jitter][/red][/sine]",
+    "tags": [
+      {
+        "kind": "epithet",
+        "text": "称号: 复生之母（被放逐）"
+      },
+      {
+        "kind": "title",
+        "text": "名称: 涅奥"
+      }
+    ],
+    "options": [
+      {
+        "id": "arcane-scroll",
+        "title": "奥术卷轴",
+        "description": "拾起时，将一张随机[gold]稀有牌[/gold]加入你的[gold]牌组[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/arcane_scroll.webp",
+        "href": "/zh/relics/arcane-scroll"
+      },
+      {
+        "id": "booming-conch",
+        "title": "轰鸣海螺",
+        "description": "在[gold]精英[/gold]战的战斗开始时，额外抽[blue]2[/blue]张牌并获得[energy:1]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/booming_conch.webp",
+        "href": "/zh/relics/booming-conch"
+      },
+      {
+        "id": "fishing-rod",
+        "title": "钓鱼竿",
+        "description": "每[blue]，随机[gold]升级[/gold]你[gold]牌组[/gold]中的一张牌。",
+        "image": "https://img.slaythespire2.gg/assets/relics/beta/fishing_rod.webp",
+        "href": "/zh/relics/fishing-rod"
+      },
+      {
+        "id": "golden-pearl",
+        "title": "金色珍珠",
+        "description": "拾起时，获得[blue]150[/blue][gold]金币[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/golden_pearl.webp",
+        "href": "/zh/relics/golden-pearl"
+      },
+      {
+        "id": "kaleidoscope",
+        "title": "万花筒",
+        "description": "拾起时，获得[blue]2[/blue]次来自其他角色的卡牌奖励。",
+        "image": "https://img.slaythespire2.gg/assets/relics/beta/kaleidoscope.webp",
+        "href": "/zh/relics/kaleidoscope"
+      },
+      {
+        "id": "lead-paperweight",
+        "title": "铅制镇纸",
+        "description": "拾起时，从[blue]2[/blue]张无色牌中选择[blue]1张[/blue]加入你的[gold]牌组[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/lead_paperweight.webp",
+        "href": "/zh/relics/lead-paperweight"
+      },
+      {
+        "id": "lost-coffer",
+        "title": "失物盒",
+        "description": "拾起时，获得[blue]1[/blue]次卡牌奖励和[blue]1[/blue]瓶随机药水。",
+        "image": "https://img.slaythespire2.gg/assets/relics/lost_coffer.webp",
+        "href": "/zh/relics/lost-coffer"
+      },
+      {
+        "id": "massive-scroll",
+        "title": "巨大卷轴",
+        "description": "拾起时，从[blue]3[/blue]张[gold]多人游戏牌[/gold]中选择[blue]1[/blue]张加入你的[gold]牌组[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/massive_scroll.webp",
+        "href": "/zh/relics/massive-scroll"
+      },
+      {
+        "id": "neows-torment",
+        "title": "涅奥的苦痛",
+        "description": "拾起时，将[blue]1[/blue]张[gold]涅奥之怒[/gold]加入你的[gold]牌组[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/neows_torment.webp",
+        "href": "/zh/relics/neows-torment"
+      },
+      {
+        "id": "new-leaf",
+        "title": "新叶",
+        "description": "拾起时，[gold]变化[/gold][blue]1[/blue]张牌。",
+        "image": "https://img.slaythespire2.gg/assets/relics/new_leaf.webp",
+        "href": "/zh/relics/new-leaf"
+      },
+      {
+        "id": "phial-holster",
+        "title": "药瓶皮套",
+        "description": "拾起时，获得[blue]1[/blue]个药水栏位并获得[blue]2[/blue]瓶随机药水。",
+        "image": "https://img.slaythespire2.gg/assets/relics/phial_holster.webp",
+        "href": "/zh/relics/phial-holster"
+      },
+      {
+        "id": "precise-scissors",
+        "title": "精准剪刀",
+        "description": "拾起时，从你的[gold]牌组[/gold]中移除[blue]1[/blue]张牌。",
+        "image": "https://img.slaythespire2.gg/assets/relics/precise_scissors.webp",
+        "href": "/zh/relics/precise-scissors"
+      },
+      {
+        "id": "silken-tress",
+        "title": "华美发束",
+        "description": "拾起时，失去所有[gold]金币[/gold]。为第一次卡牌奖励中的所有牌[gold]附魔[/gold]：[purple]华彩[/purple]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/beta/silken_tress.webp",
+        "href": "/zh/relics/silken-tress"
+      },
+      {
+        "id": "winged-boots",
+        "title": "羽翼之靴",
+        "description": "你在选择下一层的房间时有[blue]3[/blue]次机会可以无视当前的路线。",
+        "image": "https://img.slaythespire2.gg/assets/relics/winged_boots.webp",
+        "href": "/zh/relics/winged-boots"
+      },
+      {
+        "id": "lava-rock",
+        "title": "熔岩石",
+        "description": "第一阶段的Boss敌人额外掉落[blue]2[/blue]件[gold]遗物[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/lava_rock.webp",
+        "href": "/zh/relics/lava-rock"
+      },
+      {
+        "id": "neows-talisman",
+        "title": "涅奥的护符",
+        "description": "拾起时，[gold]升级[/gold]你的[blue]1[/blue]张[gold]打击[/gold]和[blue]1[/blue]张[gold]防御[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/neows_talisman.webp",
+        "href": "/zh/relics/neows-talisman"
+      },
+      {
+        "id": "nutritious-oyster",
+        "title": "营养牡蛎",
+        "description": "拾起时，将你的最大生命值提升[blue]11[/blue]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/nutritious_oyster.webp",
+        "href": "/zh/relics/nutritious-oyster"
+      },
+      {
+        "id": "pomander",
+        "title": "橙型香盒",
+        "description": "拾起时，[gold]升级[/gold]一张牌。",
+        "image": "https://img.slaythespire2.gg/assets/relics/pomander.webp",
+        "href": "/zh/relics/pomander"
+      },
+      {
+        "id": "small-capsule",
+        "title": "小型扭蛋",
+        "description": "拾起时，获得一件随机[gold]遗物[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/small_capsule.webp",
+        "href": "/zh/relics/small-capsule"
+      },
+      {
+        "id": "stone-humidifier",
+        "title": "石炉加湿器",
+        "description": "每当你在[gold]休息处[/gold][gold]休息[/gold]时，将你的最大生命值提升[blue]5[/blue]点。",
+        "image": "https://img.slaythespire2.gg/assets/relics/stone_humidifier.webp",
+        "href": "/zh/relics/stone-humidifier"
+      },
+      {
+        "id": "cursed-pearl",
+        "title": "诅咒珍珠",
+        "description": "拾起时，获得一张[red]贪婪[/red]，获得[blue]333[/blue][gold]金币[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/cursed_pearl.webp",
+        "href": "/zh/relics/cursed-pearl"
+      },
+      {
+        "id": "hefty-tablet",
+        "title": "沉重石板",
+        "description": "拾起时，从[blue]3[/blue]张稀有牌中选择[blue]1[/blue]张加入你的[gold]牌组[/gold]，同时将[blue]1[/blue]张[red]受伤[/red]加入你的[gold]牌组[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/hefty_tablet.webp",
+        "href": "/zh/relics/hefty-tablet"
+      },
+      {
+        "id": "large-capsule",
+        "title": "巨大扭蛋",
+        "description": "拾起时，获得[blue]2[/blue]件随机[gold]遗物[/gold]。额外将一对[gold]打击[/gold]和[gold]防御[/gold]，加入你的[gold]牌组[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/large_capsule.webp",
+        "href": "/zh/relics/large-capsule"
+      },
+      {
+        "id": "leafy-poultice",
+        "title": "树叶药膏",
+        "description": "拾起时，[gold]变化[/gold]你的[blue]1[/blue]张[gold]打击[/gold]和[blue]1[/blue]张[gold]防御[/gold]，然后失去[blue]12[/blue]点最大生命。",
+        "image": "https://img.slaythespire2.gg/assets/relics/leafy_poultice.webp",
+        "href": "/zh/relics/leafy-poultice"
+      },
+      {
+        "id": "neows-bones",
+        "title": "涅奥的骨头",
+        "description": "拾起时，获得[blue]2[/blue]件随机[gold]涅奥遗物[/gold]。将[blue]1[/blue]张随机[red]诅咒[/red]加入你的[gold]牌组[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/neows_bones.webp",
+        "href": "/zh/relics/neows-bones"
+      },
+      {
+        "id": "precarious-shears",
+        "title": "松动羊毛剪",
+        "description": "拾起时，从你的[gold]牌组[/gold]中移除[blue]2[/blue]张牌并失去[blue]16[/blue]点生命。",
+        "image": "https://img.slaythespire2.gg/assets/relics/precarious_shears.webp",
+        "href": "/zh/relics/precarious-shears"
+      },
+      {
+        "id": "silver-crucible",
+        "title": "白银熔炉",
+        "description": "你遇到的前[blue]3[/blue]次卡牌奖励将是被[gold]升级[/gold]过的。你打开的第一个宝箱将是[red]空的[/red]",
+        "image": "https://img.slaythespire2.gg/assets/relics/silver_crucible.webp",
+        "href": "/zh/relics/silver-crucible"
+      },
+      {
+        "id": "scroll-boxes",
+        "title": "卷轴箱",
+        "description": "拾起时，从[blue]2[/blue]个卡牌包中选择[blue]1[/blue]包加入你的[gold]牌组[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/scroll_boxes.webp",
+        "href": "/zh/relics/scroll-boxes"
+      }
+    ],
+    "image": "https://img.slaythespire2.gg/assets/events/ancients/neow.webp"
+  },
+  {
+    "id": "ancient-nonupeipe",
+    "name": "诺奴佩普",
+    "category": "ANCIENT",
+    "key": "ANCIENT_NONUPEIPE",
+    "description": "[gold]示例对话:[/gold]\n• 塔顶有疯狂在等待。穿上我的力量，消灭一切吧。\n• 来到我这里，你走了很远吧！\n过来吧，接受我的赐福。\n• 构装体也能够配得上我的赐福么？\n过来吧，故障机器人。在所有自动机械里，你将成为最美。\n• 可怜的机器呀，如此残破不堪，来让我将你好好改善吧。\n• 我通常不会喜欢建筑师的造物，但我承认，你让我有点喜欢上了。",
+    "descriptionPlain": "[gold]示例对话:[/gold]\n• 塔顶有疯狂在等待。穿上我的力量，消灭一切吧。\n• 来到我这里，你走了很远吧！\n过来吧，接受我的赐福。\n• 构装体也能够配得上我的赐福么？\n过来吧，故障机器人。在所有自动机械里，你将成为最美。\n• 可怜的机器呀，如此残破不堪，来让我将你好好改善吧。\n• 我通常不会喜欢建筑师的造物，但我承认，你让我有点喜欢上了。",
+    "tags": [
+      {
+        "kind": "epithet",
+        "text": "称号: 机缘的化身"
+      },
+      {
+        "kind": "title",
+        "text": "名称: 诺奴佩普"
+      }
+    ],
+    "options": [
+      {
+        "id": "blessed-antler",
+        "title": "赐福鹿角",
+        "description": "在每回合开始时获得[energy:1]。在战斗开始时，将[blue]3[/blue]张[gold]晕眩[/gold]放入你的[gold]抽牌堆[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/blessed_antler.webp",
+        "href": "/zh/relics/blessed-antler"
+      },
+      {
+        "id": "brilliant-scarf",
+        "title": "艳丽围巾",
+        "description": "你每回合从你的手牌打出的第[blue]5[/blue]张牌可以被免费打出。",
+        "image": "https://img.slaythespire2.gg/assets/relics/brilliant_scarf.webp",
+        "href": "/zh/relics/brilliant-scarf"
+      },
+      {
+        "id": "delicate-frond",
+        "title": "娇嫩蕨草",
+        "description": "在每场战斗开始时，用随机药水将你的空药水栏位填满。",
+        "image": "https://img.slaythespire2.gg/assets/relics/delicate_frond.webp",
+        "href": "/zh/relics/delicate-frond"
+      },
+      {
+        "id": "diamond-diadem",
+        "title": "钻石头冠",
+        "description": "如果你在本回合打出的牌少于等于[blue]2[/blue]张，则受到敌人的伤害减半。",
+        "image": "https://img.slaythespire2.gg/assets/relics/diamond_diadem.webp",
+        "href": "/zh/relics/diamond-diadem"
+      },
+      {
+        "id": "fur-coat",
+        "title": "皮草大衣",
+        "description": "拾起时，随机标记[blue]7[/blue]处战斗。这些战斗中的敌人将只有[blue]1[/blue]点生命。",
+        "image": "https://img.slaythespire2.gg/assets/relics/fur_coat.webp",
+        "href": "/zh/relics/fur-coat"
+      },
+      {
+        "id": "glitter",
+        "title": "亮片",
+        "description": "为之后的所有卡牌奖励[gold]附魔[/gold]：[purple]华彩[/purple]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/glitter.webp",
+        "href": "/zh/relics/glitter"
+      },
+      {
+        "id": "jewelry-box",
+        "title": "珠宝盒",
+        "description": "拾起时，将[blue]1[/blue]张[gold]神化[/gold]加入你的[gold]牌组[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/jewelry_box.webp",
+        "href": "/zh/relics/jewelry-box"
+      },
+      {
+        "id": "looming-fruit",
+        "title": "布质果实",
+        "description": "拾起时，将你的最大生命值提升[blue]31[/blue]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/looming_fruit.webp",
+        "href": "/zh/relics/looming-fruit"
+      },
+      {
+        "id": "signet-ring",
+        "title": "图章戒指",
+        "description": "拾起时，获得[blue]999[/blue][gold]金币[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/signet_ring.webp",
+        "href": "/zh/relics/signet-ring"
+      },
+      {
+        "id": "beautiful-bracelet",
+        "title": "华美手镯",
+        "description": "拾起时，从你的[gold]牌组[/gold]中选择[blue]3[/blue]张牌，[gold]附魔[/gold]：[purple]迅捷[/purple][blue]3[/blue]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/beautiful_bracelet.webp",
+        "href": "/zh/relics/beautiful-bracelet"
+      }
+    ],
+    "image": "https://img.slaythespire2.gg/assets/events/ancients/nonupeipe.webp"
+  },
+  {
+    "id": "ancient-orobas",
+    "name": "欧洛巴斯",
+    "category": "ANCIENT",
+    "key": "ANCIENT_OROBAS",
+    "description": "[gold]示例对话:[/gold]\n• 试试这个！！！\n• 找到了很好的东西！！你看，你看！\n• 什么！构装体仆人？！居然还在运作！！\n为什么在这里？？为什么不在工厂？？\n• 闪亮的充能球！怎么运作的？\n[jitter]啊呀！！[/jitter]\n• 核心损坏？涅奥驱使着坏了的构装体？\n是利用？",
+    "descriptionPlain": "[gold]示例对话:[/gold]\n• 试试这个！！！\n• 找到了很好的东西！！你看，你看！\n• 什么！构装体仆人？！居然还在运作！！\n为什么在这里？？为什么不在工厂？？\n• 闪亮的充能球！怎么运作的？\n[jitter]啊呀！！[/jitter]\n• 核心损坏？涅奥驱使着坏了的构装体？\n是利用？",
+    "tags": [
+      {
+        "kind": "epithet",
+        "text": "称号: 活体虹光"
+      },
+      {
+        "kind": "title",
+        "text": "名称: 欧洛巴斯"
+      }
+    ],
+    "options": [
+      {
+        "id": "electric-shrymp",
+        "title": "放电异虾",
+        "description": "拾起时，选择一张技能牌为它[gold]附魔[/gold]：[purple]注能[/purple]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/electric_shrymp.webp",
+        "href": "/zh/relics/electric-shrymp"
+      },
+      {
+        "id": "glass-eye",
+        "title": "玻璃眼珠",
+        "description": "拾起时，获得[blue]2[/blue]组[gold]普通[/gold]、[blue]2[/blue]组[gold]罕见[/gold]、和[blue]1[/blue]组[gold]稀有[/gold]卡牌奖励。",
+        "image": "https://img.slaythespire2.gg/assets/relics/glass_eye.webp",
+        "href": "/zh/relics/glass-eye"
+      },
+      {
+        "id": "sand-castle",
+        "title": "沙堡",
+        "description": "拾起时，随机[gold]升级[/gold][blue]6[/blue]张牌。",
+        "image": "https://img.slaythespire2.gg/assets/relics/sand_castle.webp",
+        "href": "/zh/relics/sand-castle"
+      },
+      {
+        "id": "alchemical-coffer",
+        "title": "炼金箱",
+        "description": "拾起时，获得[blue]4[/blue]个放有随机药水的药水栏位。",
+        "image": "https://img.slaythespire2.gg/assets/relics/alchemical_coffer.webp",
+        "href": "/zh/relics/alchemical-coffer"
+      },
+      {
+        "id": "driftwood",
+        "title": "浮木",
+        "description": "你可以在每一个卡牌奖励中重掷一次。",
+        "image": "https://img.slaythespire2.gg/assets/relics/driftwood.webp",
+        "href": "/zh/relics/driftwood"
+      },
+      {
+        "id": "radiant-pearl",
+        "title": "发光珍珠",
+        "description": "在每场战斗开始时，将[blue]1[/blue]张[gold]冷光[/gold]加入你的[gold]手牌[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/radiant_pearl.webp",
+        "href": "/zh/relics/radiant-pearl"
+      },
+      {
+        "id": "prismatic-gem",
+        "title": "棱彩宝石",
+        "description": "在每个回合开始时获得[energy:1]。卡牌奖励现在会包含其他颜色的卡牌。",
+        "image": "https://img.slaythespire2.gg/assets/relics/prismatic_gem.webp",
+        "href": "/zh/relics/prismatic-gem"
+      },
+      {
+        "id": "sea-glass",
+        "title": "海玻璃",
+        "description": "查看[blue]15[/blue]张来自其他角色的牌。从中选择任意数量的卡牌加入你的[gold]牌组[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/sea_glass.webp",
+        "href": "/zh/relics/sea-glass"
+      },
+      {
+        "id": "touch-of-orobas",
+        "title": "欧洛巴斯之触",
+        "description": "拾起时，将你的初始[gold]遗物[/gold]替换为[gold]先古[/gold]版本。",
+        "image": "https://img.slaythespire2.gg/assets/relics/touch_of_orobas.webp",
+        "href": "/zh/relics/touch-of-orobas"
+      },
+      {
+        "id": "archaic-tooth",
+        "title": "古老牙齿",
+        "description": "拾起时，将一张初始卡牌[gold]变化[/gold]为先古版本。",
+        "image": "https://img.slaythespire2.gg/assets/relics/archaic_tooth.webp",
+        "href": "/zh/relics/archaic-tooth"
+      }
+    ],
+    "image": "https://img.slaythespire2.gg/assets/events/ancients/orobas.webp"
+  },
+  {
+    "id": "ancient-pael",
+    "name": "佩尔",
+    "category": "ANCIENT",
+    "key": "ANCIENT_PAEL",
+    "description": "[gold]示例对话:[/gold]\n• [thinky_dots]欢迎回来，朋友。让我的血肉帮助你吧……[/thinky_dots]\n• [i][font_size=22]佩尔正在沉睡，它的鼾声让整个房间不停震动着。[/font_size][/i]\n• [thinky_dots]困扰的自动机械，在找你的朋友吗？\n让我来帮忙……[/thinky_dots]\n• [thinky_dots]构装体会做梦吗？\n看着我，模仿我……[/thinky_dots]\n• [thinky_dots]我梦见了你的朋友……\n父亲可以将[aqua]缺陷[/aqua]复原……[/thinky_dots]",
+    "descriptionPlain": "[gold]示例对话:[/gold]\n• [thinky_dots]欢迎回来，朋友。让我的血肉帮助你吧……[/thinky_dots]\n• [i][font_size=22]佩尔正在沉睡，它的鼾声让整个房间不停震动着。[/font_size][/i]\n• [thinky_dots]困扰的自动机械，在找你的朋友吗？\n让我来帮忙……[/thinky_dots]\n• [thinky_dots]构装体会做梦吗？\n看着我，模仿我……[/thinky_dots]\n• [thinky_dots]我梦见了你的朋友……\n父亲可以将[aqua]缺陷[/aqua]复原……[/thinky_dots]",
+    "tags": [
+      {
+        "kind": "epithet",
+        "text": "称号: 融化巨龙"
+      },
+      {
+        "kind": "title",
+        "text": "名称: 佩尔"
+      }
+    ],
+    "options": [
+      {
+        "id": "paels-claw",
+        "title": "佩尔之爪",
+        "description": "拾起时，为所有的“[gold]防御[/gold]”[gold]附魔[/gold]：[purple]Goopy[/purple]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/paels_claw.webp",
+        "href": "/zh/relics/paels-claw"
+      },
+      {
+        "id": "paels-tooth",
+        "title": "佩尔之牙",
+        "description": "拾起时，从你的[gold]牌组[/gold]中选择[blue]5[/blue]张牌移除。在每场战斗结束时，将其中随机[blue]1[/blue]张牌[gold]升级[/gold]然后返还。",
+        "image": "https://img.slaythespire2.gg/assets/relics/paels_tooth.webp",
+        "href": "/zh/relics/paels-tooth"
+      },
+      {
+        "id": "paels-growth",
+        "title": "佩尔的增生组织",
+        "description": "拾起时，从[gold]牌组[/gold]中选择一张牌，为其[gold]附魔[/gold]：[purple]Clone[/purple]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/paels_growth.webp",
+        "href": "/zh/relics/paels-growth"
+      },
+      {
+        "id": "paels-legion",
+        "title": "佩尔的士兵",
+        "description": "将你从一张卡牌中获得的[gold]格挡[/gold]翻倍，然后此遗物会休眠[blue]2[/blue]回合。",
+        "image": "https://img.slaythespire2.gg/assets/relics/paels_legion.webp",
+        "href": "/zh/relics/paels-legion"
+      },
+      {
+        "id": "paels-flesh",
+        "title": "佩尔之肉",
+        "description": "从你的第[blue]3[/blue]回合开始，在回合开始时额外获得[energy:1]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/paels_flesh.webp",
+        "href": "/zh/relics/paels-flesh"
+      },
+      {
+        "id": "paels-horn",
+        "title": "佩尔之角",
+        "description": "拾起时，将[blue]2[/blue]张[gold]放松[/gold]加入你的[gold]牌组[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/paels_horn.webp",
+        "href": "/zh/relics/paels-horn"
+      },
+      {
+        "id": "paels-tears",
+        "title": "佩尔之泪",
+        "description": "如果你在拥有未花费的[energy:1]情况下结束回合，则下个回合额外获得[energy:2]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/paels_tears.webp",
+        "href": "/zh/relics/paels-tears"
+      },
+      {
+        "id": "paels-wing",
+        "title": "佩尔之翼",
+        "description": "你可以将你的卡牌奖励献祭给佩尔。每献祭[blue]2[/blue]次，就能获得一件[gold]遗物[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/paels_wing.webp",
+        "href": "/zh/relics/paels-wing"
+      },
+      {
+        "id": "paels-eye",
+        "title": "佩尔之眼",
+        "description": "你在每场战斗中第一次没有打出任何牌就结束回合时，[gold]消耗[/gold]所有[gold]手牌[/gold]然后进行一个额外回合。",
+        "image": "https://img.slaythespire2.gg/assets/relics/paels_eye.webp",
+        "href": "/zh/relics/paels-eye"
+      },
+      {
+        "id": "paels-blood",
+        "title": "佩尔之血",
+        "description": "在你的回合开始时，额外抽[blue]1[/blue]张牌",
+        "image": "https://img.slaythespire2.gg/assets/relics/paels_blood.webp",
+        "href": "/zh/relics/paels-blood"
+      }
+    ],
+    "image": "https://img.slaythespire2.gg/assets/events/ancients/pael.webp"
+  },
+  {
+    "id": "ancient-tanx",
+    "name": "坦克斯",
+    "category": "ANCIENT",
+    "key": "ANCIENT_TANX",
+    "description": "[gold]示例对话:[/gold]\n• [b]快点变强，让我们好好战斗一番！！！[/b]\n• [b]武器永远不嫌多！！[/b]\n• [b]构装体！没有武器么！？收下这个！[/b]\n• [b]几个球球，算什么武器！[/b]\n• [b]故障机器人，与我一战！！[/b]",
+    "descriptionPlain": "[gold]示例对话:[/gold]\n• [b]快点变强，让我们好好战斗一番！！！[/b]\n• [b]武器永远不嫌多！！[/b]\n• [b]构装体！没有武器么！？收下这个！[/b]\n• [b]几个球球，算什么武器！[/b]\n• [b]故障机器人，与我一战！！[/b]",
+    "tags": [
+      {
+        "kind": "epithet",
+        "text": "称号: 嵌合兽之王"
+      },
+      {
+        "kind": "title",
+        "text": "名称: 坦克斯"
+      }
+    ],
+    "options": [
+      {
+        "id": "claws",
+        "title": "利爪",
+        "description": "拾起时，将至多[blue]6[/blue]张牌[gold]变化[/gold]为[gold]撕咬[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/claws.webp",
+        "href": "/zh/relics/claws"
+      },
+      {
+        "id": "crossbow",
+        "title": "十字弓",
+        "description": "在你的回合开始时，将一张随机[gold]攻击牌[/gold]加入你的[gold]手牌[/gold]。这张牌在本回合可以免费打出。",
+        "image": "https://img.slaythespire2.gg/assets/relics/crossbow.webp",
+        "href": "/zh/relics/crossbow"
+      },
+      {
+        "id": "iron-club",
+        "title": "铁棒",
+        "description": "你每打出[blue]4[/blue]张牌，就抽[blue]1[/blue]张牌。",
+        "image": "https://img.slaythespire2.gg/assets/relics/iron_club.webp",
+        "href": "/zh/relics/iron-club"
+      },
+      {
+        "id": "meat-cleaver",
+        "title": "切肉刀",
+        "description": "你可以在休息处进行[gold]烹饪[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/meat_cleaver.webp",
+        "href": "/zh/relics/meat-cleaver"
+      },
+      {
+        "id": "sai",
+        "title": "钗",
+        "description": "在你的回合开始时，获得[blue]7[/blue]点[gold]格挡[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/sai.webp",
+        "href": "/zh/relics/sai"
+      },
+      {
+        "id": "spiked-gauntlets",
+        "title": "带刺手甲",
+        "description": "在每回合开始时获得[energy:1]。能力牌的耗能增加[blue]1[/blue][energy:1]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/spiked_gauntlets.webp",
+        "href": "/zh/relics/spiked-gauntlets"
+      },
+      {
+        "id": "tanxs-whistle",
+        "title": "坦克斯的哨子",
+        "description": "拾起时，将[blue]1[/blue]张[gold]吹哨[/gold]加入你的[gold]牌组[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/tanxs_whistle.webp",
+        "href": "/zh/relics/tanxs-whistle"
+      },
+      {
+        "id": "throwing-axe",
+        "title": "投斧",
+        "description": "你在每场战斗中打出的第一张牌会多打出一次。",
+        "image": "https://img.slaythespire2.gg/assets/relics/throwing_axe.webp",
+        "href": "/zh/relics/throwing-axe"
+      },
+      {
+        "id": "war-hammer",
+        "title": "战锤",
+        "description": "每当你击败一名[gold]精英[/gold]敌人的时候，随机[gold]升级[/gold][blue]4[/blue]张牌。",
+        "image": "https://img.slaythespire2.gg/assets/relics/war_hammer.webp",
+        "href": "/zh/relics/war-hammer"
+      },
+      {
+        "id": "tri-boomerang",
+        "title": "三刃回旋镖",
+        "description": "从你的[gold]牌组[/gold]中选择[blue]3[/blue]张攻击牌。为这些牌[gold]附魔[/gold]：[purple]本能[/purple]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/tri_boomerang.webp",
+        "href": "/zh/relics/tri-boomerang"
+      }
+    ],
+    "image": "https://img.slaythespire2.gg/assets/events/ancients/tanx.webp"
+  },
+  {
+    "id": "ancient-tezcatara",
+    "name": "特兹卡塔拉",
+    "category": "ANCIENT",
+    "key": "ANCIENT_TEZCATARA",
+    "description": "[gold]示例对话:[/gold]\n• 欢迎回来，小可爱。让我来[jitter][b]烧掉[/b][/jitter]你的缺点。\n• 进来吧，亲爱的！特兹卡特拉今天能为你做些什么呢？\n• 不是来这里烦扰我的吗？真是个[jitter][b]不同寻常[/b][/jitter]的小小构装体呢……\n• 要是他被自己的同类给毁了，那该多荒唐呀？\n• 你确定想要被修好么？",
+    "descriptionPlain": "[gold]示例对话:[/gold]\n• 欢迎回来，小可爱。让我来[jitter][b]烧掉[/b][/jitter]你的缺点。\n• 进来吧，亲爱的！特兹卡特拉今天能为你做些什么呢？\n• 不是来这里烦扰我的吗？真是个[jitter][b]不同寻常[/b][/jitter]的小小构装体呢……\n• 要是他被自己的同类给毁了，那该多荒唐呀？\n• 你确定想要被修好么？",
+    "tags": [
+      {
+        "kind": "epithet",
+        "text": "称号: 饲火者"
+      },
+      {
+        "kind": "title",
+        "text": "名称: 特兹卡塔拉"
+      }
+    ],
+    "options": [
+      {
+        "id": "nutritious-soup",
+        "title": "营养汤",
+        "description": "拾起时，为你[gold]牌组[/gold]中的所有“[gold]打击[/gold]”[gold]附魔[/gold]：[purple]特兹卡塔拉的余烬[/purple]",
+        "image": "https://img.slaythespire2.gg/assets/relics/nutritious_soup.webp",
+        "href": "/zh/relics/nutritious-soup"
+      },
+      {
+        "id": "very-hot-cocoa",
+        "title": "烫嘴可可",
+        "description": "在每场战斗的第一回合额外获得[blue][energy:4][/blue]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/very_hot_cocoa.webp",
+        "href": "/zh/relics/very-hot-cocoa"
+      },
+      {
+        "id": "yummy-cookie",
+        "title": "美味饼干",
+        "description": "拾起时，[gold]升级[/gold][blue]4[/blue]张牌。",
+        "image": null,
+        "href": "/zh/relics/yummy-cookie"
+      },
+      {
+        "id": "biiig-hug",
+        "title": "大～抱抱",
+        "description": "拾起时，从你的[gold]牌组[/gold]中移除[blue]4[/blue]张牌。每当你的[gold]抽牌堆[/gold]打乱洗牌时，将一张[gold]煤灰[/gold]加入你的[gold]抽牌堆[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/biiig_hug.webp",
+        "href": "/zh/relics/biiig-hug"
+      },
+      {
+        "id": "storybook",
+        "title": "故事书",
+        "description": "拾起时，将[blue]1[/blue]张[gold]至亮之焰[/gold]添加到你的[gold]牌组[/gold]中。",
+        "image": "https://img.slaythespire2.gg/assets/relics/storybook.webp",
+        "href": "/zh/relics/storybook"
+      },
+      {
+        "id": "toasty-mittens",
+        "title": "烘焙手套",
+        "description": "在你的回合开始时，[gold]消耗[/gold]你[gold]抽牌堆[/gold]顶部的牌并获得[blue]1[/blue]点[gold]力量[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/toasty_mittens.webp",
+        "href": "/zh/relics/toasty-mittens"
+      },
+      {
+        "id": "golden-compass",
+        "title": "黄金罗盘",
+        "description": "拾起时，将第[blue]2[/blue][gold]阶段[/gold]的地图替换为一条特殊的直道。",
+        "image": "https://img.slaythespire2.gg/assets/relics/golden_compass.webp",
+        "href": "/zh/relics/golden-compass"
+      },
+      {
+        "id": "pumpkin-candle",
+        "title": "南瓜蜡烛",
+        "description": "在每个回合开始时获得。这件遗物会在[blue]5[/blue]场战斗后熄灭。可以在[gold]休息处[/gold]为其[gold]添火[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/pumpkin_candle.webp",
+        "href": "/zh/relics/pumpkin-candle"
+      },
+      {
+        "id": "toy-box",
+        "title": "玩具盒",
+        "description": "拾起时，获得[blue]4[/blue]件[gold]蜡制遗物[/gold]。每经过[blue]3[/blue]场战斗，你最左侧的[gold]蜡制遗物[/gold]将会融化。",
+        "image": "https://img.slaythespire2.gg/assets/relics/toy_box.webp",
+        "href": "/zh/relics/toy-box"
+      },
+      {
+        "id": "seal-of-gold",
+        "title": "黄金印",
+        "description": "在你的回合开始时，花费[blue]5[/blue][gold]金币[/gold]来获得[energy:1]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/seal_of_gold.webp",
+        "href": "/zh/relics/seal-of-gold"
+      }
+    ],
+    "image": "https://img.slaythespire2.gg/assets/events/ancients/tezcatara.webp"
+  },
+  {
+    "id": "ancient-the-architect",
+    "name": "建筑师",
+    "category": "ANCIENT",
+    "key": "ANCIENT_THE_ARCHITECT",
+    "description": "[gold]示例对话:[/gold]\n• 你在这里做什么？\n• 修好你？凭什么。\n• 你回来了？我不是把你拆解了吗？\n• 修好你？还要修好你的朋友？胡言乱语。\n• 你怎么还能一直回来？这是涅奥做的么？",
+    "descriptionPlain": "[gold]示例对话:[/gold]\n• 你在这里做什么？\n• 修好你？凭什么。\n• 你回来了？我不是把你拆解了吗？\n• 修好你？还要修好你的朋友？胡言乱语。\n• 你怎么还能一直回来？这是涅奥做的么？",
+    "tags": [
+      {
+        "kind": "title",
+        "text": "名称: 建筑师"
+      }
+    ],
+    "options": [
+      {
+        "id": "continue",
+        "title": "Continue",
+        "description": "Advance the dialogue.",
+        "image": null,
+        "href": "$undefined"
+      },
+      {
+        "id": "respond",
+        "title": "Respond",
+        "description": "Reply to the Architect.",
+        "image": null,
+        "href": "$undefined"
+      }
+    ],
+    "image": "https://img.slaythespire2.gg/assets/events/ancients/the-architect.webp"
+  },
+  {
+    "id": "ancient-vakuu",
+    "name": "瓦库",
+    "category": "ANCIENT",
+    "key": "ANCIENT_VAKUU",
+    "description": "[gold]示例对话:[/gold]\n• 在尖塔中追寻荣耀是么？我倒是有一些提案可以给你……\n• 143次。你已经来过这里143次。\n• 你知道这[sine]永远不会[/sine]结束，是吧？\n• 破损的存在呀，让我把你变得[sine]完美[/sine]吧。\n• 为何你的构装体同胞们都想杀死你，你就不觉得奇怪么？",
+    "descriptionPlain": "[gold]示例对话:[/gold]\n• 在尖塔中追寻荣耀是么？我倒是有一些提案可以给你……\n• 143次。你已经来过这里143次。\n• 你知道这[sine]永远不会[/sine]结束，是吧？\n• 破损的存在呀，让我把你变得[sine]完美[/sine]吧。\n• 为何你的构装体同胞们都想杀死你，你就不觉得奇怪么？",
+    "tags": [
+      {
+        "kind": "epithet",
+        "text": "称号: 第一个恶魔"
+      },
+      {
+        "kind": "title",
+        "text": "名称: 瓦库"
+      }
+    ],
+    "options": [
+      {
+        "id": "blood-soaked-rose",
+        "title": "血染玫瑰",
+        "description": "拾起时，将[blue]1[/blue]张[red]执迷[/red]加入你的[gold]牌组[/gold]。在回合开始时获得[energy:1]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/blood_soaked_rose.webp",
+        "href": "/zh/relics/blood-soaked-rose"
+      },
+      {
+        "id": "whispering-earring",
+        "title": "低语耳环",
+        "description": "在每个回合开始时，获得[energy:1]。[red]瓦库将接管你的第一回合。[/red]",
+        "image": "https://img.slaythespire2.gg/assets/relics/whispering_earring.webp",
+        "href": "/zh/relics/whispering-earring"
+      },
+      {
+        "id": "fiddle",
+        "title": "小提琴",
+        "description": "在每个回合开始时，额外抽[blue]2[/blue]张牌。你在回合进行中不再能抽任何牌。",
+        "image": "https://img.slaythespire2.gg/assets/relics/fiddle.webp",
+        "href": "/zh/relics/fiddle"
+      },
+      {
+        "id": "preserved-fog",
+        "title": "腌制活雾",
+        "description": "拾起时，从你的[gold]牌组[/gold]中移除[blue]3[/blue]张牌。将一张[red]愚行[/red]加入你的[gold]牌组[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/preserved_fog.webp",
+        "href": "/zh/relics/preserved-fog"
+      },
+      {
+        "id": "sere-talon",
+        "title": "原初之爪",
+        "description": "拾起时，将[blue]2[/blue]张随机[red]诅咒[/red]牌和[blue]3[/blue]张[purple]许愿[/purple]加入你的[gold]牌组[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/sere_talon.webp",
+        "href": "/zh/relics/sere-talon"
+      },
+      {
+        "id": "distinguished-cape",
+        "title": "卓越斗篷",
+        "description": "拾起时，失去[red]9[/red]点最大生命值。将[blue]3[/blue]张[gold]灵体[/gold]加入你的[gold]牌组[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/distinguished_cape.webp",
+        "href": "/zh/relics/distinguished-cape"
+      },
+      {
+        "id": "choices-paradox",
+        "title": "选择悖论",
+        "description": "在每场战斗开始时，从[blue]5[/blue]张随机牌中选择[blue]1[/blue]张放入你的[gold]手牌[/gold]。被选中的牌获得[gold]保留[/gold]。",
+        "image": "https://img.slaythespire2.gg/assets/relics/choices_paradox.webp",
+        "href": "/zh/relics/choices-paradox"
+      },
+      {
+        "id": "music-box",
+        "title": "音乐盒",
+        "description": "将你每回合打出的第一张攻击牌的一张[gold]虚无[/gold]复制品加入你的手牌。",
+        "image": "https://img.slaythespire2.gg/assets/relics/music_box.webp",
+        "href": "/zh/relics/music-box"
+      },
+      {
+        "id": "lords-parasol",
+        "title": "领主阳伞",
+        "description": "当你遇见[gold]商人[/gold]时，立刻获得他所出售的[red]所有[/red]物品。",
+        "image": "https://img.slaythespire2.gg/assets/relics/lords_parasol.webp",
+        "href": "/zh/relics/lords-parasol"
+      },
+      {
+        "id": "jeweled-mask",
+        "title": "宝石面具",
+        "description": "在每场战斗开始时，将一张随机能力牌从你的[gold]抽牌堆[/gold]放入你的[gold]手牌[/gold]，这张牌在本场战斗可以免费打出。",
+        "image": "https://img.slaythespire2.gg/assets/relics/jeweled_mask.webp",
+        "href": "/zh/relics/jeweled-mask"
+      }
+    ],
+    "image": "https://img.slaythespire2.gg/assets/events/ancients/vakuu.webp"
+  }
+]

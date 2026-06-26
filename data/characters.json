@@ -1,0 +1,161 @@
+[
+  {
+    "id": "ironclad",
+    "name": "铁甲战士",
+    "category": "CHARACTER",
+    "description": "铁甲军团最后的士兵。\n并非出自自身的意愿，用刀剑与烈焰击溃敌人们。",
+    "iconColor": "#ef4444",
+    "startingHp": 80,
+    "startingGold": 99,
+    "maxEnergy": 3,
+    "baseOrbSlotCount": 0,
+    "startingRelic": "Burning Blood",
+    "dataSource": "EarlyAccess",
+    "startingDeck": [
+      {
+        "cardId": "strike-ironclad",
+        "count": 5
+      },
+      {
+        "cardId": "defend-ironclad",
+        "count": 4
+      },
+      {
+        "cardId": "bash-ironclad",
+        "count": 1
+      }
+    ],
+    "startingRelicId": "burning-blood"
+  },
+  {
+    "id": "silent",
+    "name": "静默猎手",
+    "category": "CHARACTER",
+    "description": "一位来自尖塔之外的女猎手。\n随时准备刀刺与毒杀任何拦路者。",
+    "iconColor": "#22c55e",
+    "startingHp": 70,
+    "startingGold": 99,
+    "maxEnergy": 3,
+    "baseOrbSlotCount": 0,
+    "startingRelic": "Ring of the Snake",
+    "dataSource": "EarlyAccess",
+    "startingDeck": [
+      {
+        "cardId": "strike-silent",
+        "count": 5
+      },
+      {
+        "cardId": "defend-silent",
+        "count": 5
+      },
+      {
+        "cardId": "neutralize-silent",
+        "count": 1
+      },
+      {
+        "cardId": "survivor-silent",
+        "count": 1
+      }
+    ],
+    "startingRelicId": "ring-of-the-snake"
+  },
+  {
+    "id": "the-regent",
+    "name": "储君",
+    "category": "CHARACTER",
+    "description": "群星王座的继承人。\n拥有宇宙的力量，但总是让他的仆从们去做各种事情。",
+    "iconColor": "#eab308",
+    "startingHp": 75,
+    "startingGold": 99,
+    "maxEnergy": 3,
+    "baseOrbSlotCount": 0,
+    "startingRelic": "Divine Right",
+    "dataSource": "EarlyAccess",
+    "unlocksAfterRunAs": "silent",
+    "startingDeck": [
+      {
+        "cardId": "strike-the-regent",
+        "count": 4
+      },
+      {
+        "cardId": "defend-the-regent",
+        "count": 4
+      },
+      {
+        "cardId": "falling-star-the-regent",
+        "count": 1
+      },
+      {
+        "cardId": "venerate-the-regent",
+        "count": 1
+      }
+    ],
+    "startingRelicId": "divine-right"
+  },
+  {
+    "id": "necrobinder",
+    "name": "亡灵契约师",
+    "category": "CHARACTER",
+    "description": "一位出生在尖塔的巫妖，正在寻求复仇。\n战斗中会召唤她可靠的左手[gold]奥斯提[/gold]。",
+    "iconColor": "#8b5cf6",
+    "startingHp": 66,
+    "startingGold": 99,
+    "maxEnergy": 3,
+    "baseOrbSlotCount": 0,
+    "startingRelic": "Bound Phylactery",
+    "dataSource": "EarlyAccess",
+    "unlocksAfterRunAs": "the-regent",
+    "startingDeck": [
+      {
+        "cardId": "strike-necrobinder",
+        "count": 4
+      },
+      {
+        "cardId": "defend-necrobinder",
+        "count": 4
+      },
+      {
+        "cardId": "bodyguard-necrobinder",
+        "count": 1
+      },
+      {
+        "cardId": "unleash-necrobinder",
+        "count": 1
+      }
+    ],
+    "startingRelicId": "bound-phylactery"
+  },
+  {
+    "id": "defect",
+    "name": "故障机器人",
+    "category": "CHARACTER",
+    "description": "一具不停改造自己来生存下去的自动机械。\n在不得不战斗时，它会使用充能球科技来作战。",
+    "iconColor": "#38bdf8",
+    "startingHp": 75,
+    "startingGold": 99,
+    "maxEnergy": 3,
+    "baseOrbSlotCount": 3,
+    "startingRelic": "Cracked Core",
+    "dataSource": "EarlyAccess",
+    "unlocksAfterRunAs": "necrobinder",
+    "startingDeck": [
+      {
+        "cardId": "strike-defect",
+        "count": 4
+      },
+      {
+        "cardId": "defend-defect",
+        "count": 4
+      },
+      {
+        "cardId": "zap-defect",
+        "count": 1
+      },
+      {
+        "cardId": "dualcast-defect",
+        "count": 1
+      }
+    ],
+    "startingRelicId": "cracked-core"
+  }
+]

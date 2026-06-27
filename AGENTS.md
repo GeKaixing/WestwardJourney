@@ -6,7 +6,7 @@
 
 核心玩法：回合制战术战斗、每次运行的卡组构筑、随机生成的地图推进、角色专属卡池、遗物与状态效果、随机事件与奖励、通过程序化内容实现高重玩性。灵感来源于卡牌构筑 roguelike 类型，但采用基于西游记的原创设定、机制和内容
 ## 项目借鉴
-杀戮尖塔2  
+杀戮尖塔2：https://store.steampowered.com/app/2868840/Slay_the_Spire_2/  
 github开源类似的项目：https://github.com/oskarrough/slaytheweb  
 杀戮尖塔2wiki百科：https://slaythespire2.gg/zh  
 ## 技术栈

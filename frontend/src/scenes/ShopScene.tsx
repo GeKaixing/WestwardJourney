@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { CARD_CONFIGS, RELIC_CONFIGS, POTION_CONFIGS } from "../data";
 import { useGameStore } from "../store";
 import { GiCoins, GiHealthPotion, GiCampfire, GiCardRandom, GiExitDoor } from "react-icons/gi";
+import { playCoin, buttonClick, playShopBGM } from "../systems/sounds";
 import { cardImageGenerator } from "../utils/cardImageGenerator";
 import type { CardConfig } from "@shared/types/CardConfig";
 
@@ -68,6 +69,8 @@ export function ShopScene() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => { playShopBGM(); }, []);
+
   useEffect(() => {
     let cancelled = false;
     const loadCardImages = async () => {
@@ -114,6 +117,7 @@ export function ShopScene() {
       return;
     }
     setSold((prev) => new Set(prev).add(item.id));
+    playCoin();
     if (item.type === "card") {
       addCardToDeck({
         instanceId: `shop_card_${instanceCounter++}_${Date.now()}`,

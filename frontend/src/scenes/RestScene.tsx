@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useGameStore } from "../store";
 import { CARD_CONFIGS } from "../data";
 import { GiCampfire, GiAnvil, GiExitDoor, GiHearts } from "react-icons/gi";
+import { heal as playHealSound, upgrade, buttonClick } from "../systems/sounds";
 
 export function RestScene() {
   const navigate = useNavigate();
@@ -18,12 +19,14 @@ export function RestScene() {
 
   const handleRest = () => {
     heal(healAmount);
+    playHealSound();
     navigate("/map");
   };
 
   const handleSmith = (instanceId: string) => {
     useGameStore.getState().upgradeCard(instanceId);
     upgradedId[1](instanceId);
+    upgrade();
     setTimeout(() => navigate("/map"), 600);
   };
 
@@ -133,7 +136,7 @@ export function RestScene() {
             className="relative flex w-56 flex-col items-center justify-center rounded-2xl border-2 border-amber-600 bg-amber-950/40 p-8 text-amber-400 shadow-xl transition-all overflow-hidden hover:bg-amber-900/60 hover:shadow-[0_0_20px_rgba(217,119,6,0.4)]"
             whileHover={{ scale: 1.05, y: -5 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => setShowSmith(true)}
+            onClick={() => { buttonClick(); setShowSmith(true); }}
           >
             <GiAnvil className="text-6xl mb-4 drop-shadow-md" />
             <span className="text-2xl font-bold font-display tracking-widest">锻造</span>

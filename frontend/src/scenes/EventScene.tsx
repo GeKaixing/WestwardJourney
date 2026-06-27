@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { EVENT_CONFIGS, CARD_CONFIGS, RELIC_CONFIGS } from "../data";
 import { useGameStore } from "../store";
 import type { EventChoice } from "@shared/types/EventConfig";
+import { buttonClick } from "../systems/sounds";
 import { GiScrollUnfurled, GiExitDoor, GiGhost } from "react-icons/gi";
 
 export function EventScene() {
@@ -146,7 +147,7 @@ export function EventScene() {
               transition={{ delay: 0.1 * i + 0.3, type: "spring" }}
               whileHover={{ scale: 1.02, x: 10 }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => handleChoice(choice)}
+              onClick={() => { buttonClick(); handleChoice(choice); }}
             >
               <p className="text-lg font-bold text-gold-200">{choice.label}</p>
               <p className="mt-2 text-sm text-gray-400">{choice.description}</p>

@@ -24,6 +24,7 @@ import { MapNodeType } from "@shared/enums/MapNodeType";
 import { MapGenerator, type MapNode } from "../systems/map";
 import { useGameStore } from "../store";
 import { PLAYER_CONFIGS, RELIC_CONFIGS } from "../data";
+import { pageEnter, buttonClick } from "../systems/sounds";
 
 const NODE_LABELS: Record<MapNodeType, string> = {
   [MapNodeType.Monster]: "敌人",
@@ -80,6 +81,7 @@ export function MapScene() {
   const mapFloors = run?.mapFloors ?? 0;
 
   useEffect(() => {
+    pageEnter();
     if (!run) navigate("/select");
   }, [run, navigate]);
 
@@ -93,6 +95,7 @@ export function MapScene() {
 
   const handleNodeClick = (node: MapNode) => {
     if (!node.available || node.visited) return;
+    buttonClick();
 
     const nextNodes = nodes.map((entry) => ({
       ...entry,

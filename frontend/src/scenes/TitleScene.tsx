@@ -1,5 +1,7 @@
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { startGame, buttonClick, playMainMenuBGM } from "../systems/sounds";
 
 const menuVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -13,10 +15,12 @@ const menuVariants = {
 export function TitleScene() {
   const navigate = useNavigate();
 
-  const menuItems = [
-    { label: "单人模式", onClick: () => navigate("/select") },
+  useEffect(() => { startGame(); playMainMenuBGM(); }, []);
 
-    { label: "设置", onClick: () => navigate("/settings") },
+  const menuItems = [
+    { label: "单人模式", onClick: () => { buttonClick(); navigate("/select"); } },
+
+    { label: "设置", onClick: () => { buttonClick(); navigate("/settings"); } },
     {
       label: "退出",
       onClick: typeof window !== "undefined" ? () => window.close() : undefined,

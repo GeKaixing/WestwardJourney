@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, ReactNode, useCallback } from "react";
 import {
   GiMonkey,
   GiMonkFace,
@@ -30,6 +30,8 @@ import { RelicSystem } from "../systems/relics";
 import { CARD_CONFIGS, ENEMY_CONFIGS, PLAYER_CONFIGS, RELIC_CONFIGS } from "../data";
 import { useGameStore } from "../store";
 import { cardImageGenerator } from "../utils/cardImageGenerator";
+import { startTurn, endTurn as playEndTurn, playBattleBGM } from "../systems/sounds";
+import { useCardDragDrop } from "../hooks/useCardDragDrop";
 
 const buffSystem = new BuffSystem();
 const cardSystem = new CardSystem();
@@ -64,7 +66,7 @@ function CardView({
   return (
     <motion.button
       className={`shrink-0 rounded-lg border-2 transition-colors ${
-        disabled ? "border-gray-700 opacity-50" : "border-transparent"
+        disabled ? "border-transparent opacity-50" : "border-transparent"
       }`}
       whileTap={disabled ? {} : { scale: 0.95 }}
       onClick={onClick}
@@ -74,11 +76,11 @@ function CardView({
         <img
           src={imageUrl}
           alt={card.configId}
-          className="h-36 w-auto rounded-lg"
+          className="h-72 w-auto rounded-lg"
           draggable={false}
         />
       ) : (
-        <div className="flex h-36 w-[100px] items-center justify-center rounded-lg bg-dark-800">
+        <div className="flex h-72 w-[180px] items-center justify-center rounded-lg bg-dark-800">
           <span className="animate-pulse text-xs text-gray-600">...</span>
         </div>
       )}
@@ -106,6 +108,17 @@ export function BattleScene() {
   const [error, setError] = useState<string | null>(null);
   const [cardImages, setCardImages] = useState<Record<string, string>>({});
   const loadingCards = useRef<Set<string>>(new Set());
+
+  const onDragPlayCard = useCallback((cardInstanceId: string, targetIds: string[]) => {
+    battleSystem.playCard(cardInstanceId, targetIds);
+  }, [battleSystem]);
+  const getCardTargetType = useCallback((cardInstanceId: string) => {
+    const card = battleState?.hand.find(c => c.instanceId === cardInstanceId);
+    if (!card) return "single_enemy";
+    const config = CARD_CONFIGS.find(c => c.id === card.configId);
+    return config?.targetType ?? "single_enemy";
+  }, [battleState?.hand]);
+  const { onPointerDown, onPointerMove, onPointerUp } = useCardDragDrop(onDragPlayCard, getCardTargetType);
 
   useEffect(() => {
     if (!battleState) return;
@@ -175,6 +188,11 @@ export function BattleScene() {
       );
       setInBattle(true);
       battleSystem.startBattle();
+      startTurn();
+      // ponytail: play random zone BGM since zones aren't defined yet
+      const zones = ["denseForest", "nest", "darkPort", "glory"] as const;
+      const randomZone = zones[Math.floor(Math.random() * zones.length)];
+      playBattleBGM(randomZone, "normal");
     } catch (e) {
       console.error("Battle init failed", e);
       setError(String(e));
@@ -211,7 +229,6 @@ export function BattleScene() {
   const player = battleState.player;
   const enemies = battleState.enemies;
   const aliveEnemies = enemies.filter((enemy) => enemy.isAlive);
-  const defaultTarget = aliveEnemies[0];
   const phaseLabel = ["回合开始", "抽牌", "行动", "回合结束", "敌方行动", "清理"][battleState.phase] ?? "行动";
 
   const characterEmojis: Record<string, ReactNode> = {
@@ -315,7 +332,7 @@ export function BattleScene() {
         
         {/* Player Character */}
         <div className="relative flex flex-col items-center">
-          <div className="flex h-56 w-56 items-center justify-center text-9xl drop-shadow-[0_10px_25px_rgba(0,0,0,0.5)] filter transition-transform hover:scale-105">
+          <div className="flex h-72 w-72 items-center justify-center text-[10rem] drop-shadow-[0_10px_25px_rgba(0,0,0,0.5)] filter transition-transform hover:scale-105">
             {playerEmoji}
           </div>
           {/* HP Bar */}
@@ -336,7 +353,7 @@ export function BattleScene() {
         {/* Enemies */}
         <div className="flex gap-20">
           {enemies.map((enemy) => (
-            <div key={enemy.id} className={`relative flex flex-col items-center transition-all duration-500 ${enemy.isAlive ? "" : "opacity-0 scale-90"}`}>
+            <div key={enemy.id} data-enemy-id={enemy.id} className={`Target relative flex flex-col items-center transition-all duration-500 ${enemy.isAlive ? "" : "opacity-0 scale-90"}`}>
                {/* Intent */}
                {enemy.intent && enemy.isAlive && (
                   <div className="absolute -top-16 flex flex-col items-center z-20">
@@ -357,7 +374,7 @@ export function BattleScene() {
                  const imgUrl = enemyConfig?.image;
                  if (imgUrl) {
                    return (
-                     <div className="flex h-48 w-48 items-center justify-center drop-shadow-[0_10px_25px_rgba(0,0,0,0.5)] filter transition-transform hover:scale-105">
+                      <div className="flex h-64 w-64 items-center justify-center drop-shadow-[0_10px_25px_rgba(0,0,0,0.5)] filter transition-transform hover:scale-105">
                        <img
                          src={imgUrl}
                          alt={enemy.name}
@@ -366,7 +383,7 @@ export function BattleScene() {
                            const target = e.target as HTMLImageElement;
                            target.style.display = "none";
                            const fallback = document.createElement("span");
-                           fallback.className = "text-8xl text-gray-400";
+                            fallback.className = "text-9xl text-gray-400";
                            fallback.textContent = "👹";
                            target.parentElement?.appendChild(fallback);
                          }}
@@ -375,7 +392,7 @@ export function BattleScene() {
                    );
                  }
                  return (
-                   <div className="flex h-48 w-48 items-center justify-center text-8xl drop-shadow-[0_10px_25px_rgba(0,0,0,0.5)] filter transition-transform hover:scale-105 text-gray-400">
+                    <div className="flex h-64 w-64 items-center justify-center text-9xl drop-shadow-[0_10px_25px_rgba(0,0,0,0.5)] filter transition-transform hover:scale-105 text-gray-400">
                      {enemyEmojis[enemy.id] ?? <GiOgre />}
                    </div>
                  );
@@ -421,7 +438,7 @@ export function BattleScene() {
         {/* End Turn Button (Bottom Right) */}
         <div className="pointer-events-auto absolute bottom-12 right-10 z-40">
           <button
-            onClick={() => battleSystem.endTurn()}
+            onClick={() => { battleSystem.endTurn(); playEndTurn(); }}
             className="flex h-12 w-32 items-center justify-center rounded-lg bg-sky-950 border-2 border-sky-600 text-lg font-bold text-sky-200 transition-all hover:bg-sky-900 hover:scale-105 hover:shadow-[0_0_20px_rgba(14,165,233,0.5)] shadow-lg"
           >
             {phaseLabel === "行动" ? "结束回合" : phaseLabel}
@@ -444,6 +461,7 @@ export function BattleScene() {
               const offset = idx - (total - 1) / 2;
               const rotate = offset * 4; 
               const yOffset = Math.abs(offset) * 6;
+              const disabled = card.cost > player.energy;
               
               return (
                 <motion.div
@@ -451,23 +469,21 @@ export function BattleScene() {
                   layout
                   initial={{ opacity: 0, y: 150, scale: 0.3 }}
                   animate={{ opacity: 1, y: yOffset, rotate: rotate, scale: 1 }}
-                  whileHover={card.cost > player.energy || !defaultTarget ? {} : { y: yOffset - 30, rotate: 0, scale: 1.15, zIndex: 50 }}
+                  whileHover={disabled ? {} : { y: yOffset - 30, rotate: 0, scale: 1.15, zIndex: 50 }}
                   exit={{ opacity: 0, y: -100, scale: 0.5, transition: { duration: 0.2 } }}
                   transition={{ type: "spring", stiffness: 350, damping: 25 }}
                   style={{ zIndex: idx }}
-                  className="-mx-3"
+                  className="-mx-3 Card--draggable"
+                  aria-disabled={disabled}
+                  onPointerDown={(e) => onPointerDown(e, card.instanceId, disabled)}
+                  onPointerMove={onPointerMove}
+                  onPointerUp={onPointerUp}
                 >
                   <CardView
                     card={card}
                     imageUrl={cardImages[card.instanceId]}
-                    disabled={card.cost > player.energy || !defaultTarget}
-                    onClick={() => {
-                      const config = CARD_CONFIGS.find((entry) => entry.id === card.configId);
-                      const targets = config?.targetType === "all_enemies"
-                        ? aliveEnemies.map((enemy) => enemy.id)
-                        : defaultTarget ? [defaultTarget.id] : [];
-                      if (targets.length > 0) battleSystem.playCard(card.instanceId, targets);
-                    }}
+                    disabled={disabled}
+                    onClick={() => {}}
                   />
                 </motion.div>
               )

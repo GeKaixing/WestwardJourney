@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGameStore, useSettingsStore } from "../store";
+import { buttonClick, updateBGMVolume } from "../systems/sounds";
 import {
   GiCog,
   GiBrokenSkull,
@@ -75,7 +76,7 @@ export function SettingsScene() {
           {TABS.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => { buttonClick(); setActiveTab(tab.id); }}
               className={`flex-1 flex items-center justify-center gap-3 py-4 text-xl font-bold rounded-2xl transition-all ${
                 activeTab === tab.id
                   ? "bg-dark-700/80 text-gold-300 shadow-inner shadow-gold-500/5"
@@ -238,6 +239,8 @@ function VideoTab() {
 function AudioTab() {
   const { masterVolume, musicVolume, sfxVolume, setMasterVolume, setMusicVolume, setSfxVolume } =
     useSettingsStore();
+
+  useEffect(() => { updateBGMVolume(); }, [masterVolume, musicVolume]);
 
   return (
     <div className="flex flex-col gap-5">
@@ -411,7 +414,7 @@ function ToggleRow({ label, value, onChange, icon }: { label: string; value: boo
         <span className="text-xl font-bold text-gray-200">{label}</span>
       </div>
       <motion.button
-        onClick={() => onChange(!value)}
+              onClick={() => { buttonClick(); onChange(!value); }}
         className={`relative w-16 h-8 rounded-full transition-colors ${
           value ? "bg-gold-600" : "bg-dark-600"
         }`}

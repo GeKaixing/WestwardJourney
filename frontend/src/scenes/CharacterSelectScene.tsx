@@ -6,6 +6,7 @@ import clsx from "clsx";
 import { CharacterClass } from "@shared/enums/CharacterClass";
 import { PLAYER_CONFIGS, CARD_CONFIGS, RELIC_CONFIGS } from "../data";
 import { useGameStore } from "../store";
+import { buttonClick, startGame } from "../systems/sounds";
 import type { CardInstance } from "../systems/cards";
 import type { RelicInstance } from "../systems/relics";
 
@@ -69,6 +70,7 @@ export function CharacterSelectScene() {
     const relic = buildStartingRelic(selectedChar);
     if (!relic) return;
     startRun(selectedChar, deck, relic);
+    startGame();
     navigate("/map");
   };
 
@@ -145,7 +147,7 @@ export function CharacterSelectScene() {
           return (
             <button
               key={charClass}
-              onClick={() => setSelectedChar(charClass)}
+              onClick={() => { buttonClick(); setSelectedChar(charClass); }}
               className={clsx(
                 "h-24 w-20 overflow-hidden rounded-xl border-2 transition-all duration-300",
                 isSelected 

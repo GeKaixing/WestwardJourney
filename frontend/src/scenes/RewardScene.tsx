@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CARD_CONFIGS, RELIC_CONFIGS, POTION_CONFIGS } from "../data";
 import { useGameStore } from "../store";
 import { GiCoins, GiCheckMark, GiCardRandom, GiCampfire, GiHealthPotion, GiTreasureMap } from "react-icons/gi";
+import { playCoin, selectCard } from "../systems/sounds";
 import { cardImageGenerator } from "../utils/cardImageGenerator";
 import type { CardConfig } from "@shared/types/CardConfig";
 
@@ -58,6 +59,7 @@ export function RewardScene() {
   }, [cardOptions, run?.characterClass]);
 
   const handleCardSelect = (configId: string) => {
+    selectCard();
     const config = CARD_CONFIGS.find((c) => c.id === configId);
     if (config) {
       addCardToDeck({
@@ -84,6 +86,8 @@ export function RewardScene() {
     }
     navigate("/map");
   };
+
+  useEffect(() => { if (phase === "gold") playCoin(); }, [phase]);
 
   if (phase === "gold") {
     return (

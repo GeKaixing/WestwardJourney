@@ -1,17 +1,20 @@
 # AGENTS.md — 西游行 (WestwardJourney)
 
-## Project
+## 项目简介
 
-Single-player roguelike deck-building game. Theme: Journey to the West. Long-term commercial-grade (Steam target). No prototype code.
+单人 roguelike 卡牌构筑游戏。主题：西游记。长期商业化项目（目标 Steam）。无原型代码。
 
-Core gameplay: turn-based tactical combat, deck construction each run, randomly generated map progression, character-specific card pools, relics and status effects, random events and rewards, high replayability via procedural content. Inspired by the deck-building roguelike genre but uses an original setting, mechanics, and content based on Journey to the West.
+核心玩法：回合制战术战斗、每次运行的卡组构筑、随机生成的地图推进、角色专属卡池、遗物与状态效果、随机事件与奖励、通过程序化内容实现高重玩性。灵感来源于卡牌构筑 roguelike 类型，但采用基于西游记的原创设定、机制和内容
+## 项目借鉴
+杀戮尖塔2  
+github开源类似的项目：https://github.com/oskarrough/slaytheweb  
+杀戮尖塔2wiki百科：https://slaythespire2.gg/zh  
+## 技术栈
 
-## Tech Stack
+- **前端：** React 19, TypeScript, Vite, PixiJS 8, Zustand, React Router, Framer Motion, Tailwind CSS
+- **后端：** Node.js, NestJS, TypeScript, PostgreSQL, Prisma, Redis, WebSocket
 
-- **Frontend:** React 19, TypeScript, Vite, PixiJS 8, Zustand, React Router, Framer Motion, Tailwind CSS
-- **Backend:** Node.js, NestJS, TypeScript, PostgreSQL, Prisma, Redis, WebSocket
-
-## Directory Layout
+## 目录结构
 
 ```
 frontend/
@@ -23,35 +26,37 @@ backend/
   enemy/ event/ save/ websocket/ common/
 ```
 
-## Architecture Constraints
+## 架构约束
 
-- **Data-driven design** — cards, relics, enemies, buffs, maps, events, rewards must all be configurable, never hardcoded
-- **Decoupled rendering & logic** — gameplay logic, rendering, networking, persistence are independent layers
-- **Independent game systems** — Battle System, Action Queue, Turn Manager, Buff System, Relic System, Card System, Map Generator, Save System, Event System, Reward System
-- One responsibility per file. Prefer files under 300 lines.
-- Separate UI from business logic.
-- Composition over inheritance. Favor SOLID/DRY/KISS.
-- Always consider future extensibility.
+- **数据驱动设计** — 卡牌、遗物、敌人、增益、地图、事件、奖励必须全部可配置，绝不硬编码
+- **解耦渲染与逻辑** — 游戏逻辑、渲染、网络、持久化为独立层
+- **独立的游戏系统** — 战斗系统、行动队列、回合管理器、增益系统、遗物系统、卡牌系统、地图生成器、存档系统、事件系统、奖励系统
+- 每个文件单一职责。文件尽量不超过 300 行。
+- 将 UI 与业务逻辑分离。
+- 组合优于继承。遵循 SOLID/DRY/KISS 原则。
+- 始终考虑未来的可扩展性。
+- 不要去做兜底设计，直接将错误抛出  
+- 每一编写完都有做测试  
 
-## Code Conventions
+## 代码规范
 
-- **Files/Classes:** PascalCase (`Player.ts`, `BattleScene.ts`)
-- **Functions/Methods:** camelCase (`drawCard()`, `applyBuff()`)
-- Strong typing everywhere. No `any`.
-- No duplicated code. No giant files.
-- Never hardcode game data — use config/JSON for all game content.
+- **文件/类：** PascalCase（`Player.ts`、`BattleScene.ts`）
+- **函数/方法：** camelCase（`drawCard()`、`applyBuff()`）
+- 全程强类型。禁止使用 `any`。
+- 无重复代码。无超大型文件。
+- 绝不硬编码游戏数据 — 所有游戏内容使用配置/JSON。
 
-## Commands
+## 命令
 
 ```sh
-npm run dev          # Start frontend dev server (Vite, port 5173)
-npm run build        # Type-check & build all packages
-npm run lint         # Type-check frontend & backend (no emit)
-npm run typecheck    # Alias for lint
-npm run backend:dev  # Start NestJS dev server (port 3000)
-npm run backend:build# Build NestJS backend
-npm run prisma:generate  # Generate Prisma client
-npm run prisma:migrate   # Run Prisma migrations (requires PostgreSQL + DATABASE_URL)
+npm run dev          # 启动前端开发服务器（Vite，端口 5173）
+npm run build        # 类型检查并构建所有包
+npm run lint         # 类型检查前端和后端（不输出文件）
+npm run typecheck    # lint 的别名
+npm run backend:dev  # 启动 NestJS 开发服务器（端口 3000）
+npm run backend:build# 构建 NestJS 后端
+npm run prisma:generate  # 生成 Prisma 客户端
+npm run prisma:migrate   # 运行 Prisma 迁移（需要 PostgreSQL + DATABASE_URL）
 ```
 
-**Type-check before commit** — `npm run lint` catches issues early. Backend build requires `prisma:generate` first.
+**提交前进行类型检查** — `npm run lint` 可及早发现问题。后端构建需要先执行 `prisma:generate`。

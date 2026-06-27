@@ -16,7 +16,7 @@ export function TitleScene() {
   const menuItems = [
     { label: "单人模式", onClick: () => navigate("/select") },
     { label: "多人模式", onClick: undefined },
-    { label: "设置", onClick: undefined },
+    { label: "设置", onClick: () => navigate("/settings") },
     {
       label: "退出",
       onClick: typeof window !== "undefined" ? () => window.close() : undefined,

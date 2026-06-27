@@ -13,3 +13,23 @@ body {
 #root {
   min-height: 100vh;
 }
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #16213e;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #1e2d5a;
+}
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #16213e transparent;
+}

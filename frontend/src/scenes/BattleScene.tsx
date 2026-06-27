@@ -121,7 +121,7 @@ export function BattleScene() {
       loadingCards.current.add(card.instanceId);
       changed = true;
 
-      cardImageGenerator.getCardImageUrl(config, card.upgraded).then((url) => {
+      cardImageGenerator.getCardImageUrl(config, card.upgraded, run?.characterClass).then((url) => {
         loadingCards.current.delete(card.instanceId);
         setCardImages((prev) => ({ ...prev, [card.instanceId]: url }));
       }).catch(() => {
@@ -257,20 +257,28 @@ export function BattleScene() {
              {run?.relics.map((r, i) => {
                const config = RELIC_CONFIGS.find(rc => rc.id === r.configId);
                return (
-                 <div key={i} className="flex h-8 w-8 items-center justify-center cursor-help transition-transform hover:scale-110 text-xl text-orange-500" title={config?.name}>
-                   <GiCampfire />
+                 <div key={i} className="flex h-8 w-8 items-center justify-center cursor-help transition-transform hover:scale-110" title={config?.name}>
+                   {config?.image ? (
+                     <img src={config.image} alt={config.name} className="h-8 w-8 object-contain" />
+                   ) : (
+                     <GiCampfire className="text-xl text-orange-500" />
+                   )}
                  </div>
                );
              })}
-          </div>
+           </div>
 
-          <div className="flex gap-2 border-l border-gray-600/50 pl-4">
-            {/* Potions */}
-            {(run?.potions?.length ?? 0) > 0 ? run!.potions.map((p, i) => (
-              <div key={i} className="flex h-8 w-8 items-center justify-center cursor-help transition-transform hover:scale-110 text-xl text-green-400" title={p.name}>
-                <GiHealthPotion />
-              </div>
-            )) : (
+           <div className="flex gap-2 border-l border-gray-600/50 pl-4">
+             {/* Potions */}
+             {(run?.potions?.length ?? 0) > 0 ? run!.potions.map((p, i) => (
+               <div key={i} className="flex h-8 w-8 items-center justify-center cursor-help transition-transform hover:scale-110" title={p.name}>
+                 {p.image ? (
+                   <img src={p.image} alt={p.name} className="h-8 w-8 object-contain" />
+                 ) : (
+                   <GiHealthPotion className="text-xl text-green-400" />
+                 )}
+               </div>
+             )) : (
               // Empty potion slots placeholders
               <>
                 <div className="h-8 w-8 rounded bg-black/20 border border-gray-600/50 border-dashed opacity-50"></div>
@@ -344,9 +352,34 @@ export function BattleScene() {
                )}
                
                {/* Character */}
-               <div className="flex h-48 w-48 items-center justify-center text-8xl drop-shadow-[0_10px_25px_rgba(0,0,0,0.5)] filter transition-transform hover:scale-105 text-gray-400">
-                  {enemyEmojis[enemy.id] ?? <GiOgre />}
-               </div>
+               {(() => {
+                 const enemyConfig = ENEMY_CONFIGS.find(e => e.id === enemy.id);
+                 const imgUrl = enemyConfig?.image;
+                 if (imgUrl) {
+                   return (
+                     <div className="flex h-48 w-48 items-center justify-center drop-shadow-[0_10px_25px_rgba(0,0,0,0.5)] filter transition-transform hover:scale-105">
+                       <img
+                         src={imgUrl}
+                         alt={enemy.name}
+                         className="h-full w-full object-contain"
+                         onError={(e) => {
+                           const target = e.target as HTMLImageElement;
+                           target.style.display = "none";
+                           const fallback = document.createElement("span");
+                           fallback.className = "text-8xl text-gray-400";
+                           fallback.textContent = "👹";
+                           target.parentElement?.appendChild(fallback);
+                         }}
+                       />
+                     </div>
+                   );
+                 }
+                 return (
+                   <div className="flex h-48 w-48 items-center justify-center text-8xl drop-shadow-[0_10px_25px_rgba(0,0,0,0.5)] filter transition-transform hover:scale-105 text-gray-400">
+                     {enemyEmojis[enemy.id] ?? <GiOgre />}
+                   </div>
+                 );
+               })()}
                
                {/* HP Bar */}
                <div className="mt-4 w-32">

@@ -23,6 +23,7 @@ export interface EnemyConfig {
   id: string;
   name: string;
   description?: string;
+  image?: string;
   health: number;
   healthPerAscension?: number;
   block?: number;

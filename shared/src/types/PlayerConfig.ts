@@ -11,6 +11,7 @@ export interface PlayerConfig {
   characterClass: CharacterClass;
   displayName: string;
   description: string;
+  avatar: string;
   stats: CharacterStats;
   startingDeck: string[];
   startingRelic: string;

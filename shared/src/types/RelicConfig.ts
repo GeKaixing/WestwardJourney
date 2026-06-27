@@ -16,6 +16,7 @@ export interface RelicConfig {
   id: string;
   name: string;
   description: string;
+  image?: string;
   rarity: Rarity;
   characterClass?: CharacterClass;
   effects: RelicEffect[];

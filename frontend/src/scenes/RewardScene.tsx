@@ -1,9 +1,11 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CARD_CONFIGS, RELIC_CONFIGS, POTION_CONFIGS } from "../data";
 import { useGameStore } from "../store";
 import { GiCoins, GiCheckMark, GiCardRandom, GiCampfire, GiHealthPotion, GiTreasureMap } from "react-icons/gi";
+import { cardImageGenerator } from "../utils/cardImageGenerator";
+import type { CardConfig } from "@shared/types/CardConfig";
 
 const REWARD_GOLD = 25;
 
@@ -16,6 +18,7 @@ export function RewardScene() {
   const addPotion = useGameStore((s) => s.addPotion);
   const [phase, setPhase] = useState<"gold" | "cards" | "done">("gold");
   const instanceCounter = useRef(0);
+  const [cardImages, setCardImages] = useState<Map<string, string>>(new Map());
 
   const cardOptions = useMemo(() => {
     const shuffled = [...CARD_CONFIGS].sort(() => Math.random() - 0.5);
@@ -36,6 +39,23 @@ export function RewardScene() {
     }
     return null;
   }, []);
+
+  useEffect(() => {
+    const loadCardImages = async () => {
+      const images = new Map<string, string>();
+      for (const card of cardOptions) {
+        const imageUrl = await cardImageGenerator.getCardImageUrl(
+          card as CardConfig,
+          false,
+          run?.characterClass
+        );
+        images.set(card.id, imageUrl);
+      }
+      setCardImages(images);
+    };
+
+    loadCardImages();
+  }, [cardOptions, run?.characterClass]);
 
   const handleCardSelect = (configId: string) => {
     const config = CARD_CONFIGS.find((c) => c.id === configId);
@@ -68,8 +88,6 @@ export function RewardScene() {
   if (phase === "gold") {
     return (
       <div className="relative flex min-h-screen flex-col items-center justify-center p-8 bg-dark-950 font-sans text-gray-200 select-none">
-        <div className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none opacity-40 grayscale" style={{ backgroundImage: "url('/kraft-paper.jpg')" }}></div>
-        <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.9)] pointer-events-none z-0"></div>
 
         <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="relative z-10 flex flex-col items-center bg-black/60 p-12 rounded-2xl border-2 border-gold-900/50 shadow-2xl backdrop-blur-sm w-full max-w-lg">
           <GiTreasureMap className="text-7xl text-gold-500 drop-shadow-md mb-2" />
@@ -83,7 +101,11 @@ export function RewardScene() {
             
             {relicDrop && (
               <div className="flex items-center gap-4 bg-dark-800/80 p-4 rounded-xl border border-purple-900/50 w-full shadow-inner">
-                <GiCampfire className="text-4xl text-purple-400 drop-shadow-md" />
+                {relicDrop.image ? (
+                  <img src={relicDrop.image} alt={relicDrop.name} className="h-10 w-10 object-contain" />
+                ) : (
+                  <GiCampfire className="text-4xl text-purple-400 drop-shadow-md" />
+                )}
                 <div>
                   <p className="text-sm text-purple-300 font-bold">遗物</p>
                   <p className="text-lg font-bold text-gray-200">{relicDrop.name}</p>
@@ -93,7 +115,11 @@ export function RewardScene() {
             
             {potionDrop && (
               <div className="flex items-center gap-4 bg-dark-800/80 p-4 rounded-xl border border-cyan-900/50 w-full shadow-inner">
-                <GiHealthPotion className="text-4xl text-cyan-400 drop-shadow-md" />
+                {potionDrop.image ? (
+                  <img src={potionDrop.image} alt={potionDrop.name} className="h-10 w-10 object-contain" />
+                ) : (
+                  <GiHealthPotion className="text-4xl text-cyan-400 drop-shadow-md" />
+                )}
                 <div>
                   <p className="text-sm text-cyan-300 font-bold">药水</p>
                   <p className="text-lg font-bold text-gray-200">{potionDrop.name}</p>
@@ -118,8 +144,6 @@ export function RewardScene() {
   if (phase === "cards") {
     return (
       <div className="relative flex min-h-screen flex-col items-center justify-center p-12 bg-dark-950 font-sans text-gray-200 select-none">
-        <div className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none opacity-40 grayscale" style={{ backgroundImage: "url('/kraft-paper.jpg')" }}></div>
-        <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.9)] pointer-events-none z-0"></div>
 
         <div className="relative z-10 flex flex-col items-center">
           <motion.h1 initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-10 font-display text-5xl text-gold-500 drop-shadow-lg">
@@ -127,33 +151,35 @@ export function RewardScene() {
           </motion.h1>
           <p className="mb-8 text-lg font-bold text-gray-300 bg-black/40 px-6 py-2 rounded-full border border-gray-600/50">请选择一张卡牌加入你的牌组</p>
           <div className="flex flex-wrap justify-center gap-6">
-            {cardOptions.map((card, i) => (
-              <motion.button
-                key={card.id}
-                className="relative flex w-56 h-72 flex-col items-center justify-between rounded-xl shadow-2xl p-6 text-center transition-all bg-cover bg-center border-2 border-amber-900/60 cursor-pointer hover:border-gold-500 hover:shadow-[0_0_20px_rgba(250,204,21,0.5)]"
-                style={{ backgroundImage: "url('/kraft-paper.jpg')" }}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 * i, type: "spring" }}
-                whileHover={{ scale: 1.05, y: -5 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => handleCardSelect(card.id)}
-              >
-                <div className="absolute -top-3 -left-3 flex h-10 w-10 items-center justify-center rounded-full bg-black/80 border-2 border-gold-600 text-lg font-bold text-gold-400 shadow-md">
-                  {card.cost}
-                </div>
-                
-                <div className="flex flex-col items-center w-full mt-4">
-                  <GiCardRandom className="text-5xl drop-shadow-md text-blue-900 mb-4" />
-                  <h3 className="text-xl font-bold text-amber-950 leading-tight mb-2">{card.name}</h3>
-                  <p className="text-sm font-medium text-amber-900/80 leading-snug line-clamp-4">{card.description}</p>
-                </div>
-                
-                <div className="w-full text-center py-1 mt-2 border-t border-amber-900/30">
-                  <p className="text-xs font-bold text-amber-800 uppercase tracking-widest">{card.type}</p>
-                </div>
-              </motion.button>
-            ))}
+            {cardOptions.map((card, i) => {
+              const imageUrl = cardImages.get(card.id);
+              return (
+                <motion.button
+                  key={card.id}
+                  className={`relative flex w-56 h-80 flex-col items-center justify-center rounded-xl shadow-2xl overflow-hidden transition-all cursor-pointer hover:shadow-[0_0_20px_rgba(250,204,21,0.5)]`}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 * i, type: "spring" }}
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => handleCardSelect(card.id)}
+                >
+                  {imageUrl ? (
+                    <img 
+                      src={imageUrl} 
+                      alt={card.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex flex-col items-center justify-center w-full h-full bg-dark-800 p-4">
+                      <GiCardRandom className="text-5xl drop-shadow-md text-blue-900 mb-4" />
+                      <h3 className="text-xl font-bold text-amber-950 leading-tight mb-2">{card.name}</h3>
+                      <p className="text-sm font-medium text-amber-900/80 leading-snug line-clamp-4">{card.description}</p>
+                    </div>
+                  )}
+                </motion.button>
+              );
+            })}
           </div>
           <button 
             className="mt-12 text-gray-500 font-bold hover:text-gray-300 transition-colors"
@@ -168,8 +194,6 @@ export function RewardScene() {
 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center p-8 bg-dark-950 font-sans text-gray-200 select-none">
-      <div className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none opacity-40 grayscale" style={{ backgroundImage: "url('/kraft-paper.jpg')" }}></div>
-      <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.9)] pointer-events-none z-0"></div>
 
       <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="relative z-10 flex flex-col items-center bg-black/60 p-12 rounded-2xl border-2 border-gold-900/50 shadow-2xl backdrop-blur-sm">
         <div className="h-24 w-24 rounded-full bg-green-900/50 border-4 border-green-500 flex items-center justify-center shadow-[0_0_30px_rgba(34,197,94,0.3)] mb-6">

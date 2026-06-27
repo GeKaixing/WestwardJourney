@@ -2,6 +2,7 @@ import type { CardConfig } from "@shared/types/CardConfig";
 import type { DiyCardFormState, Sts2Manifest } from "../systems/diyCard/types";
 import { loadFonts, loadImage } from "../systems/diyCard/imageCache";
 import { renderSts2Card } from "../systems/diyCard/renderSts2Card";
+import { CharacterClass } from "@shared/enums/CharacterClass";
 
 const MANIFEST_URL = "/diy-card-assets-sts2/manifest.json";
 
@@ -18,6 +19,17 @@ const RARITY_MAP: Record<string, DiyCardFormState["cardRarity"]> = {
   common: "common",
   uncommon: "uncommon",
   rare: "rare",
+  legendary: "rare",
+  event: "event",
+  ancient: "ancient",
+};
+
+const CHARACTER_CLASS_TO_STS: Record<CharacterClass, DiyCardFormState["character"]> = {
+  [CharacterClass.SunWukong]: "ironclad",
+  [CharacterClass.TangSanzang]: "regent",
+  [CharacterClass.ZhuBajie]: "defect",
+  [CharacterClass.ShaWujing]: "silent",
+  [CharacterClass.WhiteDragonHorse]: "necrobinder",
 };
 
 class CardImageGenerator {
@@ -66,8 +78,8 @@ class CardImageGenerator {
     return this.initPromise;
   }
 
-  async getCardImageUrl(config: CardConfig, upgraded: boolean): Promise<string> {
-    const cacheKey = `${config.id}_${upgraded}`;
+  async getCardImageUrl(config: CardConfig, upgraded: boolean, playerCharacterClass?: CharacterClass): Promise<string> {
+    const cacheKey = `${config.id}_${upgraded}_${playerCharacterClass ?? "default"}`;
     const cached = this.cache.get(cacheKey);
     if (cached) return cached;
 
@@ -75,9 +87,15 @@ class CardImageGenerator {
     const manifest = this.manifest;
     if (!manifest) throw new Error("Manifest not loaded");
 
+    const character = config.characterClass 
+      ? CHARACTER_CLASS_TO_STS[config.characterClass] 
+      : playerCharacterClass 
+        ? CHARACTER_CLASS_TO_STS[playerCharacterClass]
+        : "colorless";
+
     const form: DiyCardFormState = {
       cardType: CARD_TYPE_MAP[config.type.toLowerCase()] ?? "skill",
-      character: "colorless",
+      character,
       cardRarity: RARITY_MAP[config.rarity.toLowerCase()] ?? "common",
       cardName: config.name,
       description: upgraded && config.upgradedDescription ? config.upgradedDescription : config.description,

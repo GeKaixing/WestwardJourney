@@ -7,6 +7,7 @@ export const RELIC_CONFIGS: RelicConfig[] = [
     id: "golden_circlet",
     name: "金箍",
     description: "战斗开始时，获得2层力量",
+    image: "/assets/relics/circlet.webp",
     rarity: Rarity.Basic,
     characterClass: CharacterClass.SunWukong,
     effects: [
@@ -21,6 +22,7 @@ export const RELIC_CONFIGS: RelicConfig[] = [
     id: "monk_robe",
     name: "锦斓袈裟",
     description: "每回合获得3点格挡",
+    image: "/assets/relics/distinctive_cape.webp",
     rarity: Rarity.Basic,
     characterClass: CharacterClass.TangSanzang,
     effects: [
@@ -36,6 +38,7 @@ export const RELIC_CONFIGS: RelicConfig[] = [
     id: "nine_tooth_rake",
     name: "九齿钉耙",
     description: "每造成5点伤害，获得1点生命",
+    image: "/assets/relics/archaic_tooth.webp",
     rarity: Rarity.Basic,
     characterClass: CharacterClass.ZhuBajie,
     effects: [
@@ -50,6 +53,7 @@ export const RELIC_CONFIGS: RelicConfig[] = [
     id: "demon_skull_necklace",
     name: "降魔宝珠",
     description: "战斗开始时，对所有敌人施加1层易伤",
+    image: "/assets/relics/red_skull.webp",
     rarity: Rarity.Basic,
     characterClass: CharacterClass.ShaWujing,
     effects: [
@@ -64,6 +68,7 @@ export const RELIC_CONFIGS: RelicConfig[] = [
     id: "dragon_scale",
     name: "龙鳞",
     description: "每回合获得2点能量",
+    image: "/assets/relics/ring_of_the_drake.webp",
     rarity: Rarity.Basic,
     characterClass: CharacterClass.WhiteDragonHorse,
     effects: [
@@ -79,6 +84,7 @@ export const RELIC_CONFIGS: RelicConfig[] = [
     id: "jade_pearl",
     name: "定风珠",
     description: "受到伤害时，有50%几率只承受一半",
+    image: "/assets/relics/golden_pearl.webp",
     rarity: Rarity.Common,
     effects: [
       {
@@ -91,6 +97,7 @@ export const RELIC_CONFIGS: RelicConfig[] = [
     id: "purple_gourd",
     name: "紫金葫芦",
     description: "每击败3个敌人，获得1张随机牌",
+    image: "/assets/relics/demon_tongue.webp",
     rarity: Rarity.Uncommon,
     effects: [
       {
@@ -103,6 +110,7 @@ export const RELIC_CONFIGS: RelicConfig[] = [
     id: "lotus_flower",
     name: "莲花宝座",
     description: "休息处额外恢复10点生命",
+    image: "/assets/relics/happy_flower.webp",
     rarity: Rarity.Uncommon,
     effects: [],
   },

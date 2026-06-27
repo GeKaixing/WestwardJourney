@@ -134,6 +134,13 @@ export function MapScene() {
         {/* Top Left: Name, HP, Gold, Relics, Potions */}
         <div className="flex items-center gap-6 pointer-events-auto">
           <div className="flex items-center gap-4">
+            {playerConfig?.avatar && (
+              <img 
+                src={playerConfig.avatar} 
+                alt={playerConfig.displayName}
+                className="h-8 w-8 rounded-full border-2 border-amber-600 shadow-md"
+              />
+            )}
             <span className="font-bold text-gray-200">{playerConfig?.displayName ?? "未知"}</span>
             <div className="flex items-center gap-1 font-bold text-red-400">
               <GiHearts className="text-xl" /> {run.currentHealth}/{run.maxHealth}
@@ -148,20 +155,28 @@ export function MapScene() {
              {run.relics.map((r, i) => {
                const config = RELIC_CONFIGS.find(rc => rc.id === r.configId);
                return (
-                 <div key={i} className="flex h-8 w-8 items-center justify-center cursor-help transition-transform hover:scale-110 text-xl text-orange-500" title={config?.name}>
-                   <GiCampfire />
+                 <div key={i} className="flex h-8 w-8 items-center justify-center cursor-help transition-transform hover:scale-110" title={config?.name}>
+                   {config?.image ? (
+                     <img src={config.image} alt={config.name} className="h-8 w-8 object-contain" />
+                   ) : (
+                     <GiCampfire className="text-xl text-orange-500" />
+                   )}
                  </div>
                );
              })}
-          </div>
+           </div>
 
-          <div className="flex gap-2 border-l border-gray-600/50 pl-4">
-            {/* Potions */}
-            {run.potions.length > 0 ? run.potions.map((p, i) => (
-              <div key={i} className="flex h-8 w-8 items-center justify-center cursor-help transition-transform hover:scale-110 text-xl text-green-400" title={p.name}>
-                <GiHealthPotion />
-              </div>
-            )) : (
+           <div className="flex gap-2 border-l border-gray-600/50 pl-4">
+             {/* Potions */}
+             {run.potions.length > 0 ? run.potions.map((p, i) => (
+               <div key={i} className="flex h-8 w-8 items-center justify-center cursor-help transition-transform hover:scale-110" title={p.name}>
+                 {p.image ? (
+                   <img src={p.image} alt={p.name} className="h-8 w-8 object-contain" />
+                 ) : (
+                   <GiHealthPotion className="text-xl text-green-400" />
+                 )}
+               </div>
+             )) : (
               // Empty potion slots placeholders
               <>
                 <div className="h-8 w-8 rounded bg-black/20 border border-gray-600/50 border-dashed opacity-50"></div>
@@ -218,8 +233,7 @@ export function MapScene() {
 
       {/* Right Legend */}
       <div 
-        className="absolute right-12 top-1/2 z-40 -translate-y-1/2 w-48 rounded-md p-4 text-amber-950 shadow-2xl border-2 border-amber-900/50 transform rotate-1 pointer-events-none bg-cover bg-center"
-        style={{ backgroundImage: "url('/kraft-paper.jpg')" }}
+        className="absolute right-12 top-1/2 z-40 -translate-y-1/2 w-48 rounded-md p-4 text-amber-950 shadow-2xl border-2 border-amber-900/50 transform rotate-1 pointer-events-none bg-dark-800"
       >
         <h3 className="mb-4 text-center font-display text-2xl font-bold border-b border-amber-900/30 pb-2">图例</h3>
         <div className="flex flex-col gap-3 font-bold">
@@ -233,11 +247,7 @@ export function MapScene() {
       </div>
 
       {/* Scrollable Map Container */}
-      <div className="relative z-10 mt-36 mb-10 h-full w-full max-w-3xl overflow-hidden rounded-lg shadow-2xl">
-         {/* Parchment background */}
-         <div className="absolute inset-0 bg-cover bg-center pointer-events-none opacity-90" style={{ backgroundImage: "url('/kraft-paper.jpg')" }}></div>
-         <div className="absolute inset-0 shadow-[inset_0_0_50px_rgba(0,0,0,0.5)] pointer-events-none"></div>
-         
+      <div className="relative z-10 mt-36 mb-10 h-full w-full max-w-3xl overflow-hidden rounded-lg shadow-2xl bg-dark-800">
          <div className="relative flex h-full flex-col-reverse overflow-y-auto px-16 py-12 [&::-webkit-scrollbar]:hidden">
             {floors.map((floorNodes) => (
               <div key={floorNodes[0]?.floor ?? 0} className="flex min-h-[100px] w-full items-center justify-center relative">

@@ -30,14 +30,14 @@ const CHARACTERS: { id: Character; label: string; color: string }[] = [
 ];
 
 const BASE_RARITIES: { value: CardRarity; label: string }[] = [
-  { value: "basic", label: "Basic" },
-  { value: "common", label: "Common" },
-  { value: "uncommon", label: "Uncommon" },
-  { value: "rare", label: "Rare" },
-  { value: "shop", label: "Shop" },
-  { value: "ancient", label: "Ancient" },
-  { value: "special", label: "Special" },
-  { value: "event", label: "Event" },
+  { value: "basic", label: "基础" },
+  { value: "common", label: "普通" },
+  { value: "uncommon", label: "罕见" },
+  { value: "rare", label: "稀有" },
+  { value: "shop", label: "商店" },
+  { value: "ancient", label: "先古" },
+  { value: "special", label: "特殊" },
+  { value: "event", label: "事件" },
 ];
 
 const DEFAULT_FORM: DiyCardFormState = {
@@ -68,10 +68,8 @@ export function DiyCardScene() {
   const lockedCharacter = LOCKED_CHARACTERS.has(form.character);
 
   const availableRarities = useMemo(() => {
-    const allowed = new Set<CardRarity>(BASE_RARITIES.map((r) => r.value));
-    if (form.character === "colorless") allowed.add("event");
-    return BASE_RARITIES.filter((r) => allowed.has(r.value) && !SPECIAL_RARITIES.has(r.value));
-  }, [form.character]);
+    return BASE_RARITIES.filter((r) => !SPECIAL_RARITIES.has(r.value));
+  }, []);
 
   const update = <K extends keyof DiyCardFormState>(key: K, value: DiyCardFormState[K]) => {
     setForm((prev) => applyCharacterRules({ ...prev, [key]: value }));

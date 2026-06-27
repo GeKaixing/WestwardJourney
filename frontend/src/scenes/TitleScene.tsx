@@ -15,7 +15,7 @@ export function TitleScene() {
 
   const menuItems = [
     { label: "单人模式", onClick: () => navigate("/select") },
-    { label: "多人模式", onClick: undefined },
+
     { label: "设置", onClick: () => navigate("/settings") },
     {
       label: "退出",
@@ -28,8 +28,7 @@ export function TitleScene() {
       className="relative flex min-h-screen flex-col items-center justify-center bg-cover bg-center"
       style={{ backgroundImage: "url(/assets/title-bg.png)" }}
     >
-      {/* overlay for readability */}
-      <div className="pointer-events-none absolute inset-0 bg-black/50" />
+
       <div className="relative z-10 flex flex-col items-center">
       <motion.h1
         className="font-display text-6xl text-gold-400"

@@ -1,9 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CARD_CONFIGS, RELIC_CONFIGS, POTION_CONFIGS } from "../data";
 import { useGameStore } from "../store";
 import { GiCoins, GiHealthPotion, GiCampfire, GiCardRandom, GiExitDoor } from "react-icons/gi";
+import { cardImageGenerator } from "../utils/cardImageGenerator";
+import type { CardConfig } from "@shared/types/CardConfig";
 
 interface ShopItem {
   id: string;
@@ -23,6 +25,7 @@ export function ShopScene() {
   const addPotion = useGameStore((s) => s.addPotion);
   const [sold, setSold] = useState<Set<string>>(new Set());
   const [msg, setMsg] = useState<string | null>(null);
+  const [cardImages, setCardImages] = useState<Map<string, string>>(new Map());
 
   const items = useMemo(() => {
     const result: ShopItem[] = [];
@@ -62,7 +65,44 @@ export function ShopScene() {
       });
     }
     return result;
-  }, [run]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    const loadCardImages = async () => {
+      const images = new Map<string, string>();
+      for (const item of items) {
+        if (item.type === "card") {
+          const config = CARD_CONFIGS.find(c => c.id === item.configId);
+          if (config) {
+            try {
+              const imageUrl = await cardImageGenerator.getCardImageUrl(
+                config as CardConfig,
+                false,
+                run?.characterClass
+              );
+              if (!cancelled) {
+                images.set(item.id, imageUrl);
+                console.log(`[Shop] Loaded image for ${item.name}: ${imageUrl.substring(0, 50)}...`);
+              }
+            } catch (e) {
+              console.error(`[Shop] Failed to load image for ${item.name}:`, e);
+            }
+          } else {
+            console.warn(`[Shop] Card config not found for ${item.configId}`);
+          }
+        }
+      }
+      if (!cancelled) {
+        setCardImages(images);
+        console.log(`[Shop] Total card images loaded: ${images.size}`);
+      }
+    };
+
+    loadCardImages();
+    return () => { cancelled = true; };
+  }, [items, run?.characterClass]);
 
   let instanceCounter = 0;
   const handleBuy = (item: ShopItem) => {
@@ -96,9 +136,6 @@ export function ShopScene() {
 
   return (
     <div className="relative flex min-h-screen flex-col items-center p-12 bg-dark-950 font-sans text-gray-200 select-none">
-      <div className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none opacity-40 grayscale" style={{ backgroundImage: "url('/kraft-paper.jpg')" }}></div>
-      <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.9)] pointer-events-none z-0"></div>
-
       <div className="relative z-10 flex w-full max-w-5xl flex-col items-center">
         <motion.h1 initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-4 font-display text-5xl text-gold-500 drop-shadow-lg">
           神秘商铺
@@ -128,12 +165,11 @@ export function ShopScene() {
           return (
             <motion.button
               key={item.id}
-              className={`relative flex w-56 h-72 flex-col items-center justify-between rounded-xl shadow-2xl p-6 text-center transition-all bg-cover bg-center border-2 ${
-                isSold ? "border-amber-900/30 opacity-30 grayscale cursor-not-allowed" : 
-                canAfford ? "border-amber-900/80 cursor-pointer hover:border-gold-500 hover:shadow-[0_0_20px_rgba(250,204,21,0.5)]" : 
-                "border-amber-900/50 cursor-pointer"
+              className={`relative flex w-56 h-80 flex-col items-center justify-center rounded-xl shadow-2xl overflow-hidden transition-all ${
+                isSold ? "opacity-30 grayscale cursor-not-allowed" : 
+                canAfford ? "cursor-pointer hover:shadow-[0_0_20px_rgba(250,204,21,0.5)]" : 
+                "cursor-pointer"
               }`}
-              style={{ backgroundImage: "url('/kraft-paper.jpg')" }}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 * i, type: "spring" }}
@@ -142,13 +178,47 @@ export function ShopScene() {
               onClick={() => handleBuy(item)}
               disabled={isSold}
             >
-              <div className="flex flex-col items-center w-full">
-                <Icon className={`text-6xl drop-shadow-md ${colorClass} mb-4`} />
-                <h3 className="text-xl font-bold text-amber-950 leading-tight mb-2">{item.name}</h3>
-                <p className="text-sm font-medium text-amber-900/80 leading-snug line-clamp-3">{item.description}</p>
-              </div>
+              {item.type === "card" && cardImages.has(item.id) ? (
+                <img 
+                  src={cardImages.get(item.id)} 
+                  alt={item.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : item.type === "relic" ? (
+                <div className="flex flex-col items-center justify-center w-full h-full p-4">
+                  {(() => {
+                    const relicConfig = RELIC_CONFIGS.find(r => r.id === item.configId);
+                    return relicConfig?.image ? (
+                      <img src={relicConfig.image} alt={item.name} className="h-16 w-16 object-contain mb-3" />
+                    ) : (
+                      <GiCampfire className="text-5xl drop-shadow-md text-orange-900 mb-3" />
+                    );
+                  })()}
+                  <h3 className="text-lg font-bold text-amber-950 leading-tight mb-1">{item.name}</h3>
+                  <p className="text-xs font-medium text-amber-900/80 leading-snug line-clamp-2 text-center">{item.description}</p>
+                </div>
+              ) : item.type === "potion" ? (
+                <div className="flex flex-col items-center justify-center w-full h-full p-4">
+                  {(() => {
+                    const potionConfig = POTION_CONFIGS.find(p => p.id === item.configId);
+                    return potionConfig?.image ? (
+                      <img src={potionConfig.image} alt={item.name} className="h-16 w-16 object-contain mb-3" />
+                    ) : (
+                      <GiHealthPotion className="text-5xl drop-shadow-md text-green-900 mb-3" />
+                    );
+                  })()}
+                  <h3 className="text-lg font-bold text-amber-950 leading-tight mb-1">{item.name}</h3>
+                  <p className="text-xs font-medium text-amber-900/80 leading-snug line-clamp-2 text-center">{item.description}</p>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center w-full h-full p-4">
+                  <Icon className={`text-6xl drop-shadow-md ${colorClass} mb-4`} />
+                  <h3 className="text-xl font-bold text-amber-950 leading-tight mb-2">{item.name}</h3>
+                  <p className="text-sm font-medium text-amber-900/80 leading-snug line-clamp-3">{item.description}</p>
+                </div>
+              )}
               
-              <div className={`flex items-center gap-2 px-4 py-1 rounded-full bg-black/80 shadow-md ${!canAfford && !isSold ? "text-red-500" : "text-gold-400"}`}>
+              <div className={`absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-2 px-4 py-1 rounded-full bg-black/80 shadow-md ${!canAfford && !isSold ? "text-red-500" : "text-gold-400"}`}>
                 <GiCoins className="text-xl" />
                 <span className="font-bold text-lg">{item.price}</span>
               </div>

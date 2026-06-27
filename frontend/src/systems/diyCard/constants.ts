@@ -31,15 +31,17 @@ export const DEFAULT_BANNER_HSV: Record<string, HsvAdjust> = {
   common: { h: 1, s: 0, v: 0.85 },
   uncommon: { h: 1, s: 1, v: 1 },
   rare: { h: 0.563, s: 1.198, v: 1.14 },
+  shop: { h: 0.12, s: 1.2, v: 1.1 },
+  ancient: { h: 0.85, s: 0.6, v: 1.1 },
+  special: { h: 0.75, s: 0.8, v: 1.1 },
+  event: { h: 0.35, s: 0.7, v: 1.1 },
   curse: { h: 0.27, s: 1.1, v: 0.9 },
-  event: { h: 0.875, s: 0.85, v: 0.9 },
   quest: { h: 0.515, s: 1.727, v: 0.9 },
   status: { h: 0.634, s: 0.35, v: 0.8 },
-  ancient: { h: 0, s: 0.2, v: 0.9 },
 };
 
 export const LOCKED_CHARACTERS = new Set(["quest", "status", "curse"]);
-export const SPECIAL_RARITIES = new Set(["curse", "status", "quest", "event"]);
+export const SPECIAL_RARITIES = new Set(["curse", "status", "quest"]);
 
 export function resolveBannerHsv(
   manifest: { bannerHsv?: Record<string, HsvAdjust> },

@@ -6,6 +6,7 @@ export const PLAYER_CONFIGS: Record<CharacterClass, PlayerConfig> = {
     characterClass: CharacterClass.SunWukong,
     displayName: "孙悟空",
     description: "齐天大圣。擅长高爆发攻击和连击，拥有独一无二的金箍棒和分身术。",
+    avatar: "/head-portrait/wukong.png",
     stats: {
       maxHealth: 75,
       startingGold: 99,
@@ -31,6 +32,7 @@ export const PLAYER_CONFIGS: Record<CharacterClass, PlayerConfig> = {
     characterClass: CharacterClass.TangSanzang,
     displayName: "唐三藏",
     description: "金蝉子转世。擅长治疗、护盾和咒语加持，引领团队走向胜利。",
+    avatar: "/head-portrait/tanseng.png",
     stats: {
       maxHealth: 65,
       startingGold: 150,
@@ -56,6 +58,7 @@ export const PLAYER_CONFIGS: Record<CharacterClass, PlayerConfig> = {
     characterClass: CharacterClass.ZhuBajie,
     displayName: "猪八戒",
     description: "天蓬元帅转世。皮糙肉厚，擅长格挡和嘲讽，用九齿钉耙撕裂敌人。",
+    avatar: "/head-portrait/zhubajie.png",
     stats: {
       maxHealth: 90,
       startingGold: 50,
@@ -81,6 +84,7 @@ export const PLAYER_CONFIGS: Record<CharacterClass, PlayerConfig> = {
     characterClass: CharacterClass.ShaWujing,
     displayName: "沙悟净",
     description: "卷帘大将转世。平衡型战士，利用流沙之力削弱敌人，稳固防守。",
+    avatar: "/head-portrait/sahesang.png",
     stats: {
       maxHealth: 80,
       startingGold: 75,
@@ -106,6 +110,7 @@ export const PLAYER_CONFIGS: Record<CharacterClass, PlayerConfig> = {
     characterClass: CharacterClass.WhiteDragonHorse,
     displayName: "白龙马",
     description: "西海龙王三太子。兼具速度与力量，通过高速移动积累优势，龙息焚毁一切。",
+    avatar: "/head-portrait/bailongma.png",
     stats: {
       maxHealth: 70,
       startingGold: 100,

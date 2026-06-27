@@ -48,9 +48,6 @@ export function applyCharacterRules<T extends { character: Character; cardType: 
   if (form.character === "curse") {
     return { ...form, cardType: "skill", cardRarity: "curse" };
   }
-  if (form.cardRarity === "event" && form.character !== "colorless") {
-    return { ...form, cardRarity: "common" };
-  }
   if (["curse", "status", "quest"].includes(form.cardRarity)) {
     return { ...form, cardRarity: "common" };
   }

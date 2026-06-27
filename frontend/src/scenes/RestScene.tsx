@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { useGameStore } from "../store";
+import { CARD_CONFIGS } from "../data";
 import { GiCampfire, GiAnvil, GiExitDoor, GiHearts } from "react-icons/gi";
 
 export function RestScene() {
@@ -28,8 +30,6 @@ export function RestScene() {
   if (showSmith) {
     return (
       <div className="relative flex min-h-screen flex-col items-center p-12 bg-dark-950 font-sans text-gray-200 select-none">
-        <div className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none opacity-30 grayscale" style={{ backgroundImage: "url('/kraft-paper.jpg')" }}></div>
-        <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.9)] pointer-events-none z-0"></div>
 
         <div className="relative z-10 flex w-full max-w-5xl flex-col items-center">
           <motion.h1 initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-4 font-display text-5xl text-gold-500 drop-shadow-lg flex items-center gap-4">
@@ -45,14 +45,13 @@ export function RestScene() {
               return (
                 <motion.button
                   key={card.instanceId}
-                  className={`relative flex w-40 h-56 flex-col items-center justify-center rounded-xl shadow-xl p-4 text-center transition-all bg-cover bg-center border-2 ${
+                  className={`relative flex w-40 h-56 flex-col items-center justify-center rounded-xl shadow-xl p-4 text-center transition-all bg-dark-800 border-2 ${
                     isUpgraded
                       ? "border-gold-500 shadow-[0_0_20px_rgba(250,204,21,0.6)] z-20 scale-110"
                       : isAlreadyUpgraded
                         ? "border-amber-900/30 opacity-40 grayscale cursor-not-allowed"
                         : "border-amber-900/60 cursor-pointer hover:border-gold-500 hover:shadow-[0_0_15px_rgba(250,204,21,0.4)]"
                   }`}
-                  style={{ backgroundImage: "url('/kraft-paper.jpg')" }}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.05 * i }}
@@ -61,7 +60,17 @@ export function RestScene() {
                   disabled={isAlreadyUpgraded || isUpgraded}
                   onClick={() => handleSmith(card.instanceId)}
                 >
-                  <p className={`font-bold text-lg ${isAlreadyUpgraded ? "text-amber-900" : "text-amber-950"}`}>{card.configId}</p>
+                  {(() => {
+                    const cardConfig = CARD_CONFIGS.find(c => c.id === card.configId);
+                    return (
+                      <>
+                        <p className={`font-bold text-lg ${isAlreadyUpgraded ? "text-amber-900" : "text-amber-950"}`}>
+                          {cardConfig?.name ?? card.configId}{card.upgraded ? "+" : ""}
+                        </p>
+                        <p className="text-xs text-amber-900/80 mt-1">{cardConfig?.description ?? ""}</p>
+                      </>
+                    );
+                  })()}
                   {isAlreadyUpgraded && <p className="mt-2 px-3 py-1 bg-black/60 text-gold-400 rounded-full text-xs font-bold shadow-inner">已强化</p>}
                   {isUpgraded && (
                     <motion.div 
@@ -89,8 +98,6 @@ export function RestScene() {
 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center p-8 bg-dark-950 font-sans text-gray-200 select-none">
-      <div className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none opacity-40 grayscale" style={{ backgroundImage: "url('/kraft-paper.jpg')" }}></div>
-      <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.9)] pointer-events-none z-0"></div>
 
       <motion.div
         className="relative z-10 flex w-full max-w-3xl flex-col items-center bg-black/60 p-12 rounded-2xl border-2 border-gold-900/50 shadow-2xl backdrop-blur-sm"

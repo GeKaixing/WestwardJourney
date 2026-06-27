@@ -1,12 +1,16 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useGameStore } from "../store";
 import { GiExitDoor, GiCardRandom } from "react-icons/gi";
 import { CARD_CONFIGS } from "../data";
+import { cardImageGenerator } from "../utils/cardImageGenerator";
+import type { CardConfig } from "@shared/types/CardConfig";
 
 export function DeckScene() {
   const navigate = useNavigate();
   const run = useGameStore((s) => s.run);
+  const [cardImages, setCardImages] = useState<Map<string, string>>(new Map());
 
   if (!run) {
     navigate("/");
@@ -19,10 +23,27 @@ export function DeckScene() {
     return { ...cardInstance, config };
   }).filter(c => c.config);
 
+  useEffect(() => {
+    const loadCardImages = async () => {
+      const images = new Map<string, string>();
+      for (const card of deck) {
+        if (card.config) {
+          const imageUrl = await cardImageGenerator.getCardImageUrl(
+            card.config as CardConfig,
+            card.upgraded,
+            run.characterClass
+          );
+          images.set(card.instanceId, imageUrl);
+        }
+      }
+      setCardImages(images);
+    };
+
+    loadCardImages();
+  }, [deck, run.characterClass]);
+
   return (
     <div className="relative flex min-h-screen flex-col items-center p-12 bg-dark-950 font-sans text-gray-200 select-none overflow-y-auto">
-      <div className="fixed inset-0 z-0 bg-cover bg-center pointer-events-none opacity-40 grayscale" style={{ backgroundImage: "url('/kraft-paper.jpg')" }}></div>
-      <div className="fixed inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.9)] pointer-events-none z-0"></div>
 
       <div className="relative z-10 flex w-full max-w-6xl flex-col items-center">
         <motion.h1 initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-4 font-display text-5xl text-gold-500 drop-shadow-lg flex items-center gap-4">
@@ -33,35 +54,37 @@ export function DeckScene() {
         </p>
 
         <div className="flex flex-wrap justify-center gap-6 w-full pb-20">
-          {deck.map((card, i) => (
-            <motion.div
-              key={card.instanceId}
-              className="relative flex w-56 h-72 flex-col items-center justify-between rounded-xl shadow-2xl p-6 text-center bg-cover bg-center border-2 border-amber-900/60 drop-shadow-md"
-              style={{ backgroundImage: "url('/kraft-paper.jpg')" }}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.02 * i }}
-              whileHover={{ scale: 1.05, y: -5, zIndex: 10 }}
-            >
-              <div className="absolute -top-3 -left-3 flex h-10 w-10 items-center justify-center rounded-full bg-black/80 border-2 border-gold-600 text-lg font-bold text-gold-400 shadow-md">
-                {card.cost}
-              </div>
-
-              <div className="flex flex-col items-center w-full mt-4">
-                <GiCardRandom className="text-5xl drop-shadow-md text-blue-900 mb-4" />
-                <h3 className={`text-xl font-bold leading-tight mb-2 ${card.upgraded ? "text-green-800" : "text-amber-950"}`}>
-                  {card.config?.name}{card.upgraded ? "+" : ""}
-                </h3>
-                <p className="text-sm font-medium text-amber-900/80 leading-snug line-clamp-4">
-                  {card.upgraded && card.config?.upgradedDescription ? card.config.upgradedDescription : card.config?.description}
-                </p>
-              </div>
-
-              <div className="w-full text-center py-1 mt-2 border-t border-amber-900/30">
-                <p className="text-xs font-bold text-amber-800 uppercase tracking-widest">{card.config?.type}</p>
-              </div>
-            </motion.div>
-          ))}
+          {deck.map((card, i) => {
+            const imageUrl = cardImages.get(card.instanceId);
+            return (
+              <motion.div
+                key={card.instanceId}
+                className="relative flex w-56 h-80 flex-col items-center justify-center rounded-xl shadow-2xl overflow-hidden drop-shadow-md"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.02 * i }}
+                whileHover={{ scale: 1.05, y: -5, zIndex: 10 }}
+              >
+                {imageUrl ? (
+                  <img 
+                    src={imageUrl} 
+                    alt={card.config?.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="flex flex-col items-center justify-center w-full h-full bg-dark-800 p-4">
+                    <GiCardRandom className="text-5xl drop-shadow-md text-blue-900 mb-4" />
+                    <h3 className={`text-xl font-bold leading-tight mb-2 ${card.upgraded ? "text-green-800" : "text-amber-950"}`}>
+                      {card.config?.name}{card.upgraded ? "+" : ""}
+                    </h3>
+                    <p className="text-sm font-medium text-amber-900/80 leading-snug line-clamp-4">
+                      {card.upgraded && card.config?.upgradedDescription ? card.config.upgradedDescription : card.config?.description}
+                    </p>
+                  </div>
+                )}
+              </motion.div>
+            );
+          })}
         </div>
 
         <div className="fixed bottom-8 z-50">

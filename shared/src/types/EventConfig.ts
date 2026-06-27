@@ -23,6 +23,7 @@ export interface EventConfig {
   id: string;
   title: string;
   description: string;
+  image?: string;
   choices: EventChoice[];
   actRestriction?: number[];
   oneTimeOnly?: boolean;

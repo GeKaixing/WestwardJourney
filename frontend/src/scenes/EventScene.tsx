@@ -100,11 +100,12 @@ export function EventScene() {
 
   if (done) {
     return (
-      <div className="relative flex min-h-screen flex-col items-center justify-center p-8 bg-dark-950 font-sans text-gray-200 select-none">
-        <div className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none opacity-40 grayscale" style={{ backgroundImage: "url('/kraft-paper.jpg')" }}></div>
-        <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.9)] pointer-events-none z-0"></div>
+      <div className="relative flex min-h-screen flex-col items-center justify-center p-8 bg-dark-950 font-sans text-gray-200 select-none overflow-hidden">
+        {event.image ? (
+          <div className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none" style={{ backgroundImage: `url('${event.image}')` }}></div>
+        ) : null}
         
-        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="relative z-10 flex flex-col items-center p-12 bg-black/60 rounded-xl border-2 border-gold-900/50 backdrop-blur-sm shadow-2xl">
+        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="relative z-10 flex flex-col items-center p-12 bg-black/70 rounded-xl border-2 border-gold-900/50 backdrop-blur-md shadow-2xl">
           <GiScrollUnfurled className="text-6xl text-gold-500 drop-shadow-md" />
           <p className="mt-6 font-display text-3xl text-gold-400 drop-shadow">继续前行</p>
           <button
@@ -119,17 +120,17 @@ export function EventScene() {
   }
 
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center p-8 bg-dark-950 font-sans text-gray-200 select-none">
-      <div className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none opacity-40 grayscale" style={{ backgroundImage: "url('/kraft-paper.jpg')" }}></div>
-      <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.9)] pointer-events-none z-0"></div>
+    <div className="relative flex min-h-screen flex-col items-center justify-center p-8 bg-dark-950 font-sans text-gray-200 select-none overflow-hidden">
+      {event.image ? (
+        <div className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none" style={{ backgroundImage: `url('${event.image}')` }}></div>
+      ) : null}
       
       <motion.div
-        className="relative z-10 flex w-full max-w-2xl flex-col items-center bg-black/60 p-10 rounded-2xl border-2 border-gold-900/50 shadow-2xl backdrop-blur-sm"
+        className="relative z-10 flex w-full max-w-2xl flex-col items-center bg-black/70 p-10 rounded-2xl border-2 border-gold-900/50 shadow-2xl backdrop-blur-md"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <GiGhost className="text-6xl text-purple-400 drop-shadow-lg" />
-        <h1 className="mt-6 font-display text-4xl text-gold-500 drop-shadow-md text-center">{event.title}</h1>
+        <h1 className="font-display text-4xl text-gold-500 drop-shadow-md text-center">{event.title}</h1>
         <div className="my-8 w-full max-w-xl text-center">
            <p className="text-lg leading-relaxed text-gray-300 font-medium">
              {event.description}

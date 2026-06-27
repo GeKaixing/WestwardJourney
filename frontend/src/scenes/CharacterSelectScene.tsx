@@ -102,7 +102,7 @@ export function CharacterSelectScene() {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -20, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="rounded-2xl bg-dark-900/80 p-8 shadow-2xl backdrop-blur-sm border border-dark-600/60"
+            className="rounded-2xl bg-dark-900/80 p-8 shadow-2xl backdrop-blur-sm border border-dark-600/60 opacity-20"
           >
             <h1 className="mb-4 font-display text-5xl text-gold-400 drop-shadow-md">
               {config.displayName}

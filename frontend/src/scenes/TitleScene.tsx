@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { startGame, buttonClick, playMainMenuBGM } from "../systems/sounds";
+import { Particles } from "../ui";
 
 const menuVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -29,10 +30,10 @@ export function TitleScene() {
 
   return (
     <div
-      className="relative flex min-h-screen flex-col items-center justify-center bg-cover bg-center"
+      className="relative flex min-h-screen flex-col items-center justify-center bg-cover bg-center bg-dark-950"
       style={{ backgroundImage: "url(/assets/title-bg.png)" }}
     >
-
+      <Particles />
       <div className="relative z-10 flex flex-col items-center">
       <motion.h1
         className="font-display text-6xl text-gold-400"

@@ -92,9 +92,10 @@ export function RewardScene() {
 
   if (phase === "gold") {
     return (
-      <div className="relative flex min-h-screen flex-col items-center justify-center pt-14 p-8 bg-dark-950 font-sans text-gray-200 select-none">
+      <div className="relative flex min-h-screen flex-row items-center justify-end pt-14 p-8 bg-dark-950 font-sans text-gray-200 select-none overflow-hidden">
         <GameHeader />
-        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="relative z-10 flex flex-col items-center bg-black/60 p-12 rounded-2xl border-2 border-gold-900/50 shadow-2xl backdrop-blur-sm w-full max-w-lg">
+        <div className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none" style={{ backgroundImage: "url('/assets/reward/spoils-of-war.png')" }}></div>
+        <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} className="relative z-10 flex flex-col items-center p-12 mr-16 w-96">
           <GiTreasureMap className="text-7xl text-gold-500 drop-shadow-md mb-2" />
           <h1 className="mb-8 font-display text-4xl text-gold-400 drop-shadow">战利品</h1>
           
@@ -134,7 +135,7 @@ export function RewardScene() {
           </div>
           
           <motion.button
-            className="mt-10 flex items-center gap-2 rounded-lg border-2 border-gold-700 bg-gold-950/40 px-10 py-3 text-lg font-bold text-gold-400 transition-colors hover:bg-gold-900/60 hover:text-gold-200 shadow-lg hover:shadow-gold-500/20"
+            className="mt-10 flex items-center gap-2 rounded-lg  px-10 py-3 text-lg font-bold text-gold-400 transition-colors  shadow-lg "
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setPhase("cards")}
@@ -148,20 +149,21 @@ export function RewardScene() {
 
   if (phase === "cards") {
     return (
-      <div className="relative flex min-h-screen flex-col items-center justify-center pt-14 p-12 bg-dark-950 font-sans text-gray-200 select-none">
+      <div className="relative flex min-h-screen flex-row items-center justify-end pt-14 p-12 bg-dark-950 font-sans text-gray-200 select-none overflow-hidden">
         <GameHeader />
-        <div className="relative z-10 flex flex-col items-center">
-          <motion.h1 initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-10 font-display text-5xl text-gold-500 drop-shadow-lg">
+        <div className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none" style={{ backgroundImage: "url('/assets/reward/spoils-of-war.png')" }}></div>
+        <div className="relative z-10 flex flex-col items-center mr-16">
+          <motion.h1 initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} className="mb-10 font-display text-5xl text-gold-500 drop-shadow-lg">
             卡牌奖励
           </motion.h1>
-          <p className="mb-8 text-lg font-bold text-gray-300 bg-black/40 px-6 py-2 rounded-full border border-gray-600/50">请选择一张卡牌加入你的牌组</p>
+          <p className="mb-8 text-lg font-bold text-gray-300">请选择一张卡牌加入你的牌组</p>
           <div className="flex flex-wrap justify-center gap-6">
             {cardOptions.map((card, i) => {
               const imageUrl = cardImages.get(card.id);
               return (
                 <motion.button
                   key={card.id}
-                  className={`relative flex w-56 h-80 flex-col items-center justify-center rounded-xl shadow-2xl overflow-hidden transition-all cursor-pointer hover:shadow-[0_0_20px_rgba(250,204,21,0.5)]`}
+                  className={`relative flex w-56 h-80 flex-col items-center justify-center rounded-xl shadow-2xl overflow-hidden transition-all cursor-pointer `}
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 * i, type: "spring" }}
@@ -198,15 +200,16 @@ export function RewardScene() {
   }
 
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center pt-14 p-8 bg-dark-950 font-sans text-gray-200 select-none">
+    <div className="relative flex min-h-screen flex-row items-center justify-end pt-14 p-8 bg-dark-950 font-sans text-gray-200 select-none overflow-hidden">
       <GameHeader />
-      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="relative z-10 flex flex-col items-center bg-black/60 p-12 rounded-2xl border-2 border-gold-900/50 shadow-2xl backdrop-blur-sm">
+      <div className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none" style={{ backgroundImage: "url('/assets/reward/spoils-of-war.png')" }}></div>
+      <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} className="relative z-10 flex flex-col items-center p-12 mr-16">
         <div className="h-24 w-24 rounded-full bg-green-900/50 border-4 border-green-500 flex items-center justify-center shadow-[0_0_30px_rgba(34,197,94,0.3)] mb-6">
           <GiCheckMark className="text-5xl text-green-400" />
         </div>
         <p className="mt-2 font-display text-4xl text-gold-400 drop-shadow-md">卡牌已加入牌组</p>
         <motion.button
-          className="mt-10 flex items-center gap-2 rounded-lg border-2 border-gold-700 bg-gold-950/50 px-10 py-3 text-xl font-bold text-gold-400 hover:bg-gold-900/80 hover:text-gold-200 hover:shadow-[0_0_15px_rgba(250,204,21,0.3)] transition-all"
+          className="mt-10 flex items-center gap-2 rounded-lg  px-10 py-3 text-xl font-bold text-gold-400  transition-all"
           whileHover={{ scale: 1.05, y: -2 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleDone}

@@ -72,7 +72,10 @@ export const ENEMY_CONFIGS: EnemyConfig[] = [
         id: "swift_strike",
         name: "快速攻击",
         description: "造成4点伤害，连续攻击2次",
-        effects: [{ effectType: "damage", value: 4 }],
+        effects: [
+          { effectType: "damage", value: 4 },
+          { effectType: "damage", value: 4 },
+        ],
       },
     ],
     intentPattern: [

@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useGameStore } from "../store";
 import { CARD_CONFIGS } from "../data";
 import { GiCampfire, GiAnvil, GiExitDoor, GiHearts } from "react-icons/gi";
 import { heal as playHealSound, upgrade, buttonClick } from "../systems/sounds";
+import { cardImageGenerator } from "../utils/cardImageGenerator";
+import { GameHeader } from "../ui";
 
 export function RestScene() {
   const navigate = useNavigate();
@@ -12,10 +14,27 @@ export function RestScene() {
   const heal = useGameStore((s) => s.heal);
   const deck = run?.deck ?? [];
   const [showSmith, setShowSmith] = useState(false);
-  const upgradedId = useState<string | null>(null);
+  const [upgradedId, setUpgradedId] = useState<string | null>(null);
+  const [cardImages, setCardImages] = useState<Record<string, string>>({});
+  const loadingRef = useRef<Set<string>>(new Set());
 
   const healAmount = run ? Math.floor(run.maxHealth * 0.3) : 0;
   const canHeal = run ? run.currentHealth < run.maxHealth : false;
+
+  useEffect(() => {
+    for (const card of deck) {
+      if (cardImages[card.instanceId] || loadingRef.current.has(card.instanceId)) continue;
+      const config = CARD_CONFIGS.find((c) => c.id === card.configId);
+      if (!config) continue;
+      loadingRef.current.add(card.instanceId);
+      cardImageGenerator.getCardImageUrl(config, card.upgraded, run?.characterClass).then((url) => {
+        loadingRef.current.delete(card.instanceId);
+        setCardImages((prev) => ({ ...prev, [card.instanceId]: url }));
+      }).catch(() => {
+        loadingRef.current.delete(card.instanceId);
+      });
+    }
+  }, [deck, cardImages, run?.characterClass]);
 
   const handleRest = () => {
     heal(healAmount);
@@ -25,35 +44,38 @@ export function RestScene() {
 
   const handleSmith = (instanceId: string) => {
     useGameStore.getState().upgradeCard(instanceId);
-    upgradedId[1](instanceId);
+    setUpgradedId(instanceId);
     upgrade();
     setTimeout(() => navigate("/map"), 600);
   };
 
   if (showSmith) {
     return (
-      <div className="relative flex min-h-screen flex-col items-center p-12 bg-dark-950 font-sans text-gray-200 select-none">
+      <div className="relative flex min-h-screen flex-col items-center pt-14 p-12 bg-dark-950 font-sans text-gray-200 select-none overflow-hidden">
+        <GameHeader />
+        <div className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none" style={{ backgroundImage: "url('/assets/rest/campfire-camp.png')" }}></div>
 
-        <div className="relative z-10 flex w-full max-w-5xl flex-col items-center">
+        <div className="relative z-10 flex w-full max-w-5xl flex-col items-center mt-10">
           <motion.h1 initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-4 font-display text-5xl text-gold-500 drop-shadow-lg flex items-center gap-4">
             <GiAnvil /> 锻造
           </motion.h1>
           <p className="mb-10 text-lg font-bold text-gray-300">选择一张牌来永久强化它</p>
-          
-          <div className="flex w-full max-w-4xl flex-wrap justify-center gap-4">
+
+          <div className="flex w-full max-w-4xl flex-wrap justify-center gap-6">
             {deck.map((card, i) => {
-              const isUpgraded = upgradedId[0] === card.instanceId;
+              const isUpgraded = upgradedId === card.instanceId;
               const isAlreadyUpgraded = card.upgraded;
-              
+              const imgUrl = cardImages[card.instanceId];
+
               return (
                 <motion.button
                   key={card.instanceId}
-                  className={`relative flex w-40 h-56 flex-col items-center justify-center rounded-xl shadow-xl p-4 text-center transition-all bg-dark-800 border-2 ${
+                  className={`relative shrink-0 rounded-xl shadow-xl transition-all border-2 overflow-hidden ${
                     isUpgraded
                       ? "border-gold-500 shadow-[0_0_20px_rgba(250,204,21,0.6)] z-20 scale-110"
                       : isAlreadyUpgraded
-                        ? "border-amber-900/30 opacity-40 grayscale cursor-not-allowed"
-                        : "border-amber-900/60 cursor-pointer hover:border-gold-500 hover:shadow-[0_0_15px_rgba(250,204,21,0.4)]"
+                        ? "border-amber-700/30 opacity-40 grayscale cursor-not-allowed"
+                        : "border-transparent cursor-pointer hover:border-gold-500 hover:shadow-[0_0_15px_rgba(250,204,21,0.4)]"
                   }`}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -63,21 +85,21 @@ export function RestScene() {
                   disabled={isAlreadyUpgraded || isUpgraded}
                   onClick={() => handleSmith(card.instanceId)}
                 >
-                  {(() => {
-                    const cardConfig = CARD_CONFIGS.find(c => c.id === card.configId);
-                    return (
-                      <>
-                        <p className={`font-bold text-lg ${isAlreadyUpgraded ? "text-amber-900" : "text-amber-950"}`}>
-                          {cardConfig?.name ?? card.configId}{card.upgraded ? "+" : ""}
-                        </p>
-                        <p className="text-xs text-amber-900/80 mt-1">{cardConfig?.description ?? ""}</p>
-                      </>
-                    );
-                  })()}
-                  {isAlreadyUpgraded && <p className="mt-2 px-3 py-1 bg-black/60 text-gold-400 rounded-full text-xs font-bold shadow-inner">已强化</p>}
+                  {imgUrl ? (
+                    <img src={imgUrl} alt={card.configId} className="h-56 w-auto rounded-lg" draggable={false} />
+                  ) : (
+                    <div className="flex h-56 w-36 items-center justify-center rounded-lg bg-dark-800">
+                      <span className="animate-pulse text-xs text-gray-600">...</span>
+                    </div>
+                  )}
+                  {isAlreadyUpgraded && (
+                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+                      <span className="px-3 py-1 bg-black/70 text-gold-400 rounded-full text-xs font-bold">已强化</span>
+                    </div>
+                  )}
                   {isUpgraded && (
-                    <motion.div 
-                      className="absolute inset-0 flex items-center justify-center bg-gold-400/20 rounded-xl"
+                    <motion.div
+                      className="absolute inset-0 z-10 flex items-center justify-center bg-gold-400/20 rounded-xl"
                       initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                     >
                       <GiAnvil className="text-6xl text-gold-500 drop-shadow-md" />
@@ -87,7 +109,7 @@ export function RestScene() {
               );
             })}
           </div>
-          
+
           <button
             className="mt-16 flex items-center gap-2 rounded-lg border-2 border-gray-600 bg-black/50 px-8 py-3 text-lg font-bold text-gray-300 transition-colors hover:bg-gray-800 hover:text-white"
             onClick={() => setShowSmith(false)}
@@ -100,12 +122,14 @@ export function RestScene() {
   }
 
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center p-8 bg-dark-950 font-sans text-gray-200 select-none">
+    <div className="relative flex min-h-screen flex-row items-center justify-end pt-14 p-8 bg-dark-950 font-sans text-gray-200 select-none overflow-hidden">
+      <GameHeader />
+      <div className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none" style={{ backgroundImage: "url('/assets/rest/campfire-camp.png')" }}></div>
 
       <motion.div
-        className="relative z-10 flex w-full max-w-3xl flex-col items-center bg-black/60 p-12 rounded-2xl border-2 border-gold-900/50 shadow-2xl backdrop-blur-sm"
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
+        className="relative z-10 flex flex-col items-center mr-16"
+        initial={{ opacity: 0, x: 30 }}
+        animate={{ opacity: 1, x: 0 }}
       >
         <GiCampfire className="text-7xl text-orange-500 drop-shadow-lg mb-4 animate-pulse" />
         <h1 className="font-display text-5xl text-gold-500 drop-shadow-md">
@@ -114,7 +138,7 @@ export function RestScene() {
         <p className="mt-6 flex items-center gap-2 text-lg font-bold text-gray-300 bg-black/40 px-6 py-2 rounded-full border border-gray-600/50">
           暂时歇歇脚吧。<span className="text-red-400 flex items-center gap-1"><GiHearts /> {run?.currentHealth}/{run?.maxHealth}</span>
         </p>
-        
+
         <div className="mt-12 flex gap-8 w-full justify-center">
           <motion.button
             className={`relative flex w-56 flex-col items-center justify-center rounded-2xl border-2 p-8 shadow-xl transition-all overflow-hidden ${
@@ -131,7 +155,7 @@ export function RestScene() {
             <span className="text-2xl font-bold font-display tracking-widest">休息</span>
             <span className="mt-2 text-sm font-medium">恢复 {healAmount} 点生命</span>
           </motion.button>
-          
+
           <motion.button
             className="relative flex w-56 flex-col items-center justify-center rounded-2xl border-2 border-amber-600 bg-amber-950/40 p-8 text-amber-400 shadow-xl transition-all overflow-hidden hover:bg-amber-900/60 hover:shadow-[0_0_20px_rgba(217,119,6,0.4)]"
             whileHover={{ scale: 1.05, y: -5 }}
@@ -143,9 +167,9 @@ export function RestScene() {
             <span className="mt-2 text-sm font-medium">永久强化一张牌</span>
           </motion.button>
         </div>
-        
-        <button 
-          className="absolute right-8 top-8 flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-300 transition-colors" 
+
+        <button
+          className="mt-12 flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-300 transition-colors"
           onClick={() => navigate("/map")}
         >
           <GiExitDoor className="text-xl" /> 跳过

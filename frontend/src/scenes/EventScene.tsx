@@ -5,7 +5,8 @@ import { EVENT_CONFIGS, CARD_CONFIGS, RELIC_CONFIGS } from "../data";
 import { useGameStore } from "../store";
 import type { EventChoice } from "@shared/types/EventConfig";
 import { buttonClick } from "../systems/sounds";
-import { GiScrollUnfurled, GiExitDoor, GiGhost } from "react-icons/gi";
+import { GiScrollUnfurled, GiExitDoor } from "react-icons/gi";
+import { GameHeader } from "../ui";
 
 export function EventScene() {
   const navigate = useNavigate();
@@ -101,12 +102,12 @@ export function EventScene() {
 
   if (done) {
     return (
-      <div className="relative flex min-h-screen flex-col items-center justify-center p-8 bg-dark-950 font-sans text-gray-200 select-none overflow-hidden">
-        {event.image ? (
+      <div className="relative flex min-h-screen flex-row items-center justify-end pt-14 p-8 bg-dark-950 font-sans text-gray-200 select-none overflow-hidden">
+        <GameHeader />        {event.image ? (
           <div className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none" style={{ backgroundImage: `url('${event.image}')` }}></div>
         ) : null}
         
-        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="relative z-10 flex flex-col items-center p-12 bg-black/70 rounded-xl border-2 border-gold-900/50 backdrop-blur-md shadow-2xl">
+        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="relative z-10 flex flex-col items-center p-12 mr-16">
           <GiScrollUnfurled className="text-6xl text-gold-500 drop-shadow-md" />
           <p className="mt-6 font-display text-3xl text-gold-400 drop-shadow">继续前行</p>
           <button
@@ -121,39 +122,35 @@ export function EventScene() {
   }
 
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center p-8 bg-dark-950 font-sans text-gray-200 select-none overflow-hidden">
-      {event.image ? (
+    <div className="relative flex min-h-screen flex-row items-center justify-end pt-14 p-8 bg-dark-950 font-sans text-gray-200 select-none overflow-hidden">
+      <GameHeader />      {event.image ? (
         <div className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none" style={{ backgroundImage: `url('${event.image}')` }}></div>
       ) : null}
       
       <motion.div
-        className="relative z-10 flex w-full max-w-2xl flex-col items-center bg-black/70 p-10 rounded-2xl border-2 border-gold-900/50 shadow-2xl backdrop-blur-md"
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
+        className="relative z-10 flex w-80 flex-col gap-4 mr-16"
+        initial={{ opacity: 0, x: 30 }}
+        animate={{ opacity: 1, x: 0 }}
       >
-        <h1 className="font-display text-4xl text-gold-500 drop-shadow-md text-center">{event.title}</h1>
-        <div className="my-8 w-full max-w-xl text-center">
-           <p className="text-lg leading-relaxed text-gray-300 font-medium">
-             {event.description}
-           </p>
+        <div>
+          <h1 className="font-display text-4xl text-gold-500 drop-shadow-md">{event.title}</h1>
+          <p className="mt-4 text-lg leading-relaxed text-gray-300 font-medium">{event.description}</p>
         </div>
-        <div className="mt-4 flex w-full flex-col gap-4 items-center">
-          {event.choices.map((choice, i) => (
-            <motion.button
-              key={i}
-              className="w-full max-w-lg rounded-xl border-2 border-amber-900/50 bg-black/40 p-5 text-left transition-all hover:border-gold-500 hover:bg-black/80 hover:shadow-[0_0_15px_rgba(250,204,21,0.3)]"
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.1 * i + 0.3, type: "spring" }}
-              whileHover={{ scale: 1.02, x: 10 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => { buttonClick(); handleChoice(choice); }}
-            >
-              <p className="text-lg font-bold text-gold-200">{choice.label}</p>
-              <p className="mt-2 text-sm text-gray-400">{choice.description}</p>
-            </motion.button>
-          ))}
-        </div>
+        {event.choices.map((choice, i) => (
+          <motion.button
+            key={i}
+            className="w-full rounded-xl p-5 text-left transition-all hover:text-gold-500"
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 * i + 0.3, type: "spring" }}
+            whileHover={{ scale: 1.02, x: 10 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => { buttonClick(); handleChoice(choice); }}
+          >
+            <p className="text-lg font-bold text-gold-200">{choice.label}</p>
+            <p className="mt-2 text-sm text-gray-400">{choice.description}</p>
+          </motion.button>
+        ))}
       </motion.div>
     </div>
   );

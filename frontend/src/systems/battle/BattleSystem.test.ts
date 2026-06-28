@@ -3,8 +3,6 @@ import { BattleSystem } from "./BattleSystem";
 import { CardSystem } from "../cards/CardSystem";
 import { BuffSystem } from "../buffs/BuffSystem";
 import { RelicSystem } from "../relics/RelicSystem";
-import { TurnPhase } from "../turn/TurnManager";
-import { BuffType } from "@shared/enums/BuffType";
 
 describe("BattleSystem", () => {
   let cardSystem: CardSystem;
@@ -32,7 +30,7 @@ describe("BattleSystem", () => {
     expect(state.player.energy).toBe(4);
     expect(state.player.maxEnergy).toBe(4);
     expect(state.enemies.length).toBe(1);
-    expect(state.enemies[0].health).toBe(50);
+    expect(state.enemies[0]!.health).toBe(50);
   });
   
   it("should reset block on turn start if no barricade", () => {

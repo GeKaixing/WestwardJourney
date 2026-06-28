@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { BattleSystem } from '../battle/BattleSystem';
-import { CardSystem, CardInstance } from '../cards/CardSystem';
+import { CardSystem } from '../cards/CardSystem';
 import { BuffSystem } from '../buffs/BuffSystem';
 import { RelicSystem } from '../relics/RelicSystem';
 import { TurnPhase } from '../turn/TurnManager';
@@ -125,7 +125,7 @@ describe('BattleSystem', () => {
     await new Promise(r => setTimeout(r, 10));
     
     // Add block to enemy and vulnerable debuff
-    const enemy = battleSystem.getState().enemies[0];
+    const enemy = battleSystem.getState().enemies[0]!;
     buffSystem.addBuff(enemy.id, BuffType.Vulnerable, 1, 1, 'player1');
     // We need to bypass encapsulation to set block directly or via effect, but let's assume we use addBlock logic via effect. 
     // Wait, let's just play the card. Strike deals 6. Vulnerable makes it 9.
@@ -134,7 +134,7 @@ describe('BattleSystem', () => {
     await new Promise(r => setTimeout(r, 10));
     
     const stateAfter = battleSystem.getState();
-    expect(stateAfter.enemies[0].health).toBe(41); // 50 - 9
+    expect(stateAfter.enemies[0]!.health).toBe(41); // 50 - 9
     expect(stateAfter.hand).toHaveLength(0);
     expect(stateAfter.discardPile).toHaveLength(1);
     expect(stateAfter.player.energy).toBe(2);
@@ -202,7 +202,7 @@ describe('BattleSystem', () => {
     await battleSystem.startBattle();
     await new Promise(r => setTimeout(r, 10));
     
-    const enemy = battleSystem.getState().enemies[0];
+    const enemy = battleSystem.getState().enemies[0]!;
     battleSystem.playCard(strike.instanceId, [enemy.id]);
     await new Promise(r => setTimeout(r, 10));
     

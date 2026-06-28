@@ -88,13 +88,13 @@ describe('CardSystem', () => {
     let getBuffStacksMock: ReturnType<typeof vi.fn>;
     
     beforeEach(() => {
-      getBuffStacksMock = vi.fn().mockReturnValue(0);
+      getBuffStacksMock = vi.fn().mockReturnValue(0) as any;
       mockContext = {
         playerId: 'player',
         targets: ['enemy1'],
         energy: 3,
         buffSystem: {
-          getBuffStacks: getBuffStacksMock,
+          getBuffStacks: getBuffStacksMock as (entityId: string, type: BuffType) => number,
           addBuff: vi.fn(),
         },
         dealDamage: vi.fn().mockReturnValue(0),

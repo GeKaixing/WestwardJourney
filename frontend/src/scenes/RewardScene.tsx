@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CARD_CONFIGS, RELIC_CONFIGS, POTION_CONFIGS } from "../data";
@@ -6,6 +6,7 @@ import { useGameStore } from "../store";
 import { GiCoins, GiCheckMark, GiCardRandom, GiCampfire, GiHealthPotion, GiTreasureMap } from "react-icons/gi";
 import { playCoin, selectCard } from "../systems/sounds";
 import { cardImageGenerator } from "../utils/cardImageGenerator";
+import { GameHeader } from "../ui";
 import type { CardConfig } from "@shared/types/CardConfig";
 
 const REWARD_GOLD = 25;
@@ -91,8 +92,8 @@ export function RewardScene() {
 
   if (phase === "gold") {
     return (
-      <div className="relative flex min-h-screen flex-col items-center justify-center p-8 bg-dark-950 font-sans text-gray-200 select-none">
-
+      <div className="relative flex min-h-screen flex-col items-center justify-center pt-14 p-8 bg-dark-950 font-sans text-gray-200 select-none">
+        <GameHeader />
         <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="relative z-10 flex flex-col items-center bg-black/60 p-12 rounded-2xl border-2 border-gold-900/50 shadow-2xl backdrop-blur-sm w-full max-w-lg">
           <GiTreasureMap className="text-7xl text-gold-500 drop-shadow-md mb-2" />
           <h1 className="mb-8 font-display text-4xl text-gold-400 drop-shadow">战利品</h1>
@@ -147,8 +148,8 @@ export function RewardScene() {
 
   if (phase === "cards") {
     return (
-      <div className="relative flex min-h-screen flex-col items-center justify-center p-12 bg-dark-950 font-sans text-gray-200 select-none">
-
+      <div className="relative flex min-h-screen flex-col items-center justify-center pt-14 p-12 bg-dark-950 font-sans text-gray-200 select-none">
+        <GameHeader />
         <div className="relative z-10 flex flex-col items-center">
           <motion.h1 initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-10 font-display text-5xl text-gold-500 drop-shadow-lg">
             卡牌奖励
@@ -197,8 +198,8 @@ export function RewardScene() {
   }
 
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center p-8 bg-dark-950 font-sans text-gray-200 select-none">
-
+    <div className="relative flex min-h-screen flex-col items-center justify-center pt-14 p-8 bg-dark-950 font-sans text-gray-200 select-none">
+      <GameHeader />
       <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="relative z-10 flex flex-col items-center bg-black/60 p-12 rounded-2xl border-2 border-gold-900/50 shadow-2xl backdrop-blur-sm">
         <div className="h-24 w-24 rounded-full bg-green-900/50 border-4 border-green-500 flex items-center justify-center shadow-[0_0_30px_rgba(34,197,94,0.3)] mb-6">
           <GiCheckMark className="text-5xl text-green-400" />

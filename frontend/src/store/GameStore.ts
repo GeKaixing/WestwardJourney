@@ -9,6 +9,7 @@ export interface PotionInstance {
   configId: string;
   name: string;
   description: string;
+  image?: string;
 }
 
 export interface RunState {

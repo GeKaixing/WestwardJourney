@@ -75,6 +75,7 @@ export class BattleSystem {
     return {
       onTurnStart: (_turnNumber) => {
         this.player.energy = this.player.maxEnergy;
+        this.processPoison(this.player.id);
         if (!this.buffSystem.hasBuff(this.player.id, BuffType.Barricade)) {
           this.player.block = 0;
         }
@@ -213,11 +214,14 @@ export class BattleSystem {
     this.actionQueue.enqueue({
       priority: ActionPriority.Card,
       execute: async () => {
-        this.hand.splice(handIndex, 1);
-        this.discardPile.push(cardInstance);
-        this.player.energy -= cardInstance.cost;
+        const idx = this.hand.findIndex((c) => c.instanceId === cardInstanceId);
+        if (idx === -1) return;
+        const [card] = this.hand.splice(idx, 1);
+        if (!card) return;
+        this.player.energy -= card.cost;
+        this.discardPile.push(card);
 
-        await this.cardSystem.playCard(cardInstance, this.createPlayContext(targetIds));
+        await this.cardSystem.playCard(card, this.createPlayContext(targetIds));
         this.relicSystem.triggerEvent(
           "card_played",
           { playerId: this.player.id, event: "card_played", cardId: cardInstanceId },
@@ -228,7 +232,9 @@ export class BattleSystem {
       sourceId: this.player.id,
       label: `Play card ${cardInstanceId}`,
     });
-    void this.actionQueue.processAll();
+    this.actionQueue.processAll().catch((err) => {
+      console.error("Action queue processing failed:", err);
+    });
   }
 
   endTurn(): void {
@@ -355,6 +361,8 @@ export class BattleSystem {
   private executeEnemyIntents(): void {
     for (const enemy of this.enemies) {
       if (!enemy.isAlive) continue;
+      this.processPoison(enemy.id);
+      if (!enemy.isAlive) continue;
       const action = enemy.actions?.find((entry) => entry.id === enemy.actionId);
       if (!action) continue;
 
@@ -431,6 +439,29 @@ export class BattleSystem {
     );
   }
 
+  private processPoison(entityId: string): void {
+    const stacks = this.buffSystem.getBuffStacks(entityId, BuffType.Poison);
+    if (stacks <= 0) return;
+
+    const entity = entityId === this.player.id
+      ? this.player
+      : this.enemies.find((e) => e.id === entityId);
+    if (!entity || !entity.isAlive) return;
+
+    entity.health -= stacks;
+    if (entity.health <= 0) {
+      entity.health = 0;
+      entity.isAlive = false;
+      this.checkBattleEnd();
+    }
+
+    this.buffSystem.removeBuff(entityId, BuffType.Poison);
+    const remaining = Math.max(0, stacks - 1);
+    if (remaining > 0) {
+      this.buffSystem.addBuff(entityId, BuffType.Poison, remaining, 99, entityId);
+    }
+  }
+
   private rollEnemyIntents(): void {
     for (const enemy of this.enemies) {
       if (!enemy.isAlive || !enemy.actions?.length || !enemy.intentPattern?.length) continue;
@@ -473,7 +504,7 @@ export class BattleSystem {
 
   private getIntentType(action: EnemyAction): EnemyState["intentType"] {
     const effectTypes = action.effects.map((effect) => effect.effectType);
-    if (effectTypes.includes("damage")) return "attack";
+    if (effectTypes.includes("damage") || effectTypes.includes("aoe_damage")) return "attack";
     if (effectTypes.includes("block")) return "block";
     if (effectTypes.includes("buff")) return "buff";
     if (effectTypes.includes("debuff")) return "debuff";

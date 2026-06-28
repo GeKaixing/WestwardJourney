@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { RelicSystem, RelicTriggerContext, RelicExecutionContext } from '../relics/RelicSystem';
+import { RelicSystem, RelicExecutionContext } from '../relics/RelicSystem';
 import type { RelicConfig } from '@shared/types/RelicConfig';
 
 describe('RelicSystem', () => {
@@ -20,19 +20,6 @@ describe('RelicSystem', () => {
     ],
   };
 
-  const mockVajra: RelicConfig = {
-    id: 'vajra',
-    name: 'Vajra',
-    description: 'At the start of each turn, gain 1 Strength.',
-    rarity: 'common' as any,
-    unique: true,
-    effects: [
-      {
-        effectType: 'buff', // Wait, looking at RelicSystem.ts, effectType 'buff' is not implemented! But I'll test supported effects: heal, gold, draw_card, energy, block, damage
-      }
-    ] as any
-  };
-  
   const mockLantern: RelicConfig = {
     id: 'lantern',
     name: 'Lantern',
@@ -58,8 +45,8 @@ describe('RelicSystem', () => {
     expect(relicSystem.hasRelic('player1', 'burning_blood')).toBe(true);
     const relics = relicSystem.getRelics('player1');
     expect(relics).toHaveLength(1);
-    expect(relics[0].configId).toBe('burning_blood');
-    expect(relics[0].obtainedAtFloor).toBe(1);
+    expect(relics[0]!.configId).toBe('burning_blood');
+    expect(relics[0]!.obtainedAtFloor).toBe(1);
   });
 
   it('should not add duplicate unique relics', () => {

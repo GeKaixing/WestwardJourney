@@ -4,8 +4,9 @@ import { motion } from "framer-motion";
 import { CARD_CONFIGS, RELIC_CONFIGS, POTION_CONFIGS } from "../data";
 import { useGameStore } from "../store";
 import { GiCoins, GiHealthPotion, GiCampfire, GiCardRandom, GiExitDoor } from "react-icons/gi";
-import { playCoin, buttonClick, playShopBGM } from "../systems/sounds";
+import { playCoin, playShopBGM } from "../systems/sounds";
 import { cardImageGenerator } from "../utils/cardImageGenerator";
+import { GameHeader } from "../ui";
 import type { CardConfig } from "@shared/types/CardConfig";
 
 interface ShopItem {
@@ -139,7 +140,8 @@ export function ShopScene() {
   };
 
   return (
-    <div className="relative flex min-h-screen flex-col items-center p-12 bg-dark-950 font-sans text-gray-200 select-none">
+    <div className="relative flex min-h-screen flex-col items-center pt-14 p-12 bg-dark-950 font-sans text-gray-200 select-none">
+      <GameHeader />
       <div className="relative z-10 flex w-full max-w-5xl flex-col items-center">
         <motion.h1 initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-4 font-display text-5xl text-gold-500 drop-shadow-lg">
           神秘商铺

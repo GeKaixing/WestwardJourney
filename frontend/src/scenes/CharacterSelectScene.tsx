@@ -104,7 +104,7 @@ export function CharacterSelectScene() {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -20, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="rounded-2xl bg-dark-900/80 p-8 shadow-2xl backdrop-blur-sm border border-dark-600/60 opacity-20"
+            className="rounded-2xl  p-8   opacity-20"
           >
             <h1 className="mb-4 font-display text-5xl text-gold-400 drop-shadow-md">
               {config.displayName}
@@ -126,8 +126,8 @@ export function CharacterSelectScene() {
             </div>
 
             {relicConfig && (
-              <div className="flex items-start gap-4 rounded-xl bg-dark-800/80 p-4 border border-dark-600/50 shadow-inner">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-dark-700/80 ring-1 ring-gold-500/50 drop-shadow text-2xl text-orange-500">
+              <div className="flex items-start gap-4 rounded-xl  p-4  ">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full   drop-shadow text-2xl text-orange-500">
                   <GiCampfire />
                 </div>
                 <div>

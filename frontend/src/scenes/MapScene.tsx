@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, ReactNode } from "react";
+import { useEffect, useLayoutEffect, useMemo, useState, useRef, ReactNode } from "react";
 import {
   GiGoblinHead,
   GiOgre,
@@ -8,14 +8,6 @@ import {
   GiCardRandom,
   GiChest,
   GiRollingDices,
-  GiHearts,
-  GiCoins,
-  GiHealthPotion,
-  GiCompass,
-  GiHourglass,
-  GiTreasureMap,
-  GiPokerHand,
-  GiCog,
 } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -23,8 +15,8 @@ import clsx from "clsx";
 import { MapNodeType } from "@shared/enums/MapNodeType";
 import { MapGenerator, type MapNode } from "../systems/map";
 import { useGameStore } from "../store";
-import { PLAYER_CONFIGS, RELIC_CONFIGS } from "../data";
 import { pageEnter, buttonClick } from "../systems/sounds";
+import { GameHeader } from "../ui";
 
 const NODE_LABELS: Record<MapNodeType, string> = {
   [MapNodeType.Monster]: "敌人",
@@ -49,14 +41,14 @@ const NODE_ICONS: Record<MapNodeType, ReactNode> = {
 };
 
 const NODE_COLORS: Record<MapNodeType, string> = {
-  [MapNodeType.Monster]: "text-[#3e2723]",
-  [MapNodeType.Elite]: "text-red-900",
-  [MapNodeType.Boss]: "text-red-950 scale-125",
-  [MapNodeType.Rest]: "text-green-900",
-  [MapNodeType.Shop]: "text-purple-900",
-  [MapNodeType.Event]: "text-blue-900",
-  [MapNodeType.Treasure]: "text-yellow-800",
-  [MapNodeType.Mystery]: "text-teal-900",
+  [MapNodeType.Monster]: "text-[#6d1b1b]",
+  [MapNodeType.Elite]: "text-[#d32f2f]",
+  [MapNodeType.Boss]: "text-[#4a148c]",
+  [MapNodeType.Rest]: "text-[#2e7d32]",
+  [MapNodeType.Shop]: "text-[#ef6c00]",
+  [MapNodeType.Event]: "text-[#1565c0]",
+  [MapNodeType.Treasure]: "text-[#fbc02d]",
+  [MapNodeType.Mystery]: "text-[#455a64]",
 };
 
 const NODE_INTROS: Record<MapNodeType, string> = {
@@ -75,15 +67,64 @@ export function MapScene() {
   const run = useGameStore((s) => s.run);
   const setFloor = useGameStore((s) => s.setFloor);
   const setMapNodes = useGameStore((s) => s.setMapNodes);
-  const generator = useMemo(() => new MapGenerator(), []);
   const [selectedIntro, setSelectedIntro] = useState<string | null>(null);
+  const nodeRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [lines, setLines] = useState<Array<{ key: string; x1: number; y1: number; x2: number; y2: number }>>([]);
+
   const nodes = run?.mapNodes ?? [];
   const mapFloors = run?.mapFloors ?? 0;
+  const generator = useMemo(() => new MapGenerator(), []);
+
+  useEffect(() => {
+    setSelectedIntro(null);
+  }, []);
 
   useEffect(() => {
     pageEnter();
     if (!run) navigate("/select");
   }, [run, navigate]);
+
+  useLayoutEffect(() => {
+    if (!containerRef.current) return;
+    const newLines: typeof lines = [];
+    for (const node of nodes) {
+      for (const cIndex of node.connections) {
+        const target = nodes[cIndex];
+        if (!target) continue;
+        const nodeEl = nodeRefs.current[node.id];
+        const targetEl = nodeRefs.current[target.id];
+        if (!nodeEl || !targetEl) continue;
+
+        const nodeRect = nodeEl.getBoundingClientRect();
+        const targetRect = targetEl.getBoundingClientRect();
+        const containerRect = containerRef.current.getBoundingClientRect();
+
+        const x1 = nodeRect.left - containerRect.left + nodeRect.width / 2;
+        const y1 = nodeRect.top - containerRect.top + nodeRect.height / 2;
+        const x2 = targetRect.left - containerRect.left + targetRect.width / 2;
+        const y2 = targetRect.top - containerRect.top + targetRect.height / 2;
+
+        const dx = x2 - x1;
+        const dy = y2 - y1;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance === 0) continue;
+
+        const padding = nodeRect.width / 2 + 8;
+        const ux = dx / distance;
+        const uy = dy / distance;
+
+        newLines.push({
+          key: `${node.id}-${target.id}`,
+          x1: x1 + ux * padding,
+          y1: y1 + uy * padding,
+          x2: x2 - ux * padding,
+          y2: y2 - uy * padding,
+        });
+      }
+    }
+    setLines(newLines);
+  }, [nodes]);
 
   const floors = useMemo(() => {
     const groups: MapNode[][] = [];
@@ -127,100 +168,13 @@ export function MapScene() {
     return null;
   }
 
-  const playerConfig = PLAYER_CONFIGS[run.characterClass];
-
   return (
     <div className="relative flex h-screen w-full flex-col items-center overflow-hidden bg-dark-950 font-sans text-gray-200 select-none">
-      
-      {/* Full-width Header */}
-      <div className="absolute left-0 right-0 top-0 z-50 flex h-14 w-full items-center justify-between bg-[#1e262f] px-6 text-sm shadow-md border-b border-black/50">
-        {/* Top Left: Name, HP, Gold, Relics, Potions */}
-        <div className="flex items-center gap-6 pointer-events-auto">
-          <div className="flex items-center gap-4">
-            {playerConfig?.avatar && (
-              <img 
-                src={playerConfig.avatar} 
-                alt={playerConfig.displayName}
-                className="h-8 w-8 rounded-full border-2 border-amber-600 shadow-md"
-              />
-            )}
-            <span className="font-bold text-gray-200">{playerConfig?.displayName ?? "未知"}</span>
-            <div className="flex items-center gap-1 font-bold text-red-400">
-              <GiHearts className="text-xl" /> {run.currentHealth}/{run.maxHealth}
-            </div>
-            <div className="flex items-center gap-1 font-bold text-yellow-400">
-              <GiCoins className="text-xl" /> {run.gold}
-            </div>
-          </div>
-          
-          <div className="flex gap-1 border-l border-gray-600/50 pl-4">
-             {/* Relics */}
-             {run.relics.map((r, i) => {
-               const config = RELIC_CONFIGS.find(rc => rc.id === r.configId);
-               return (
-                 <div key={i} className="flex h-8 w-8 items-center justify-center cursor-help transition-transform hover:scale-110" title={config?.name}>
-                   {config?.image ? (
-                     <img src={config.image} alt={config.name} className="h-8 w-8 object-contain" />
-                   ) : (
-                     <GiCampfire className="text-xl text-orange-500" />
-                   )}
-                 </div>
-               );
-             })}
-           </div>
 
-           <div className="flex gap-2 border-l border-gray-600/50 pl-4">
-             {/* Potions */}
-             {run.potions.length > 0 ? run.potions.map((p, i) => (
-               <div key={i} className="flex h-8 w-8 items-center justify-center cursor-help transition-transform hover:scale-110" title={p.name}>
-                 {p.image ? (
-                   <img src={p.image} alt={p.name} className="h-8 w-8 object-contain" />
-                 ) : (
-                   <GiHealthPotion className="text-xl text-green-400" />
-                 )}
-               </div>
-             )) : (
-              // Empty potion slots placeholders
-              <>
-                <div className="h-8 w-8 rounded bg-black/20 border border-gray-600/50 border-dashed opacity-50"></div>
-                <div className="h-8 w-8 rounded bg-black/20 border border-gray-600/50 border-dashed opacity-50"></div>
-                <div className="h-8 w-8 rounded bg-black/20 border border-gray-600/50 border-dashed opacity-50"></div>
-              </>
-            )}
-          </div>
-        </div>
-        
-        {/* Top Right: Floor, Time, Map, Deck, Settings */}
-        <div className="flex items-center gap-6 pointer-events-auto text-gray-300">
-          <div className="flex items-center gap-4 font-bold">
-            <span className="flex items-center gap-1 text-green-400"><GiCompass className="text-xl" /> {run.currentFloor}</span>
-            <span className="flex items-center gap-1"><GiHourglass className="text-xl text-yellow-500" /> 00:00</span>
-          </div>
-          
-          <div className="flex items-center gap-5 border-l border-gray-600/50 pl-4">
-            <button className="flex items-center hover:text-white transition-colors text-2xl" title="地图">
-              <GiTreasureMap />
-            </button>
-            <button 
-              className="flex items-center gap-1 hover:text-white transition-colors font-bold" 
-              title="牌组"
-              onClick={() => navigate("/deck")}
-            >
-               <GiPokerHand className="text-2xl" /> <span className="text-base">{run.deck.length}</span>
-            </button>
-            <button 
-              className="flex items-center hover:text-white transition-colors text-2xl" 
-              title="设置"
-              onClick={() => navigate("/settings")}
-            >
-              <GiCog />
-            </button>
-          </div>
-        </div>
-      </div>
+      <GameHeader />
 
       {/* Intro Text */}
-      <div className="absolute top-20 z-40 text-center pointer-events-none">
+       <div className="absolute top-14 z-40 text-center pointer-events-none">
         <h1 className="font-display text-4xl text-gold-500 drop-shadow-md">西行之路</h1>
         {selectedIntro && (
           <motion.p
@@ -234,72 +188,81 @@ export function MapScene() {
         )}
       </div>
 
-      {/* Right Legend */}
-      <div 
-        className="absolute right-12 top-1/2 z-40 -translate-y-1/2 w-48 rounded-md p-4 text-amber-950 shadow-2xl border-2 border-amber-900/50 transform rotate-1 pointer-events-none bg-dark-800"
-      >
-        <h3 className="mb-4 text-center font-display text-2xl font-bold border-b border-amber-900/30 pb-2">图例</h3>
-        <div className="flex flex-col gap-3 font-bold">
+      {/* Legend Bar */}
+       <div className="absolute left-0 right-0 top-24 z-40 flex h-16 w-full items-center justify-center bg-[#cba474]/90 px-6 text-sm text-amber-950 border-y-2 border-amber-900/30">
+         <div className="flex items-center gap-4 font-bold">
           {Object.entries(NODE_LABELS).map(([type, label]) => (
-            <div key={type} className="flex items-center gap-3">
-              <span className={clsx("flex w-8 justify-center text-xl drop-shadow-[0_0_5px_rgba(255,255,255,0.8)]", NODE_COLORS[type as MapNodeType])}>{NODE_ICONS[type as MapNodeType]}</span>
-              <span className="text-lg">{label}</span>
+            <div key={type} className="flex items-center gap-1">
+              <span className={clsx("text-lg", NODE_COLORS[type as MapNodeType])}>{NODE_ICONS[type as MapNodeType]}</span>
+              <span>{label}</span>
             </div>
           ))}
-        </div>
+         </div>
       </div>
 
       {/* Scrollable Map Container */}
-      <div className="relative z-10 mt-36 mb-10 h-full w-full max-w-3xl overflow-hidden rounded-lg shadow-2xl bg-dark-800">
-         <div className="relative flex h-full flex-col-reverse overflow-y-auto px-16 py-12 [&::-webkit-scrollbar]:hidden">
-            {floors.map((floorNodes) => (
-              <div key={floorNodes[0]?.floor ?? 0} className="flex min-h-[100px] w-full items-center justify-center relative">
-                
-                {/* Floor Number Indicator */}
-                <span className="absolute left-0 text-sm font-bold text-[#6b4729] opacity-50 pointer-events-none">
-                  层 {floorNodes[0]?.floor}
-                </span>
+       <div className="relative z-10 mt-40 h-full w-full rounded-md shadow-2xl bg-[#e3d5ca] border-8 border-[#cba474] p-8 overflow-hidden">
+         <div ref={containerRef} className="relative flex h-full w-full items-center justify-around px-2 ">
+            <svg className="absolute inset-0 pointer-events-none z-0" style={{ width: '100%', height: '100%' }}>
+             {lines.map(line => (
+               <line
+                 key={line.key}
+                 x1={line.x1}
+                 y1={line.y1}
+                 x2={line.x2}
+                 y2={line.y2}
+                 stroke="#6b4729"
+                 strokeWidth="2"
+                 strokeDasharray="4 4"
+               />
+             ))}
+           </svg>
+           {floors.map((floorNodes) => (
+             <div key={floorNodes[0]?.floor ?? 0} className="flex flex-col h-full items-center justify-between relative py-4">
 
-                <div className="flex w-full justify-around items-center px-12">
-                  {floorNodes.map((node) => {
-                    const isFuture = !node.visited && !node.available;
-                    const isAvailable = node.available && !node.visited;
-                    
-                    return (
-                      <motion.button
-                        key={node.id}
-                        className={clsx(
-                          "relative flex h-14 w-14 items-center justify-center text-4xl transition-all drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]",
-                          NODE_COLORS[node.type],
-                          isFuture ? "opacity-40 grayscale" : "opacity-100",
-                          node.visited ? "opacity-30 grayscale" : "",
-                          isAvailable ? "cursor-pointer drop-shadow-[0_0_15px_rgba(250,204,21,1)] scale-110" : "cursor-default"
-                        )}
-                        whileHover={isAvailable ? { scale: 1.3, y: -5 } : {}}
-                        whileTap={isAvailable ? { scale: 0.95 } : {}}
-                        onClick={() => handleNodeClick(node)}
-                        title={NODE_LABELS[node.type]}
-                      >
-                        {NODE_ICONS[node.type]}
-                        
-                        {/* Selected Indicator */}
-                        {isAvailable && (
-                          <div className="absolute -inset-2 rounded-full border-2 border-dashed border-gold-600 animate-spin-slow opacity-50 pointer-events-none"></div>
-                        )}
-                        
-                        {/* Visited Checkmark */}
-                        {node.visited && (
-                          <span className="absolute right-0 top-0 flex h-5 w-5 items-center justify-center rounded-full bg-green-600 text-xs text-white shadow-md ring-2 ring-[#cba474]">
-                            ✓
-                          </span>
-                        )}
-                      </motion.button>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
-         </div>
+               <span className="text-sm font-bold text-[#6b4729] opacity-50 pointer-events-none">
+                 {floorNodes[0]?.floor}
+               </span>
+
+               <div className="flex flex-col h-full justify-around items-center">
+                 {floorNodes.map((node) => {
+                   const isFuture = !node.visited && !node.available;
+                   const isAvailable = node.available && !node.visited;
+
+                   return (
+                     <motion.button
+                       key={node.id}
+                       ref={(el) => { nodeRefs.current[node.id] = el; }}
+                       className={clsx(
+                         "relative flex h-20 w-20 items-center justify-center text-5xl transition-all my-4",
+                         NODE_COLORS[node.type],
+                         isFuture ? "opacity-40" : "opacity-100",
+                         node.visited ? "opacity-30" : "",
+                         isAvailable ? "cursor-pointer scale-110 drop-shadow-[0_0_10px_rgba(0,0,0,0.5)]" : "cursor-default"
+                       )}
+                       whileHover={isAvailable ? { scale: 1.3, x: -5 } : {}}
+                       whileTap={isAvailable ? { scale: 0.95 } : {}}
+                       onClick={() => handleNodeClick(node)}
+                       title={NODE_LABELS[node.type]}
+                     >
+                       {NODE_ICONS[node.type]}
+
+                       {isAvailable && (
+                         <div className="absolute -inset-2 rounded-full border-2 border-dashed border-gold-600 animate-spin-slow opacity-50 pointer-events-none"></div>
+                       )}
+
+                       {node.visited && (
+                         <span className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-green-600 text-[10px] text-white shadow-md ring-1 ring-[#cba474]">
+                           ✓
+                         </span>
+                       )}
+                     </motion.button>
+                   );
+                 })}
+               </div>
+             </div>
+           ))}
+        </div>
       </div>
 
     </div>

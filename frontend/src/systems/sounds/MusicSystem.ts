@@ -48,8 +48,8 @@ export function playShopBGM() {
 }
 
 export function playBattleBGM(zone: Zone, type: "normal" | "elite" | "boss") {
-  const zoneConfig = BGM_CONFIG[zone];
+  const zoneConfig = BGM_CONFIG[zone] as { normal: readonly string[]; elite: readonly string[]; boss: readonly string[] };
   const tracks = zoneConfig[type];
-  const track = tracks[Math.floor(Math.random() * tracks.length)];
+  const track = tracks[Math.floor(Math.random() * tracks.length)]!;
   playBGM(track);
 }

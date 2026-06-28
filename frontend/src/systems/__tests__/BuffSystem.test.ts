@@ -16,7 +16,7 @@ describe('BuffSystem', () => {
     
     const buffs = buffSystem.getBuffs('player1');
     expect(buffs).toHaveLength(1);
-    expect(buffs[0].duration).toBe(3);
+    expect(buffs[0]!.duration).toBe(3);
   });
 
   it('should stack buffs additively based on config', () => {
@@ -25,7 +25,7 @@ describe('BuffSystem', () => {
     
     expect(buffSystem.getBuffStacks('player1', BuffType.Strength)).toBe(5); // 2 + 3
     const buffs = buffSystem.getBuffs('player1');
-    expect(buffs[0].duration).toBe(3); // max of durations
+    expect(buffs[0]!.duration).toBe(3); // max of durations
   });
 
   it('should stack buffs by max refresh based on config', () => {
@@ -35,7 +35,7 @@ describe('BuffSystem', () => {
     // Vulnerable is MaxRefresh, with maxStacks 1
     expect(buffSystem.getBuffStacks('player1', BuffType.Vulnerable)).toBe(1);
     const buffs = buffSystem.getBuffs('player1');
-    expect(buffs[0].duration).toBe(3); // max of durations
+    expect(buffs[0]!.duration).toBe(3); // max of durations
   });
 
   it('should decrease duration on turn end and remove expired buffs', () => {

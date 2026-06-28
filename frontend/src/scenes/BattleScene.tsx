@@ -11,15 +11,7 @@ import {
   GiSwordClash,
   GiShield,
   GiMagicSwirl,
-  GiHearts,
-  GiCoins,
-  GiCampfire,
-  GiHealthPotion,
-  GiCompass,
-  GiHourglass,
-  GiTreasureMap,
   GiPokerHand,
-  GiCog,
 } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
@@ -32,6 +24,7 @@ import { useGameStore } from "../store";
 import { cardImageGenerator } from "../utils/cardImageGenerator";
 import { startTurn, endTurn as playEndTurn, playBattleBGM } from "../systems/sounds";
 import { useCardDragDrop } from "../hooks/useCardDragDrop";
+import { GameHeader } from "../ui";
 
 const buffSystem = new BuffSystem();
 const cardSystem = new CardSystem();
@@ -76,7 +69,7 @@ function CardView({
         <img
           src={imageUrl}
           alt={card.configId}
-          className="h-72 w-auto rounded-lg"
+          className="h-72 max-w-none rounded-lg"
           draggable={false}
         />
       ) : (
@@ -118,7 +111,7 @@ export function BattleScene() {
     const config = CARD_CONFIGS.find(c => c.id === card.configId);
     return config?.targetType ?? "single_enemy";
   }, [battleState?.hand]);
-  const { onPointerDown, onPointerMove, onPointerUp } = useCardDragDrop(onDragPlayCard, getCardTargetType);
+  const { onPointerDown, onPointerMove, onPointerUp, onPointerCancel } = useCardDragDrop(onDragPlayCard, getCardTargetType);
 
   useEffect(() => {
     if (!battleState) return;
@@ -191,7 +184,7 @@ export function BattleScene() {
       startTurn();
       // ponytail: play random zone BGM since zones aren't defined yet
       const zones = ["denseForest", "nest", "darkPort", "glory"] as const;
-      const randomZone = zones[Math.floor(Math.random() * zones.length)];
+      const randomZone = zones[Math.floor(Math.random() * zones.length)]!;
       playBattleBGM(randomZone, "normal");
     } catch (e) {
       console.error("Battle init failed", e);
@@ -228,7 +221,6 @@ export function BattleScene() {
 
   const player = battleState.player;
   const enemies = battleState.enemies;
-  const aliveEnemies = enemies.filter((enemy) => enemy.isAlive);
   const phaseLabel = ["回合开始", "抽牌", "行动", "回合结束", "敌方行动", "清理"][battleState.phase] ?? "行动";
 
   const characterEmojis: Record<string, ReactNode> = {
@@ -255,77 +247,7 @@ export function BattleScene() {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-dark-950 opacity-70" />
       </div>
 
-      {/* Full-width Header */}
-      <div className="absolute left-0 right-0 top-0 z-50 flex h-14 w-full items-center justify-between bg-[#1e262f] px-6 text-sm shadow-md border-b border-black/50">
-        {/* Top Left: Name, HP, Gold, Relics, Potions */}
-        <div className="flex items-center gap-6 pointer-events-auto">
-          <div className="flex items-center gap-4">
-            <span className="font-bold text-gray-200">{player.name}</span>
-            <div className="flex items-center gap-1 font-bold text-red-400">
-              <GiHearts className="text-xl" /> {player.health}/{player.maxHealth}
-            </div>
-            <div className="flex items-center gap-1 font-bold text-yellow-400">
-              <GiCoins className="text-xl" /> {run?.gold ?? 0}
-            </div>
-          </div>
-          
-          <div className="flex gap-1 border-l border-gray-600/50 pl-4">
-             {/* Relics */}
-             {run?.relics.map((r, i) => {
-               const config = RELIC_CONFIGS.find(rc => rc.id === r.configId);
-               return (
-                 <div key={i} className="flex h-8 w-8 items-center justify-center cursor-help transition-transform hover:scale-110" title={config?.name}>
-                   {config?.image ? (
-                     <img src={config.image} alt={config.name} className="h-8 w-8 object-contain" />
-                   ) : (
-                     <GiCampfire className="text-xl text-orange-500" />
-                   )}
-                 </div>
-               );
-             })}
-           </div>
-
-           <div className="flex gap-2 border-l border-gray-600/50 pl-4">
-             {/* Potions */}
-             {(run?.potions?.length ?? 0) > 0 ? run!.potions.map((p, i) => (
-               <div key={i} className="flex h-8 w-8 items-center justify-center cursor-help transition-transform hover:scale-110" title={p.name}>
-                 {p.image ? (
-                   <img src={p.image} alt={p.name} className="h-8 w-8 object-contain" />
-                 ) : (
-                   <GiHealthPotion className="text-xl text-green-400" />
-                 )}
-               </div>
-             )) : (
-              // Empty potion slots placeholders
-              <>
-                <div className="h-8 w-8 rounded bg-black/20 border border-gray-600/50 border-dashed opacity-50"></div>
-                <div className="h-8 w-8 rounded bg-black/20 border border-gray-600/50 border-dashed opacity-50"></div>
-                <div className="h-8 w-8 rounded bg-black/20 border border-gray-600/50 border-dashed opacity-50"></div>
-              </>
-            )}
-          </div>
-        </div>
-        
-        {/* Top Right: Floor, Time, Map, Deck, Settings */}
-        <div className="flex items-center gap-6 pointer-events-auto text-gray-300">
-          <div className="flex items-center gap-4 font-bold">
-            <span className="flex items-center gap-1 text-green-400"><GiCompass className="text-xl" /> {run?.currentFloor ?? 0}</span>
-            <span className="flex items-center gap-1"><GiHourglass className="text-xl text-yellow-500" /> 00:00</span>
-          </div>
-          
-          <div className="flex items-center gap-5 border-l border-gray-600/50 pl-4">
-            <button className="flex items-center hover:text-white transition-colors text-2xl" title="地图">
-              <GiTreasureMap />
-            </button>
-            <button className="flex items-center gap-1 hover:text-white transition-colors font-bold" title="牌组">
-               <GiPokerHand className="text-2xl" /> <span className="text-base">{run?.deck.length ?? 0}</span>
-            </button>
-            <button className="flex items-center hover:text-white transition-colors text-2xl" title="设置">
-              <GiCog />
-            </button>
-          </div>
-        </div>
-      </div>
+      <GameHeader hideAvatar playerName={player.name} currentHealth={player.health} maxHealth={player.maxHealth} />
 
       {/* Main Battle Area */}
       <div className="relative z-10 flex flex-1 w-full items-center justify-between px-32 pb-32 pt-16">
@@ -438,8 +360,13 @@ export function BattleScene() {
         {/* End Turn Button (Bottom Right) */}
         <div className="pointer-events-auto absolute bottom-12 right-10 z-40">
           <button
+            disabled={battleState.phase !== 2}
             onClick={() => { battleSystem.endTurn(); playEndTurn(); }}
-            className="flex h-12 w-32 items-center justify-center rounded-lg bg-sky-950 border-2 border-sky-600 text-lg font-bold text-sky-200 transition-all hover:bg-sky-900 hover:scale-105 hover:shadow-[0_0_20px_rgba(14,165,233,0.5)] shadow-lg"
+            className={`flex h-12 w-32 items-center justify-center rounded-lg border-2 text-lg font-bold transition-all shadow-lg ${
+              battleState.phase !== 2
+                ? "bg-gray-800 border-gray-600 text-gray-500 cursor-not-allowed"
+                : "bg-sky-950 border-sky-600 text-sky-200 hover:bg-sky-900 hover:scale-105 hover:shadow-[0_0_20px_rgba(14,165,233,0.5)]"
+            }`}
           >
             {phaseLabel === "行动" ? "结束回合" : phaseLabel}
           </button>
@@ -473,11 +400,12 @@ export function BattleScene() {
                   exit={{ opacity: 0, y: -100, scale: 0.5, transition: { duration: 0.2 } }}
                   transition={{ type: "spring", stiffness: 350, damping: 25 }}
                   style={{ zIndex: idx }}
-                  className="-mx-3 Card--draggable"
+                  className="-mx-3 Card--draggable shrink-0"
                   aria-disabled={disabled}
-                  onPointerDown={(e) => onPointerDown(e, card.instanceId, disabled)}
+                   onPointerDown={(e) => onPointerDown(e, card.instanceId, disabled)}
                   onPointerMove={onPointerMove}
                   onPointerUp={onPointerUp}
+                  onPointerCancel={onPointerCancel}
                 >
                   <CardView
                     card={card}

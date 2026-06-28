@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useEffect } from "react";
 import { selectCard, cardToHand, playCard } from "../systems/sounds";
 
 interface DragState {
@@ -15,7 +15,29 @@ export function useCardDragDrop(
 ) {
   const dragRef = useRef<DragState | null>(null);
   const ghostRef = useRef<HTMLElement | null>(null);
-  const isDisabledRef = useRef(false);
+  const draggingRef = useRef(false);
+
+  const cleanup = useCallback(() => {
+    draggingRef.current = false;
+    const g = ghostRef.current;
+    ghostRef.current = null;
+    dragRef.current = null;
+    g?.remove();
+    document.querySelectorAll<HTMLElement>("[data-enemy-id]").forEach((el) => el.classList.remove("is-dragOver"));
+  }, []);
+
+  // Global fallback: if mouseup/cancel fires anywhere during a drag, clean up
+  useEffect(() => {
+    const onGlobal = () => {
+      if (draggingRef.current) cleanup();
+    };
+    document.addEventListener("pointerup", onGlobal);
+    document.addEventListener("pointercancel", onGlobal);
+    return () => {
+      document.removeEventListener("pointerup", onGlobal);
+      document.removeEventListener("pointercancel", onGlobal);
+    };
+  }, [cleanup]);
 
   const getEnemyElements = useCallback(() => {
     return document.querySelectorAll<HTMLElement>("[data-enemy-id]");
@@ -38,31 +60,38 @@ export function useCardDragDrop(
 
   const onPointerDown = useCallback((e: React.PointerEvent<HTMLElement>, cardInstanceId: string, disabled: boolean) => {
     if (disabled) return;
-    isDisabledRef.current = false;
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
-    const r = (e.target as HTMLElement).getBoundingClientRect();
+    cleanup();
+
+    const el = e.currentTarget as HTMLElement;
+    el.setPointerCapture(e.pointerId);
+    const r = el.getBoundingClientRect();
     dragRef.current = { cardInstanceId, startX: r.left, startY: r.top, offsetX: e.clientX - r.left, offsetY: e.clientY - r.top };
 
-    const ghost = (e.target as HTMLElement).cloneNode(true) as HTMLElement;
+    const ghost = el.cloneNode(true) as HTMLElement;
+    ghost.style.margin = "0";
     ghost.style.position = "fixed";
     ghost.style.pointerEvents = "none";
     ghost.style.zIndex = "9999";
     ghost.style.opacity = "0.85";
     ghost.style.transform = "rotate(3deg) scale(1.1)";
-    ghost.style.width = `${r.width}px`;
+    ghost.style.width = `${el.offsetWidth}px`;
     ghost.style.left = `${r.left}px`;
     ghost.style.top = `${r.top}px`;
     ghost.style.transition = "none";
     document.body.appendChild(ghost);
     ghostRef.current = ghost;
+    draggingRef.current = true;
 
     selectCard();
-  }, []);
+  }, [cleanup]);
 
   const onPointerMove = useCallback((e: React.PointerEvent<HTMLElement>) => {
-    if (!dragRef.current || !ghostRef.current) return;
-    ghostRef.current.style.left = `${e.clientX - dragRef.current.offsetX}px`;
-    ghostRef.current.style.top = `${e.clientY - dragRef.current.offsetY}px`;
+    if (!draggingRef.current) return;
+    const ghost = ghostRef.current;
+    const drag = dragRef.current;
+    if (!ghost || !drag) return;
+    ghost.style.left = `${e.clientX - drag.offsetX}px`;
+    ghost.style.top = `${e.clientY - drag.offsetY}px`;
 
     clearHighlights();
     const targetId = getDropTarget(e.clientX, e.clientY);
@@ -73,21 +102,20 @@ export function useCardDragDrop(
   }, [clearHighlights, getDropTarget]);
 
   const onPointerUp = useCallback((e: React.PointerEvent<HTMLElement>) => {
+    if (!draggingRef.current) return;
     const drag = dragRef.current;
     const ghost = ghostRef.current;
-    dragRef.current = null;
-    ghostRef.current = null;
-    clearHighlights();
+    cleanup();
 
-    if (ghost) {
+    if (ghost && drag) {
       ghost.style.transition = "all 0.2s ease";
-      if (drag) {
-        ghost.style.left = `${drag.startX}px`;
-        ghost.style.top = `${drag.startY}px`;
-        ghost.style.transform = "rotate(0deg) scale(1)";
-        ghost.style.opacity = "0.3";
-      }
+      ghost.style.left = `${drag.startX}px`;
+      ghost.style.top = `${drag.startY}px`;
+      ghost.style.transform = "rotate(0deg) scale(1)";
+      ghost.style.opacity = "0.3";
       setTimeout(() => ghost.remove(), 200);
+    } else if (ghost) {
+      ghost.remove();
     }
 
     if (drag) {
@@ -105,7 +133,11 @@ export function useCardDragDrop(
         }
       }
     }
-  }, [clearHighlights, getDropTarget, onPlayCard]);
+  }, [cleanup, getDropTarget, getCardTargetType, onPlayCard]);
 
-  return { onPointerDown, onPointerMove, onPointerUp };
+  const onPointerCancel = useCallback(() => {
+    if (draggingRef.current) cleanup();
+  }, [cleanup]);
+
+  return { onPointerDown, onPointerMove, onPointerUp, onPointerCancel };
 }

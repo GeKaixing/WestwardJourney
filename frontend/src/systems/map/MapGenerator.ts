@@ -15,7 +15,7 @@ export interface GeneratedMap {
   floors: number;
 }
 
-const FLOORS_PER_ACT = 15;
+const FLOORS_PER_ACT = 17;
 const NODES_PER_FLOOR = 4;
 const CENTER_COL = 1;
 
@@ -107,10 +107,6 @@ export class MapGenerator {
           const connIndex = nodes.indexOf(conn);
           if (!node.connections.includes(connIndex)) {
             node.connections.push(connIndex);
-          }
-          const nodeIndex = nodes.indexOf(node);
-          if (!conn.connections.includes(nodeIndex)) {
-            conn.connections.push(nodeIndex);
           }
         }
       }

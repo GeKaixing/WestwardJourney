@@ -85,7 +85,9 @@ export function BattleEffects() {
     return () => {
       unsubs.forEach((fn) => fn());
       if (inited) {
+        const canvas = app.canvas as HTMLCanvasElement | undefined;
         app.destroy({ removeView: true }, { children: true, texture: true });
+        if (canvas?.parentNode) canvas.parentNode.removeChild(canvas);
       }
     };
   }, []);

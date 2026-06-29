@@ -1,14 +1,12 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { GiHearts, GiCoins, GiCampfire } from "react-icons/gi";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
-import { Application } from "pixi.js";
 import { CharacterClass } from "@shared/enums/CharacterClass";
 import { PLAYER_CONFIGS, CARD_CONFIGS, RELIC_CONFIGS } from "../data";
 import { useGameStore } from "../store";
 import { buttonClick, startGame } from "../systems/sounds";
-import { FrameSequenceSprite } from "../systems/sprites/FrameSequenceSprite";
 import type { CardInstance } from "../systems/cards";
 import type { RelicInstance } from "../systems/relics";
 
@@ -21,19 +19,19 @@ const CHARACTER_ORDER = [
 ];
 
 const CHAR_AVATAR: Record<CharacterClass, string> = {
-  [CharacterClass.BoneDragon]: "/head-portrait/wukong.png",
-  [CharacterClass.ImmortalDragon]: "/head-portrait/tanseng.png",
-  [CharacterClass.Longsila]: "/head-portrait/zhubajie.png",
-  [CharacterClass.DemonDragon]: "/head-portrait/sahesang.png",
-  [CharacterClass.StormDragon]: "/head-portrait/bailongma.png",
+  [CharacterClass.BoneDragon]: "/head-portrait/骨龙.png",
+  [CharacterClass.ImmortalDragon]: "/head-portrait/仙龙.png",
+  [CharacterClass.Longsila]: "/head-portrait/龙斯拉.png",
+  [CharacterClass.DemonDragon]: "/head-portrait/魔龙.png",
+  [CharacterClass.StormDragon]: "/head-portrait/风暴龙.png",
 };
 
-const CHAR_TO_SPRITE: Record<CharacterClass, string> = {
-  [CharacterClass.BoneDragon]: "hero_bone_dragon",
-  [CharacterClass.ImmortalDragon]: "hero_fairy_dragon",
-  [CharacterClass.Longsila]: "hero_dragzilla",
-  [CharacterClass.DemonDragon]: "hero_magic_dragon",
-  [CharacterClass.StormDragon]: "hero_storm_dragon",
+const CHAR_BG: Record<CharacterClass, string> = {
+  [CharacterClass.BoneDragon]: "/select/骨龙.png",
+  [CharacterClass.ImmortalDragon]: "/select/仙龙.png",
+  [CharacterClass.Longsila]: "/select/龙斯拉.png",
+  [CharacterClass.DemonDragon]: "/select/魔龙.png",
+  [CharacterClass.StormDragon]: "/select/风暴龙.png",
 };
 
 let instanceCounter = 0;
@@ -63,58 +61,6 @@ export function CharacterSelectScene() {
   const navigate = useNavigate();
   const startRun = useGameStore((s) => s.startRun);
   const [selectedChar, setSelectedChar] = useState<CharacterClass>(CharacterClass.BoneDragon);
-  const pixiRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = pixiRef.current;
-    if (!el) return;
-
-    let destroyed = false;
-    let app: Application;
-
-    const run = async () => {
-      app = new Application();
-      await app.init({
-        width: el.clientWidth,
-        height: el.clientHeight,
-        backgroundAlpha: 0,
-        antialias: true,
-        autoStart: false,
-      });
-      if (destroyed) { app.destroy({ removeView: true }); return; }
-
-      el.appendChild(app.canvas);
-      app.start();
-
-      const spriteId = CHAR_TO_SPRITE[selectedChar];
-      if (!spriteId) return;
-
-      const seq = new FrameSequenceSprite();
-      try {
-        await seq.load(spriteId);
-        if (destroyed) { seq.destroy(); return; }
-        app.stage.addChild(seq.displayContainer);
-
-        seq.displayContainer.x = app.screen.width / 2;
-        seq.displayContainer.y = app.screen.height / 2 + 20;
-        const scale = Math.min(app.screen.width, app.screen.height) / 500;
-        seq.displayContainer.scale.set(scale);
-
-        seq.play("idle", true);
-      } catch {
-        if (!destroyed) seq.destroy();
-      }
-    };
-
-    run();
-
-    return () => {
-      destroyed = true;
-      if (app) {
-        try { app.destroy({ removeView: true }, { children: true, texture: true }); } catch { /* ignore */ }
-      }
-    };
-  }, [selectedChar]);
 
   const handleStartRun = () => {
     const deck = buildStartingDeck(selectedChar);
@@ -129,10 +75,7 @@ export function CharacterSelectScene() {
   const relicConfig = RELIC_CONFIGS.find((r) => r.id === config.startingRelic);
 
   return (
-    <div className="relative flex h-screen w-full overflow-hidden bg-dark-900 text-gray-200 select-none">
-      {/* Animated Dragon Display */}
-      <div ref={pixiRef} className="absolute inset-0 z-0" />
-
+    <div className="relative flex h-screen w-full overflow-hidden bg-dark-900 text-gray-200 select-none" style={{ backgroundImage: `url(${CHAR_BG[selectedChar]})`, backgroundSize: "cover", backgroundPosition: "center" }}>
       {/* Vignette overlay */}
       <div className="absolute inset-0 z-[1] bg-gradient-to-r from-dark-950/90 via-dark-950/40 to-transparent" />
 

@@ -317,7 +317,7 @@ export function BattleScene() {
                
                {/* Character */}
 <div className="character-slot flex h-64 w-64 items-center justify-center transition-transform hover:scale-105">
-                  {stage && <EnemyCharacter stage={stage} enemyId={enemy.id} />}
+                  {stage && <EnemyCharacter stage={stage} enemyId={enemy.id} spriteId={ENEMY_CONFIGS.find((c) => c.id === enemy.id)?.spriteId} />}
                </div>
                
                {/* HP Bar */}

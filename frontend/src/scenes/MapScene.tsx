@@ -175,7 +175,7 @@ export function MapScene() {
 
       {/* Intro Text */}
        <div className="absolute top-14 z-40 text-center pointer-events-none">
-        <h1 className="font-display text-4xl text-gold-500 drop-shadow-md">西行之路</h1>
+        <h1 className="font-display text-4xl text-gold-500 drop-shadow-md">龙骸之路</h1>
         {selectedIntro && (
           <motion.p
             className="mt-2 text-lg text-gray-300 drop-shadow"

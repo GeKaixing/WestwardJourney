@@ -6,7 +6,7 @@ export const PLAYER_CONFIGS: Record<CharacterClass, PlayerConfig> = {
     characterClass: CharacterClass.BoneDragon,
     displayName: "骨龙",
     description: "曾为生命之龙，被黄金巨像杀死后从尸骸中重生。操控死亡与白骨，龙骨上刻满战死龙族的名字。沉默寡言——死者无需言语。",
-    avatar: "/head-portrait/wukong.png",
+    avatar: "/head-portrait/骨龙.png",
     stats: {
       maxHealth: 75,
       startingGold: 99,
@@ -32,7 +32,7 @@ export const PLAYER_CONFIGS: Record<CharacterClass, PlayerConfig> = {
     characterClass: CharacterClass.ImmortalDragon,
     displayName: "仙龙",
     description: "天界之龙，万龙之灵。灵力散尽后跌落凡间。在轮回中逐渐找回记忆，以纯粹的光芒治愈和守护。唯一还相信救赎的龙。",
-    avatar: "/head-portrait/tanseng.png",
+    avatar: "/head-portrait/仙龙.png",
     stats: {
       maxHealth: 65,
       startingGold: 150,
@@ -58,7 +58,7 @@ export const PLAYER_CONFIGS: Record<CharacterClass, PlayerConfig> = {
     characterClass: CharacterClass.Longsila,
     displayName: "龙斯拉",
     description: "远古龙族的末代龙王。牺牲自己铸造龙晶，在每次轮回中保留全部记忆。这份记忆是他的力量，也是他的诅咒。他不说话。他战斗。",
-    avatar: "/head-portrait/zhubajie.png",
+    avatar: "/head-portrait/龙斯拉.png",
     stats: {
       maxHealth: 90,
       startingGold: 50,
@@ -84,7 +84,7 @@ export const PLAYER_CONFIGS: Record<CharacterClass, PlayerConfig> = {
     characterClass: CharacterClass.DemonDragon,
     displayName: "魔龙",
     description: "被放逐的深渊之龙，身体由深渊物质构成，燃烧着地狱之火。它让黄金巨感到了恐惧。它不是为正义而战——它为自己的毁灭欲望而战。",
-    avatar: "/head-portrait/sahesang.png",
+    avatar: "/head-portrait/魔龙.png",
     stats: {
       maxHealth: 80,
       startingGold: 75,
@@ -110,7 +110,7 @@ export const PLAYER_CONFIGS: Record<CharacterClass, PlayerConfig> = {
     characterClass: CharacterClass.StormDragon,
     displayName: "风暴龙",
     description: "天空与雷霆之主，第一个陨落。灵魂化为永不停息的暴风雨，以风暴凝聚成躯体。它是五龙中最快的，每一次俯冲都带着万钧雷霆。",
-    avatar: "/head-portrait/bailongma.png",
+    avatar: "/head-portrait/风暴龙.png",
     stats: {
       maxHealth: 70,
       startingGold: 100,

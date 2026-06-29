@@ -49,6 +49,7 @@ export const PlayerCharacter = forwardRef<PlayerCharacterHandle, PlayerCharacter
 
       let app: Application | null = null;
       let destroyed = false;
+      let inited = false;
 
       const reposition = () => {
         const seq = seqRef.current;
@@ -79,6 +80,7 @@ export const PlayerCharacter = forwardRef<PlayerCharacterHandle, PlayerCharacter
           backgroundAlpha: 0,
           antialias: true,
         });
+        inited = true;
         if (destroyed) return;
 
         const canvas = app.canvas as HTMLCanvasElement;
@@ -128,9 +130,11 @@ export const PlayerCharacter = forwardRef<PlayerCharacterHandle, PlayerCharacter
         seqRef.current = null;
         appRef.current = null;
         if (app) {
-          const canvas = app.canvas as HTMLCanvasElement | undefined;
-          app.destroy(true, { children: true, texture: true });
-          if (canvas?.parentNode) canvas.parentNode.removeChild(canvas);
+          if (inited) {
+            const canvas = app.canvas as HTMLCanvasElement | undefined;
+            app.destroy(true, { children: true, texture: true });
+            if (canvas?.parentNode) canvas.parentNode.removeChild(canvas);
+          }
           app = null;
         }
       };

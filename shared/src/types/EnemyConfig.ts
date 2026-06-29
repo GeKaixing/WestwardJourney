@@ -24,6 +24,7 @@ export interface EnemyConfig {
   name: string;
   description?: string;
   image?: string;
+  spriteId?: string;
   health: number;
   healthPerAscension?: number;
   block?: number;

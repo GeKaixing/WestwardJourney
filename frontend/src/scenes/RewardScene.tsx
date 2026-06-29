@@ -46,17 +46,21 @@ export function RewardScene() {
     const loadCardImages = async () => {
       const images = new Map<string, string>();
       for (const card of cardOptions) {
-        const imageUrl = await cardImageGenerator.getCardImageUrl(
-          card as CardConfig,
-          false,
-          run?.characterClass
-        );
-        images.set(card.id, imageUrl);
+        try {
+          const imageUrl = await cardImageGenerator.getCardImageUrl(
+            card as CardConfig,
+            false,
+            run?.characterClass
+          );
+          images.set(card.id, imageUrl);
+        } catch (e) {
+          console.error("Failed to load card image:", card.id, e);
+        }
       }
       setCardImages(images);
     };
 
-    loadCardImages();
+    loadCardImages().catch((e) => console.error("Card image loading failed:", e));
   }, [cardOptions, run?.characterClass]);
 
   const handleCardSelect = (configId: string) => {

@@ -5,6 +5,7 @@ export const ENEMY_CONFIGS: EnemyConfig[] = [
     id: "mountain_bandit",
     name: "山贼喽啰",
     image: "/assets/enemies/sneaky-gremlin.webp",
+    spriteId: "monster_goblin",
     health: 28,
     actions: [
       {
@@ -29,6 +30,7 @@ export const ENEMY_CONFIGS: EnemyConfig[] = [
     id: "bandit_leader",
     name: "山贼头目",
     image: "/assets/enemies/fat-gremlin.webp",
+    spriteId: "hero_brute_dragon",
     health: 48,
     actions: [
       {
@@ -57,6 +59,7 @@ export const ENEMY_CONFIGS: EnemyConfig[] = [
     id: "yaoguai_scorpion",
     name: "蝎子精",
     image: "/assets/enemies/chomper.webp",
+    spriteId: "monster_eyeball",
     health: 36,
     actions: [
       {

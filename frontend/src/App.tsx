@@ -10,6 +10,7 @@ import { EventScene } from "./scenes/EventScene";
 import { DiyCardScene } from "./scenes/DiyCardScene";
 import { DeckScene } from "./scenes/DeckScene";
 import { SettingsScene } from "./scenes/SettingsScene";
+import { SpineBoyScene } from "./scenes/spine/SpineBoyScene";
 
 export function App() {
   return (
@@ -26,6 +27,7 @@ export function App() {
         <Route path="/deck" element={<DeckScene />} />
         <Route path="/settings" element={<SettingsScene />} />
         <Route path="/tools/diy-card" element={<DiyCardScene />} />
+        <Route path="/spine-demo" element={<SpineBoyScene />} />
       </Routes>
     </div>
   );

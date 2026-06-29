@@ -5,6 +5,7 @@ import { BuffSystem } from "../buffs/BuffSystem";
 import { ActionQueue, ActionPriority } from "../actions/ActionQueue";
 import { TurnManager, TurnPhase, type TurnEvents } from "../turn/TurnManager";
 import { RelicSystem } from "../relics/RelicSystem";
+import { effectBus } from "../effects/effectBus";
 
 export interface CombatantState {
   id: string;
@@ -276,6 +277,8 @@ export class BattleSystem {
     finalDamage -= blockAbsorbed;
     enemy.health -= finalDamage;
 
+    effectBus.emit("damage", { targetId, amount: finalDamage });
+
     if (enemy.health <= 0) {
       enemy.health = 0;
       enemy.isAlive = false;
@@ -422,6 +425,8 @@ export class BattleSystem {
     const blocked = Math.min(this.player.block, finalDamage);
     this.player.block -= blocked;
     this.player.health -= finalDamage - blocked;
+
+    effectBus.emit("hit-player", { amount: finalDamage });
 
     if (this.buffSystem.hasBuff(this.player.id, BuffType.Thorns)) {
       const thornDamage = this.buffSystem.getBuffStacks(this.player.id, BuffType.Thorns);

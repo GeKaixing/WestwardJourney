@@ -1,13 +1,11 @@
 import { useEffect, useMemo, useRef, useState, ReactNode, useCallback } from "react";
+import type { Container } from "pixi.js";
 import {
   GiMonkey,
   GiMonkFace,
   GiPigFace,
   GiBarbarian,
   GiHorseHead,
-  GiRobber,
-  GiOgre,
-  GiScorpion,
   GiSwordClash,
   GiShield,
   GiMagicSwirl,
@@ -24,7 +22,9 @@ import { useGameStore } from "../store";
 import { cardImageGenerator } from "../utils/cardImageGenerator";
 import { startTurn, endTurn as playEndTurn, playBattleBGM } from "../systems/sounds";
 import { useCardDragDrop } from "../hooks/useCardDragDrop";
-import { GameHeader } from "../ui";
+import { CardType } from "@shared/enums/CardType";
+import { GameHeader, BattleEffects, PlayerCharacter, EnemyCharacter } from "../ui";
+import type { PlayerCharacterHandle } from "../ui";
 
 const buffSystem = new BuffSystem();
 const cardSystem = new CardSystem();
@@ -69,11 +69,11 @@ function CardView({
         <img
           src={imageUrl}
           alt={card.configId}
-          className="h-72 max-w-none rounded-lg"
+          className="h-52 max-w-none rounded-lg"
           draggable={false}
         />
       ) : (
-        <div className="flex h-72 w-[180px] items-center justify-center rounded-lg bg-dark-800">
+        <div className="flex h-52 w-[130px] items-center justify-center rounded-lg bg-dark-800">
           <span className="animate-pulse text-xs text-gray-600">...</span>
         </div>
       )}
@@ -101,10 +101,30 @@ export function BattleScene() {
   const [error, setError] = useState<string | null>(null);
   const [cardImages, setCardImages] = useState<Record<string, string>>({});
   const loadingCards = useRef<Set<string>>(new Set());
+  const playerRef = useRef<PlayerCharacterHandle>(null);
+  const [spineFailed, setSpineFailed] = useState(false);
+  const [stage, setStage] = useState<Container | null>(null);
+
+  useEffect(() => {
+    const check = setInterval(() => {
+      const s = playerRef.current?.getStage();
+      if (s) {
+        setStage(s);
+        clearInterval(check);
+      }
+    }, 100);
+    return () => clearInterval(check);
+  }, []);
 
   const onDragPlayCard = useCallback((cardInstanceId: string, targetIds: string[]) => {
+    // 攻击牌打出前先触发友方 spine 攻击动画，与伤害数字时序对齐（参考杀戮尖塔2）
+    const card = battleState?.hand.find((c) => c.instanceId === cardInstanceId);
+    const config = card ? CARD_CONFIGS.find((c) => c.id === card.configId) : undefined;
+    if (config?.type === CardType.Attack) {
+      playerRef.current?.triggerAttack();
+    }
     battleSystem.playCard(cardInstanceId, targetIds);
-  }, [battleSystem]);
+  }, [battleSystem, battleState?.hand]);
   const getCardTargetType = useCallback((cardInstanceId: string) => {
     const card = battleState?.hand.find(c => c.instanceId === cardInstanceId);
     if (!card) return "single_enemy";
@@ -230,11 +250,6 @@ export function BattleScene() {
     sha_wujing: <GiBarbarian />,
     white_dragon_horse: <GiHorseHead />,
   };
-  const enemyEmojis: Record<string, ReactNode> = {
-    mountain_bandit: <GiRobber />,
-    bandit_leader: <GiOgre />,
-    yaoguai_scorpion: <GiScorpion />,
-  };
   const playerEmoji = run ? characterEmojis[run.characterClass] ?? <GiMonkey /> : <GiMonkey />;
 
   return (
@@ -248,14 +263,23 @@ export function BattleScene() {
       </div>
 
       <GameHeader hideAvatar playerName={player.name} currentHealth={player.health} maxHealth={player.maxHealth} />
+      <BattleEffects />
+      <PlayerCharacter
+        ref={playerRef}
+        onError={() => setSpineFailed(true)}
+      />
 
       {/* Main Battle Area */}
-      <div className="relative z-10 flex flex-1 w-full items-center justify-between px-32 pb-32 pt-16">
-        
+      <div className="relative z-10 flex flex-1 w-full items-center justify-between px-20 pb-28 pt-12">
+
         {/* Player Character */}
         <div className="relative flex flex-col items-center">
-          <div className="flex h-72 w-72 items-center justify-center text-[10rem] drop-shadow-[0_10px_25px_rgba(0,0,0,0.5)] filter transition-transform hover:scale-105">
-            {playerEmoji}
+          <div data-player-id="player" className="flex h-64 w-64 items-center justify-center">
+            {spineFailed && (
+              <span className="text-[7rem] drop-shadow-[0_10px_25px_rgba(0,0,0,0.5)] filter">
+                {playerEmoji}
+              </span>
+            )}
           </div>
           {/* HP Bar */}
           <div className="mt-4 w-40">
@@ -291,34 +315,9 @@ export function BattleScene() {
                )}
                
                {/* Character */}
-               {(() => {
-                 const enemyConfig = ENEMY_CONFIGS.find(e => e.id === enemy.id);
-                 const imgUrl = enemyConfig?.image;
-                 if (imgUrl) {
-                   return (
-                      <div className="flex h-64 w-64 items-center justify-center drop-shadow-[0_10px_25px_rgba(0,0,0,0.5)] filter transition-transform hover:scale-105">
-                       <img
-                         src={imgUrl}
-                         alt={enemy.name}
-                         className="h-full w-full object-contain"
-                         onError={(e) => {
-                           const target = e.target as HTMLImageElement;
-                           target.style.display = "none";
-                           const fallback = document.createElement("span");
-                            fallback.className = "text-9xl text-gray-400";
-                           fallback.textContent = "👹";
-                           target.parentElement?.appendChild(fallback);
-                         }}
-                       />
-                     </div>
-                   );
-                 }
-                 return (
-                    <div className="flex h-64 w-64 items-center justify-center text-9xl drop-shadow-[0_10px_25px_rgba(0,0,0,0.5)] filter transition-transform hover:scale-105 text-gray-400">
-                     {enemyEmojis[enemy.id] ?? <GiOgre />}
-                   </div>
-                 );
-               })()}
+               <div className="flex h-64 w-64 items-center justify-center transition-transform hover:scale-105">
+                 {stage && <EnemyCharacter stage={stage} enemyId={enemy.id} />}
+               </div>
                
                {/* HP Bar */}
                <div className="mt-4 w-32">
@@ -340,7 +339,7 @@ export function BattleScene() {
       </div>
 
       {/* Bottom HUD */}
-      <div className="absolute bottom-0 left-0 right-0 z-30 h-72 pointer-events-none">
+      <div className="absolute bottom-0 left-0 right-0 z-30 h-60 pointer-events-none">
         
         {/* Energy Orb (Bottom Left) */}
         <div className="pointer-events-auto absolute bottom-10 left-10 flex h-20 w-20 items-center justify-center rounded-full bg-orange-950/90 ring-2 ring-orange-500 shadow-[0_0_30px_rgba(249,115,22,0.4)] z-40 transform transition-transform hover:scale-105">

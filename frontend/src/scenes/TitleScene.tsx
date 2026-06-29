@@ -41,7 +41,7 @@ export function TitleScene() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        西游行
+        龙骸纪元
       </motion.h1>
       <motion.p
         className="mt-4 text-xl text-white"
@@ -50,7 +50,7 @@ export function TitleScene() {
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 0.3 }}
       >
-        Westward Journey
+        Dragon Remnants
       </motion.p>
       <motion.p
         className="mt-2 text-sm text-white"

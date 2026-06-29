@@ -1,11 +1,15 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
-import { Application, ImageSource, Container } from "pixi.js";
-import { Spine, SpineTexture } from "@esotericsoftware/spine-pixi-v8";
-import { SkeletonBinary, TextureAtlas, AtlasAttachmentLoader } from "@esotericsoftware/spine-core";
+import { Application, Container } from "pixi.js";
+import { CharacterClass } from "@shared/enums/CharacterClass";
+import { FrameSequenceSprite } from "../systems/sprites/FrameSequenceSprite";
 
-const SPINEBOY_BASE = "/assets/spine/spineboy";
-const SPINEBOY_SKEL = `${SPINEBOY_BASE}/spineboy-pro.skel`;
-const SPINEBOY_ATLAS_URL = `${SPINEBOY_BASE}/spineboy-pma.atlas`;
+const CHAR_TO_SPRITE: Record<CharacterClass, string> = {
+  [CharacterClass.BoneDragon]: "hero_bone_dragon",
+  [CharacterClass.ImmortalDragon]: "hero_fairy_dragon",
+  [CharacterClass.Longsila]: "hero_dragzilla",
+  [CharacterClass.DemonDragon]: "hero_magic_dragon",
+  [CharacterClass.StormDragon]: "hero_storm_dragon",
+};
 
 export interface PlayerCharacterHandle {
   triggerAttack: () => void;
@@ -14,52 +18,23 @@ export interface PlayerCharacterHandle {
 }
 
 export interface PlayerCharacterProps {
+  characterClass: CharacterClass;
   onReady?: () => void;
   onError?: () => void;
 }
 
-async function loadSpineAssets(): Promise<Spine> {
-  const [skelBuf, atlasText] = await Promise.all([
-    fetch(SPINEBOY_SKEL).then((r) => r.arrayBuffer()),
-    fetch(SPINEBOY_ATLAS_URL).then((r) => r.text()),
-  ]);
-
-  const atlas = new TextureAtlas(atlasText);
-  const atlasBase = SPINEBOY_BASE + "/";
-  for (const page of atlas.pages) {
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.src = atlasBase + page.name;
-    await new Promise<void>((resolve, reject) => {
-      img.onload = () => resolve();
-      img.onerror = reject;
-    });
-    page.setTexture(SpineTexture.from(new ImageSource({ resource: img })));
-  }
-
-  const attachmentLoader = new AtlasAttachmentLoader(atlas);
-  const binary = new SkeletonBinary(attachmentLoader);
-  const skeletonData = binary.readSkeletonData(new Uint8Array(skelBuf));
-  return new Spine({ skeletonData });
-}
-
 export const PlayerCharacter = forwardRef<PlayerCharacterHandle, PlayerCharacterProps>(
-  function PlayerCharacter({ onReady, onError }, ref) {
+  function PlayerCharacter({ characterClass, onReady, onError }, ref) {
     const containerRef = useRef<HTMLDivElement>(null);
-    const spineRef = useRef<Spine | null>(null);
+    const seqRef = useRef<FrameSequenceSprite | null>(null);
     const appRef = useRef<Application | null>(null);
     const readyRef = useRef(false);
     const [failed, setFailed] = useState(false);
 
     const triggerAttack = () => {
-      const spineboy = spineRef.current;
-      if (!spineboy) return;
-      const entry = spineboy.state.setAnimation(1, "shoot", false);
-      entry.listener = {
-        complete: () => {
-          spineRef.current?.state.clearTrack(1);
-        },
-      };
+      const seq = seqRef.current;
+      if (!seq) return;
+      seq.play("attack", false);
     };
 
     useImperativeHandle(ref, () => ({
@@ -73,22 +48,20 @@ export const PlayerCharacter = forwardRef<PlayerCharacterHandle, PlayerCharacter
       const el = containerRef.current;
 
       let app: Application | null = null;
-      let initPromise: Promise<void> | null = null;
       let destroyed = false;
 
       const reposition = () => {
-        const spineboy = spineRef.current;
+        const seq = seqRef.current;
         const slot = document.querySelector('[data-player-id="player"]');
-        if (!slot || !spineboy) return;
+        if (!slot || !seq) return;
         const rect = slot.getBoundingClientRect();
-        const b = spineboy.getBounds();
+        const b = seq.displayContainer.getBounds();
         const slotSize = Math.min(rect.width, rect.height);
         const scale = (slotSize * 0.75) / (b.width || 1);
-        const facing = spineboy.scale.x < 0 ? -1 : 1;
-        spineboy.scale.set(scale * facing, scale);
-        const nb = spineboy.getBounds();
-        spineboy.x = rect.left + (rect.width - nb.width) / 2 - nb.x;
-        spineboy.y = rect.top + (rect.height - nb.height) / 2 - nb.y;
+        seq.displayContainer.scale.set(scale);
+        const nb = seq.displayContainer.getBounds();
+        seq.displayContainer.x = rect.left + (rect.width - nb.width) / 2 - nb.x;
+        seq.displayContainer.y = rect.top + (rect.height - nb.height) / 2 - nb.y;
       };
 
       const onResize = () => {
@@ -98,7 +71,7 @@ export const PlayerCharacter = forwardRef<PlayerCharacterHandle, PlayerCharacter
         }
       };
 
-      initPromise = (async () => {
+      (async () => {
         app = new Application();
         await app.init({
           width: window.innerWidth,
@@ -118,22 +91,29 @@ export const PlayerCharacter = forwardRef<PlayerCharacterHandle, PlayerCharacter
         el.appendChild(canvas);
         appRef.current = app;
 
-        let spineboy: Spine;
+        const spriteId = CHAR_TO_SPRITE[characterClass];
+        if (!spriteId) { setFailed(true); onError?.(); return; }
+
+        const seq = new FrameSequenceSprite();
+        seq.onComplete = () => {
+          if (seq.currentAnimation === "attack") seq.play("idle", true);
+        };
+
         try {
-          spineboy = await loadSpineAssets();
+          await seq.load(spriteId);
         } catch (e) {
           if (destroyed) return;
-          console.error("PlayerCharacter spine load failed:", e);
+          console.error("PlayerCharacter frame load failed:", e);
+          seq.destroy();
           setFailed(true);
           onError?.();
           return;
         }
-        if (destroyed) return;
+        if (destroyed) { seq.destroy(); return; }
 
-        spineboy.state.data.defaultMix = 0.2;
-        app.stage.addChild(spineboy);
-        spineboy.state.setAnimation(0, "idle", true);
-        spineRef.current = spineboy;
+        app.stage.addChild(seq.displayContainer);
+        seq.play("idle", true);
+        seqRef.current = seq;
         reposition();
         readyRef.current = true;
         onReady?.();
@@ -145,21 +125,17 @@ export const PlayerCharacter = forwardRef<PlayerCharacterHandle, PlayerCharacter
         destroyed = true;
         window.removeEventListener("resize", onResize);
         readyRef.current = false;
-        spineRef.current = null;
+        seqRef.current = null;
         appRef.current = null;
-        const finalize = () => {
-          if (app) {
-            const canvas = app.canvas as HTMLCanvasElement | undefined;
-            app.destroy(true, { children: true, texture: true });
-            if (canvas?.parentNode) canvas.parentNode.removeChild(canvas);
-            app = null;
-          }
-        };
-        if (initPromise) initPromise.finally(finalize);
-        else finalize();
+        if (app) {
+          const canvas = app.canvas as HTMLCanvasElement | undefined;
+          app.destroy(true, { children: true, texture: true });
+          if (canvas?.parentNode) canvas.parentNode.removeChild(canvas);
+          app = null;
+        }
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [characterClass]);
 
     if (failed) return null;
 

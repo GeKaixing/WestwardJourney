@@ -25,11 +25,11 @@ const RARITY_MAP: Record<string, DiyCardFormState["cardRarity"]> = {
 };
 
 const CHARACTER_CLASS_TO_STS: Record<CharacterClass, DiyCardFormState["character"]> = {
-  [CharacterClass.SunWukong]: "ironclad",
-  [CharacterClass.TangSanzang]: "regent",
-  [CharacterClass.ZhuBajie]: "defect",
-  [CharacterClass.ShaWujing]: "silent",
-  [CharacterClass.WhiteDragonHorse]: "necrobinder",
+  [CharacterClass.BoneDragon]: "ironclad",
+  [CharacterClass.ImmortalDragon]: "regent",
+  [CharacterClass.Longsila]: "defect",
+  [CharacterClass.DemonDragon]: "silent",
+  [CharacterClass.StormDragon]: "necrobinder",
 };
 
 class CardImageGenerator {

@@ -266,6 +266,7 @@ export function BattleScene() {
       <BattleEffects />
       <PlayerCharacter
         ref={playerRef}
+        characterClass={run!.characterClass}
         onError={() => setSpineFailed(true)}
       />
 

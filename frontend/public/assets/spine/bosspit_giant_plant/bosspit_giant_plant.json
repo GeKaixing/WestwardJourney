@@ -1,0 +1,12 @@
+{
+class: json
+project: D:\\USER\\desktop\\SP\\bosspit_giant_plant\\bosspit_giant_plant.spine
+output: D:/user/desktop/SP/bosspit_giant_plant
+ignored: null
+extension: .json
+format: JSON
+nonessential: true
+prettyPrint: false
+createAtlas: false
+texturePacker: null
+}

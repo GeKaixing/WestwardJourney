@@ -1,29 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { GiHearts, GiCoins, GiCampfire } from "react-icons/gi";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
+import { Application } from "pixi.js";
 import { CharacterClass } from "@shared/enums/CharacterClass";
 import { PLAYER_CONFIGS, CARD_CONFIGS, RELIC_CONFIGS } from "../data";
 import { useGameStore } from "../store";
 import { buttonClick, startGame } from "../systems/sounds";
+import { FrameSequenceSprite } from "../systems/sprites/FrameSequenceSprite";
 import type { CardInstance } from "../systems/cards";
 import type { RelicInstance } from "../systems/relics";
 
 const CHARACTER_ORDER = [
-  CharacterClass.SunWukong,
-  CharacterClass.TangSanzang,
-  CharacterClass.ZhuBajie,
-  CharacterClass.ShaWujing,
-  CharacterClass.WhiteDragonHorse,
+  CharacterClass.BoneDragon,
+  CharacterClass.ImmortalDragon,
+  CharacterClass.Longsila,
+  CharacterClass.DemonDragon,
+  CharacterClass.StormDragon,
 ];
 
 const CHAR_AVATAR: Record<CharacterClass, string> = {
-  [CharacterClass.SunWukong]: "/head-portrait/wukong.png",
-  [CharacterClass.TangSanzang]: "/head-portrait/tanseng.png",
-  [CharacterClass.ZhuBajie]: "/head-portrait/zhubajie.png",
-  [CharacterClass.ShaWujing]: "/head-portrait/sahesang.png",
-  [CharacterClass.WhiteDragonHorse]: "/head-portrait/bailongma.png",
+  [CharacterClass.BoneDragon]: "/head-portrait/wukong.png",
+  [CharacterClass.ImmortalDragon]: "/head-portrait/tanseng.png",
+  [CharacterClass.Longsila]: "/head-portrait/zhubajie.png",
+  [CharacterClass.DemonDragon]: "/head-portrait/sahesang.png",
+  [CharacterClass.StormDragon]: "/head-portrait/bailongma.png",
+};
+
+const CHAR_TO_SPRITE: Record<CharacterClass, string> = {
+  [CharacterClass.BoneDragon]: "hero_bone_dragon",
+  [CharacterClass.ImmortalDragon]: "hero_fairy_dragon",
+  [CharacterClass.Longsila]: "hero_dragzilla",
+  [CharacterClass.DemonDragon]: "hero_magic_dragon",
+  [CharacterClass.StormDragon]: "hero_storm_dragon",
 };
 
 let instanceCounter = 0;
@@ -49,21 +59,62 @@ function buildStartingRelic(charClass: CharacterClass): RelicInstance | null {
   return { configId: relicConfig.id, obtainedAtFloor: 0 };
 }
 
-function getBackgroundImage(charClass: CharacterClass): string {
-  switch (charClass) {
-    case CharacterClass.SunWukong: return '/wukong_bg.png';
-    case CharacterClass.TangSanzang: return '/tanseng_bg.png';
-    case CharacterClass.ZhuBajie: return '/zhubajie_bg.png';
-    case CharacterClass.ShaWujing: return '/sahesang_bg.png';
-    case CharacterClass.WhiteDragonHorse: return '/bailongma_bg.png';
-    default: return 'none';
-  }
-}
-
 export function CharacterSelectScene() {
   const navigate = useNavigate();
   const startRun = useGameStore((s) => s.startRun);
-  const [selectedChar, setSelectedChar] = useState<CharacterClass>(CharacterClass.SunWukong);
+  const [selectedChar, setSelectedChar] = useState<CharacterClass>(CharacterClass.BoneDragon);
+  const pixiRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = pixiRef.current;
+    if (!el) return;
+
+    let destroyed = false;
+    let app: Application;
+
+    const run = async () => {
+      app = new Application();
+      await app.init({
+        width: el.clientWidth,
+        height: el.clientHeight,
+        backgroundAlpha: 0,
+        antialias: true,
+        autoStart: false,
+      });
+      if (destroyed) { app.destroy({ removeView: true }); return; }
+
+      el.appendChild(app.canvas);
+      app.start();
+
+      const spriteId = CHAR_TO_SPRITE[selectedChar];
+      if (!spriteId) return;
+
+      const seq = new FrameSequenceSprite();
+      try {
+        await seq.load(spriteId);
+        if (destroyed) { seq.destroy(); return; }
+        app.stage.addChild(seq.displayContainer);
+
+        seq.displayContainer.x = app.screen.width / 2;
+        seq.displayContainer.y = app.screen.height / 2 + 20;
+        const scale = Math.min(app.screen.width, app.screen.height) / 500;
+        seq.displayContainer.scale.set(scale);
+
+        seq.play("idle", true);
+      } catch {
+        if (!destroyed) seq.destroy();
+      }
+    };
+
+    run();
+
+    return () => {
+      destroyed = true;
+      if (app) {
+        try { app.destroy({ removeView: true }, { children: true, texture: true }); } catch { /* ignore */ }
+      }
+    };
+  }, [selectedChar]);
 
   const handleStartRun = () => {
     const deck = buildStartingDeck(selectedChar);
@@ -79,21 +130,11 @@ export function CharacterSelectScene() {
 
   return (
     <div className="relative flex h-screen w-full overflow-hidden bg-dark-900 text-gray-200 select-none">
-      {/* Full Background */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={`bg-${selectedChar}`}
-          className="absolute inset-0 z-0 bg-cover bg-center"
-          style={{
-            backgroundImage: `url('${getBackgroundImage(selectedChar)}')`,
-            backgroundColor: "#2a1f1a"
-          }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.8 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.4 }}
-        />
-      </AnimatePresence>
+      {/* Animated Dragon Display */}
+      <div ref={pixiRef} className="absolute inset-0 z-0" />
+
+      {/* Vignette overlay */}
+      <div className="absolute inset-0 z-[1] bg-gradient-to-r from-dark-950/90 via-dark-950/40 to-transparent" />
 
       {/* Info Panel */}
       <div className="relative z-10 flex h-full w-1/2 flex-col justify-center px-16 lg:w-2/5">
@@ -104,12 +145,11 @@ export function CharacterSelectScene() {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -20, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="rounded-2xl  p-8   opacity-20"
           >
             <h1 className="mb-4 font-display text-5xl text-gold-400 drop-shadow-md">
               {config.displayName}
             </h1>
-            
+
             <div className="mb-6 flex items-center gap-6 text-xl">
               <div className="flex items-center gap-2 text-red-400 font-bold drop-shadow">
                 <GiHearts className="h-6 w-6" />
@@ -126,8 +166,8 @@ export function CharacterSelectScene() {
             </div>
 
             {relicConfig && (
-              <div className="flex items-start gap-4 rounded-xl  p-4  ">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full   drop-shadow text-2xl text-orange-500">
+              <div className="flex items-start gap-4 rounded-xl p-4 bg-dark-800/60">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-dark-700 drop-shadow text-2xl text-orange-500">
                   <GiCampfire />
                 </div>
                 <div>
@@ -150,8 +190,8 @@ export function CharacterSelectScene() {
               onClick={() => { buttonClick(); setSelectedChar(charClass); }}
               className={clsx(
                 "h-24 w-20 overflow-hidden rounded-xl border-2 transition-all duration-300",
-                isSelected 
-                  ? "border-gold-400 scale-110 shadow-[0_0_20px_rgba(250,204,21,0.3)] brightness-100 z-10" 
+                isSelected
+                  ? "border-gold-400 scale-110 shadow-[0_0_20px_rgba(250,204,21,0.3)] brightness-100 z-10"
                   : "border-gray-700 brightness-50 hover:brightness-75 hover:-translate-y-2 z-0"
               )}
             >
@@ -165,7 +205,7 @@ export function CharacterSelectScene() {
 
       {/* Back Button (Bottom Left) */}
       <div className="absolute bottom-10 left-12 z-20">
-        <button 
+        <button
           onClick={() => navigate("/")}
           className="group flex h-16 w-24 items-center justify-center rounded-lg bg-orange-950/80 border border-orange-800/50 hover:bg-orange-900 transition-all shadow-lg hover:shadow-orange-900/30"
         >
@@ -177,7 +217,7 @@ export function CharacterSelectScene() {
 
       {/* Start Button (Bottom Right) */}
       <div className="absolute bottom-10 right-12 z-20">
-        <button 
+        <button
           onClick={handleStartRun}
           className="group flex h-16 w-32 items-center justify-center rounded-lg bg-sky-900/90 border border-sky-600/50 hover:bg-sky-800 hover:shadow-[0_0_25px_rgba(14,165,233,0.4)] transition-all"
         >

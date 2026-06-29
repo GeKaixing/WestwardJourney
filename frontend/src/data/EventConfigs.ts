@@ -3,13 +3,13 @@ import type { EventConfig } from "@shared/types/EventConfig";
 export const EVENT_CONFIGS: EventConfig[] = [
   {
     id: "abyssal_baths",
-    title: "深渊浴场",
-    description: "深渊中有一池散发着幽光的水。跳入其中或许能获得祝福。",
+    title: "深渊溶洞",
+    description: "熔岩在深渊裂隙中流淌，空气中弥漫着硫磺的味道。魔龙曾在此蛰伏，它的余烬仍在地脉中燃烧。",
     image: "/assets/events/abyssal_baths.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "汲取余烬",
+        description: "吸收深渊之力，但会被灼伤",
         effects: [{ effectType: "heal", value: 10 }],
       },
       {
@@ -21,13 +21,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "amalgamator",
-    title: "融合怪",
-    description: "一个奇怪的机器正在嗡嗡作响，似乎可以将两张卡牌融合。",
+    title: "黄金熔炉",
+    description: "一座辉金帝国留下的熔炉仍在运转。它将生物与金属融合，制造出半机械的战争兵器。",
     image: "/assets/events/amalgamator.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "调查熔炉",
+        description: "也许能找到强化物品",
         effects: [{ effectType: "damage", value: 8 }],
       },
       {
@@ -39,13 +39,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "aroma_of_chaos",
-    title: "混沌之香",
-    description: "一股奇异的香气飘来，闻到后你感觉身体发生了变化。",
+    title: "混沌裂口",
+    description: "空间被撕裂了一道口子，现实与深渊在此交汇。龙晶的力量在此处最为薄弱。",
     image: "/assets/events/aroma_of_chaos.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "深入裂隙",
+        description: "寻找时空碎片",
         effects: [{ effectType: "gold", value: 50 }],
       },
       {
@@ -57,13 +57,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "battleworn_dummy",
-    title: "战痕木偶",
-    description: "一个满是伤痕的训练木偶立在路边。也许它身上还有有用的东西。",
+    title: "龙骨战场",
+    description: "一片巨大的龙骨散落在山谷中。骨龙的遗骸上还残留着战斗的痕迹。",
     image: "/assets/events/battleworn_dummy.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "搜寻骨骸",
+        description: "从龙骨中获取力量",
         effects: [{ effectType: "cardReward", cardReward: [] }],
       },
       {
@@ -75,13 +75,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "brain_leech",
-    title: "吸脑虫",
-    description: "一只发光的虫子向你爬来，它似乎想要钻进你的脑袋。",
+    title: "记忆寄生体",
+    description: "一只发光的晶化生物吸附在岩石上。它是被龙晶碎片照射后异变的生灵，体内保存着古老的记忆。",
     image: "/assets/events/brain_leech.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "吸收记忆",
+        description: "获得远古遗物",
         effects: [{ effectType: "relicReward", relicReward: [] }],
       },
       {
@@ -93,13 +93,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "bugslayer",
-    title: "除虫师",
-    description: "一位猎虫人正在展示他的战利品。他愿意用宝贝换取你的帮助。",
+    title: "巨像猎手",
+    description: "一位自称屠龙者的猎人。他并不知道眼前的才是真正的龙族——他猎杀的是辉金帝国制造的机械飞龙。",
     image: "/assets/events/bugslayer.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "揭露真相",
+        description: "告知他真相，获得帮助",
         effects: [{ effectType: "heal", value: 15 }, { effectType: "cardReward", cardReward: [] }],
       },
       {
@@ -111,13 +111,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "byrdonis_nest",
-    title: "鸟巢",
-    description: "你发现了一个巨大的鸟巢，里面有几颗闪闪发光的蛋。",
+    title: "风暴巢穴",
+    description: "悬崖之巅，一个由闪电雕刻而成的巢穴。风暴龙的余力在此化作永不停息的雷暴。",
     image: "/assets/events/byrdonis_nest.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "触碰雷霆",
+        description: "承受雷电洗礼，获得金币",
         effects: [{ effectType: "damage", value: 5 }, { effectType: "gold", value: 80 }],
       },
       {
@@ -129,13 +129,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "colorful_philosophers",
-    title: "多彩哲人",
-    description: "一群穿着彩色长袍的哲人正在辩论。他们邀请你加入。",
+    title: "龙语学者",
+    description: "一群研究上古龙语的学者。他们从遗迹中破译了部分龙族文字，但无法理解其中蕴含的力量。",
     image: "/assets/events/colorful_philosophers.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "展示龙之力",
+        description: "用力量换取知识，但消耗精力",
         effects: [{ effectType: "relicReward", relicReward: [] }, { effectType: "damage", value: 10 }],
       },
       {
@@ -147,13 +147,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "colossal_flower",
-    title: "巨花",
-    description: "一朵巨大的花朵挡住了去路。它的花瓣蕴含着神秘的力量。",
+    title: "龙血花",
+    description: "一朵吸收了五龙之血的魔花。它的花瓣流动着五种颜色的光芒，散发着古老而强大的气息。",
     image: "/assets/events/colossal_flower.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "汲取花露",
+        description: "吸收龙血花的治愈之力",
         effects: [{ effectType: "heal", value: 20 }],
       },
       {
@@ -165,13 +165,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "crystal_sphere",
-    title: "水晶球",
-    description: "一个闪烁着神秘光芒的水晶球出现在你面前。",
+    title: "龙晶碎片",
+    description: "一块从龙晶上剥落的碎片悬浮在空中。它散发着柔和的紫光，周围的时空在它周围扭曲。",
     image: "/assets/events/crystal_sphere.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "触碰碎片",
+        description: "获得力量与财富",
         effects: [{ effectType: "gold", value: 30 }, { effectType: "cardReward", cardReward: [] }],
       },
       {
@@ -183,13 +183,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "dense_vegetation",
-    title: "密林",
-    description: "茂密的丛林遮蔽了天空。你感觉有什么东西在注视着你。",
+    title: "古龙森林",
+    description: "一片被龙族魔法滋养了千年的古森林。树木高耸入云，树根下埋藏着远古的秘密。",
     image: "/assets/events/dense_vegetation.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "探索森林",
+        description: "寻找远古之泉",
         effects: [{ effectType: "heal", value: 10 }],
       },
       {
@@ -201,13 +201,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "doll_room",
-    title: "人偶屋",
-    description: "一间堆满了人偶的房间。这些人偶的眼睛似乎在跟随你。",
+    title: "炼金工坊",
+    description: "一座废弃的辉金帝国炼金实验室。人形的金属傀儡仍在本能地重复着千年前的操作。",
     image: "/assets/events/doll_room.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "搜索实验室",
+        description: "触发防防御机关",
         effects: [{ effectType: "damage", value: 8 }],
       },
       {
@@ -219,13 +219,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "doors_of_light_and_dark",
-    title: "光暗之门",
-    description: "两扇门出现在你面前，一扇散发着白光，另一扇笼罩在黑暗中。",
+    title: "龙魂之门",
+    description: "两座巨大的石门矗立在你面前——一扇刻着仙龙的纹章，另一扇刻着魔龙的烙印。",
     image: "/assets/events/doors_of_light_and_dark.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "推开石门",
+        description: "发现古老财宝",
         effects: [{ effectType: "gold", value: 50 }],
       },
       {
@@ -237,13 +237,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "drowning_beacon",
-    title: "溺水灯塔",
-    description: "一座灯塔矗立在沼泽中，它的光芒似乎在召唤着什么。",
+    title: "沉没龙塔",
+    description: "一座龙族古塔沉没在沼泽中。塔顶的龙火灯仍在燃烧，在浓雾中指引着什么。",
     image: "/assets/events/drowning_beacon.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "潜入塔中",
+        description: "搜寻失传的龙族卡牌",
         effects: [{ effectType: "cardReward", cardReward: [] }],
       },
       {
@@ -255,13 +255,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "endless_conveyor",
-    title: "无尽传送带",
-    description: "一条永不停歇的传送带，上面运送着各种奇怪的物品。",
+    title: "黄金生产线",
+    description: "辉金帝国的自动化生产线仍在运作，日夜不停地铸造着黄金兵器的躯体。",
     image: "/assets/events/endless_conveyor.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "潜入生产线",
+        description: "盗取辉金遗物",
         effects: [{ effectType: "relicReward", relicReward: [] }],
       },
       {
@@ -273,13 +273,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "field_of_man_sized_holes",
-    title: "巨坑原野",
-    description: "一片遍布巨大坑洞的原野。坑底似乎有东西在发光。",
+    title: "龙陨坑",
+    description: "地面上遍布着巨大的坑洞——那是远古巨龙陨落时砸出的痕迹。坑底凝结着龙血的结晶。",
     image: "/assets/events/field_of_man_sized_holes.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "收集结晶",
+        description: "龙血结晶蕴含力量",
         effects: [{ effectType: "heal", value: 15 }, { effectType: "cardReward", cardReward: [] }],
       },
       {
@@ -291,13 +291,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "grave_of_the_forgotten",
-    title: "遗忘之墓",
-    description: "一座无名墓碑孤零零地立在路边。碑文已经模糊不清。",
+    title: "无名龙墓",
+    description: "一座没有铭文的龙族墓碑。骨龙曾在这里埋葬了一位在战争中逝去的同伴。墓碑上只有一行爪痕。",
     image: "/assets/events/grave_of_the_forgotten.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "祭奠亡者",
+        description: "获得龙族祝福",
         effects: [{ effectType: "damage", value: 5 }, { effectType: "gold", value: 80 }],
       },
       {
@@ -309,13 +309,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "hungry_for_mushrooms",
-    title: "饥饿蘑菇",
-    description: "你发现了一圈发光的蘑菇。传说这是妖精的舞池。",
+    title: "龙息菌",
+    description: "一片在风暴龙吐息中变异的大型真菌。它们释放的孢子能短时间内强化肉体。",
     image: "/assets/events/hungry_for_mushrooms.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "采集孢子",
+        description: "获得遗物但可能中毒",
         effects: [{ effectType: "relicReward", relicReward: [] }, { effectType: "damage", value: 10 }],
       },
       {
@@ -327,13 +327,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "infested_automaton",
-    title: "寄生机关",
-    description: "一台废弃的机械装置，内部爬满了奇怪的虫子。",
+    title: "腐化傀儡",
+    description: "一台被深渊能量侵蚀的黄金傀儡。它的核心仍在运转，但已经被魔龙的混沌之力扭曲。",
     image: "/assets/events/infested_automaton.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "净化核心",
+        description: "释放其中储存的能量",
         effects: [{ effectType: "heal", value: 20 }],
       },
       {
@@ -345,13 +345,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "jungle_maze_adventure",
-    title: "丛林迷宫",
-    description: "你进入了丛林迷宫。据说深处藏着宝藏，但也有危险。",
+    title: "龙纹迷宫",
+    description: "由远古龙族建造的试炼迷宫。墙壁上刻满了龙语的指引与警告。",
     image: "/assets/events/jungle_maze_adventure.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "挑战迷宫",
+        description: "通过试炼获得奖励",
         effects: [{ effectType: "gold", value: 30 }, { effectType: "cardReward", cardReward: [] }],
       },
       {
@@ -363,13 +363,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "lost_wisp",
-    title: "迷途精灵",
-    description: "一只迷路的精灵在空中飘荡。它似乎在寻找回家的路。",
+    title: "龙魂残影",
+    description: "一条远古龙族的灵魂残影在此徘徊。它似乎迷失在了轮回的间隙中。",
     image: "/assets/events/lost_wisp.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "安抚残魂",
+        description: "龙魂的感激化为治愈之力",
         effects: [{ effectType: "heal", value: 10 }],
       },
       {
@@ -381,13 +381,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "luminous_choir",
-    title: "光之合唱",
-    description: "一束神圣的光芒从天而降，伴随着悠扬的歌声。",
+    title: "仙龙遗迹",
+    description: "仙龙曾在此建立了一座圣殿。即使千年过去，圣光仍未消散，空中回荡着若有若无的龙吟。",
     image: "/assets/events/luminous_choir.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "步入圣光",
+        description: "承受圣光的净化",
         effects: [{ effectType: "damage", value: 8 }],
       },
       {
@@ -399,13 +399,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "morphic_grove",
-    title: "变形林",
-    description: "一片会变形的树林。树木的位置似乎在不断变化。",
+    title: "扭曲丛林",
+    description: "龙晶的力量使这片丛林的时空变得不稳定。树木在生长与腐朽之间循环，现实与记忆在此交织。",
     image: "/assets/events/morphic_grove.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "寻找稳定点",
+        description: "时空裂隙中藏着金币",
         effects: [{ effectType: "gold", value: 50 }],
       },
       {
@@ -417,13 +417,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "potion_courier",
-    title: "药水信使",
-    description: "一位药水快递员正在寻找愿意帮忙送药的冒险者。",
+    title: "龙血炼金师",
+    description: "一位炼金师发现了龙血的秘密。她正在收集不同属性的龙血来炼制终极药剂。",
     image: "/assets/events/potion_courier.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "提供龙血",
+        description: "换取炼金卡牌",
         effects: [{ effectType: "cardReward", cardReward: [] }],
       },
       {
@@ -435,13 +435,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "punch_off",
-    title: "拳击大赛",
-    description: "一场拳击比赛正在举行。参加比赛可以获得丰厚的奖励。",
+    title: "角力大会",
+    description: "龙斯拉的崇拜者们举办了一场力量竞赛。他们模仿龙王的战斗方式，以纯粹的肉体力量决出胜负。",
     image: "/assets/events/punch_off.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "参加比赛",
+        description: "赢得冠军遗物",
         effects: [{ effectType: "relicReward", relicReward: [] }],
       },
       {
@@ -453,13 +453,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "ranwid_the_elder",
-    title: "长者兰维德",
-    description: "一位云游僧人拦住了你的去路。他微笑着问你是否愿意听他讲一段经文。",
+    title: "轮回行者",
+    description: "一位神秘的老人。他似乎知道龙晶和轮回的秘密。他的眼中倒映着无数条时间线。",
     image: "/assets/events/ranwid_the_elder.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "聆听教诲",
+        description: "获得智慧与力量",
         effects: [{ effectType: "heal", value: 15 }, { effectType: "cardReward", cardReward: [] }],
       },
       {
@@ -471,13 +471,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "reflections",
-    title: "镜中倒影",
-    description: "一池平静的水面映照出你的倒影。但倒影似乎在对你说话。",
+    title: "时光之池",
+    description: "一池由龙晶泪水汇聚而成的湖水。水面倒映的不是你的面容，而是前次轮回中的你。",
     image: "/assets/events/reflections.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "凝视倒影",
+        description: "获取前世的记忆和财富",
         effects: [{ effectType: "damage", value: 5 }, { effectType: "gold", value: 80 }],
       },
       {
@@ -489,13 +489,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "relic_trader",
-    title: "遗物商人",
-    description: "一个看似友善的商人拦住了你。他展示着各种宝贝。",
+    title: "遗迹商人",
+    description: "一个游走在轮回之间的神秘商人。他出售的货物来自不同的时间线——你甚至看到了上一轮回中自己掉落的物品。",
     image: "/assets/events/relic_trader.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "交易",
+        description: "用生命交换遗物",
         effects: [{ effectType: "relicReward", relicReward: [] }, { effectType: "damage", value: 10 }],
       },
       {
@@ -507,13 +507,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "room_full_of_cheese",
-    title: "满屋奶酪",
-    description: "一间堆满了奶酪的房间。这些奶酪散发着诱人的香气。",
+    title: "龙族宝库",
+    description: "龙斯拉的藏宝室之一。金币和珍宝堆积如山，但守护陷阱也遍布其中。",
     image: "/assets/events/room_full_of_cheese.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "翻找宝物",
+        description: "找到治疗药剂",
         effects: [{ effectType: "heal", value: 20 }],
       },
       {
@@ -525,13 +525,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "round_tea_party",
-    title: "圆形茶会",
-    description: "一群小动物正在举办茶会。它们邀请你加入。",
+    title: "精灵茶会",
+    description: "一群被龙族魔法启蒙的森林精灵正在举办茶会。它们的茶能唤醒沉睡的力量。",
     image: "/assets/events/round_tea_party.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "加入茶会",
+        description: "品茶获得灵感",
         effects: [{ effectType: "gold", value: 30 }, { effectType: "cardReward", cardReward: [] }],
       },
       {
@@ -543,13 +543,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "sapphire_seed",
-    title: "蓝宝石种子",
-    description: "一颗闪闪发光的蓝宝石种子。种下它或许能长出特别的东西。",
+    title: "龙晶种子",
+    description: "一颗由龙晶碎片培育而成的种子。它在地面上生根发芽，长出了晶莹剔透的晶体枝叶。",
     image: "/assets/events/sapphire_seed.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "触碰晶体",
+        description: "吸收它的生命能量",
         effects: [{ effectType: "heal", value: 10 }],
       },
       {
@@ -561,13 +561,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "self_help_book",
-    title: "自助宝典",
-    description: "一本破旧的自助书籍。里面记载着一些实用的技巧。",
+    title: "龙语石板",
+    description: "一块记载着龙族战斗技巧的石板。上面的文字虽然古老，但其中蕴含的战斗智慧永不过时。",
     image: "/assets/events/self_help_book.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "研读石板",
+        description: "承受龙语的冲击",
         effects: [{ effectType: "damage", value: 8 }],
       },
       {
@@ -579,13 +579,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "slippery_bridge",
-    title: "滑桥",
-    description: "一座滑溜溜的桥横跨深渊。桥的对面似乎有什么东西。",
+    title: "龙骨桥",
+    description: "一座由风暴龙的肋骨搭建而成的天然桥梁。桥下是无尽深渊，桥上风声如龙啸。",
     image: "/assets/events/slippery_bridge.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "冒险过桥",
+        description: "桥对岸有古代遗物",
         effects: [{ effectType: "gold", value: 50 }],
       },
       {
@@ -597,13 +597,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "spiraling_whirlpool",
-    title: "螺旋漩涡",
-    description: "一个巨大的漩涡在水中旋转。漩涡中心闪烁着奇异的光芒。",
+    title: "时空漩涡",
+    description: "龙晶的力量在此处撕开了时空的裂缝。过去的影像与现实交叠，形成了能量的漩涡。",
     image: "/assets/events/spiraling_whirlpool.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "进入漩涡",
+        description: "穿越时空获取卡牌",
         effects: [{ effectType: "cardReward", cardReward: [] }],
       },
       {
@@ -615,13 +615,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "spirit_grafter",
-    title: "灵魂嫁接师",
-    description: "一位灵魂嫁接师正在寻找志愿者。他可以将强大的灵魂移植到你体内。",
+    title: "灵魂嫁接者",
+    description: "一个利用龙晶碎片力量进行灵魂实验的法师。他可以将战败敌人的灵魂嫁接到你身上。",
     image: "/assets/events/spirit_grafter.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "接受嫁接",
+        description: "获得强大的灵魂遗物",
         effects: [{ effectType: "relicReward", relicReward: [] }],
       },
       {
@@ -633,13 +633,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "stone_of_all_time",
-    title: "永恒之石",
-    description: "一块古老的石头，上面刻满了神秘的符文。",
+    title: "永恒龙骨",
+    description: "一块巨大的龙骨化石，上面刻满了龙族的年表。这是骨龙用来记录每一次轮回的石碑。",
     image: "/assets/events/stone_of_all_time.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "解读年表",
+        description: "学习古老战斗技巧",
         effects: [{ effectType: "heal", value: 15 }, { effectType: "cardReward", cardReward: [] }],
       },
       {
@@ -651,13 +651,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "sunken_statue",
-    title: "沉没雕像",
-    description: "一尊沉没在水中的雕像。雕像的眼睛似乎在发光。",
+    title: "辉金残像",
+    description: "一座被摧毁的黄金巨像残骸。即使被击碎，它的 fragments 仍在吸收周围的魔法能量。",
     image: "/assets/events/sunken_statue.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "破坏残骸",
+        description: "从中掠夺能量",
         effects: [{ effectType: "damage", value: 5 }, { effectType: "gold", value: 80 }],
       },
       {
@@ -669,13 +669,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "sunken_treasury",
-    title: "沉没宝库",
-    description: "你发现了一个沉没的宝库。里面似乎还有值钱的东西。",
+    title: "龙族金库",
+    description: "一座被时间掩埋的龙族金库。门口的龙语封印仍然完好无损。",
     image: "/assets/events/sunken_treasury.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "破解封印",
+        description: "遭遇守护者，但回报丰厚",
         effects: [{ effectType: "relicReward", relicReward: [] }, { effectType: "damage", value: 10 }],
       },
       {
@@ -687,13 +687,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "symbiote",
-    title: "共生体",
-    description: "一个发光的共生体漂浮在空中。它似乎想要依附在你身上。",
+    title: "龙晶共生体",
+    description: "一团由纯净龙晶能量构成的活体能量体。它似乎拥有自己的意识，渴望与宿主结合。",
     image: "/assets/events/symbiote.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "接纳共生",
+        description: "获得强大的治愈力",
         effects: [{ effectType: "heal", value: 20 }],
       },
       {
@@ -705,13 +705,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "tablet_of_truth",
-    title: "真理石板",
-    description: "一块刻着古老文字的石板。阅读上面的文字可能会改变命运。",
+    title: "黄金法典",
+    description: "一本辉金帝国的古籍。书中记载了黄金巨像的建造蓝图——也许能找到它的弱点。",
     image: "/assets/events/tablet_of_truth.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "研究法典",
+        description: "获取知识和财富",
         effects: [{ effectType: "gold", value: 30 }, { effectType: "cardReward", cardReward: [] }],
       },
       {
@@ -723,13 +723,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "tea_master",
-    title: "茶道大师",
-    description: "一位茶道大师正在泡茶。他的茶据说有神奇的功效。",
+    title: "龙火茶馆",
+    description: "一位隐居的龙族后裔开设的茶馆。他用龙火煮茶，据说饮下后能感受到五龙的力量。",
     image: "/assets/events/tea_master.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "品茶",
+        description: "龙火茶温暖你的身体",
         effects: [{ effectType: "heal", value: 10 }],
       },
       {
@@ -741,13 +741,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "the_future_of_potions",
-    title: "药水未来",
-    description: "一位预言家正在展示他发明的新式药水。",
+    title: "龙晶炼金术",
+    description: "一位炼金大师发现了利用龙晶碎片强化药剂的方法。他正在寻找实验品。",
     image: "/assets/events/the_future_of_potions.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "自愿试药",
+        description: "承受药剂的副作用",
         effects: [{ effectType: "damage", value: 8 }],
       },
       {
@@ -759,13 +759,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "the_legends_were_true",
-    title: "传说成真",
-    description: "传说中的圣地出现在你面前。这里真的有宝藏吗？",
+    title: "龙之圣地",
+    description: "传说中五龙诞生之地出现在你面前。这里凝聚着最纯粹的龙族原初之力。",
     image: "/assets/events/the_legends_were_true.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "汲取原初之力",
+        description: "获得龙族祝福",
         effects: [{ effectType: "gold", value: 50 }],
       },
       {
@@ -777,13 +777,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "this_or_that",
-    title: "二选一",
-    description: "你必须在两个选项中做出选择。每个选择都会带来不同的后果。",
+    title: "轮回抉择",
+    description: "龙晶向你展示了两条未来的分支。每一条都会带来不同的命运碎片。",
     image: "/assets/events/this_or_that.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "选择一条路",
+        description: "命运会给你回报",
         effects: [{ effectType: "cardReward", cardReward: [] }],
       },
       {
@@ -795,13 +795,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "tinker_time",
-    title: "修补时光",
-    description: "一位修补匠正在修理他的工具。他愿意帮你强化装备。",
+    title: "龙鳞匠人",
+    description: "一位用龙鳞打造装备的工匠。他收集了五龙褪下的鳞片，能打造出独一无二的遗物。",
     image: "/assets/events/tinker_time.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "请他打造",
+        description: "获得稀有遗物",
         effects: [{ effectType: "relicReward", relicReward: [] }],
       },
       {
@@ -813,13 +813,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "trash_heap",
-    title: "垃圾堆",
-    description: "一座巨大的垃圾堆。也许能在里面找到有用的东西。",
+    title: "轮回废墟",
+    description: "前次轮回中战斗的遗迹。残破的卡牌和遗物散落一地——有些还残留着能量。",
     image: "/assets/events/trash_heap.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "翻找废墟",
+        description: "找回遗失的力量",
         effects: [{ effectType: "heal", value: 15 }, { effectType: "cardReward", cardReward: [] }],
       },
       {
@@ -831,13 +831,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "trial",
-    title: "试炼",
-    description: "一个古老的试炼场。通过试炼可以获得强大的力量。",
+    title: "龙魂试炼",
+    description: "一座古老的龙族试炼场。只有拥有龙族血脉者才能进入。通过试炼将获得巨龙之力。",
     image: "/assets/events/trial.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "接受试炼",
+        description: "通过试炼获得远古馈赠",
         effects: [{ effectType: "damage", value: 5 }, { effectType: "gold", value: 80 }],
       },
       {
@@ -849,13 +849,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "unrest_site",
-    title: "骚乱之地",
-    description: "一片骚乱的战场遗迹。这里似乎还残留着战斗的痕迹。",
+    title: "巨像战场",
+    description: "一场与黄金巨像使徒激战后的废墟。空气中弥漫着金色的粉尘——那是被击碎的黄金之躯。",
     image: "/assets/events/unrest_site.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "收集金粉",
+        description: "金粉可用于强化遗物",
         effects: [{ effectType: "relicReward", relicReward: [] }, { effectType: "damage", value: 10 }],
       },
       {
@@ -867,13 +867,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "war_historian_repy",
-    title: "战争史官",
-    description: "一位战争史官正在收集战场上的遗物。他愿意用宝贝交换。",
+    title: "辉金档案员",
+    description: "一个保存着辉金帝国知识的机械档案员。它认为黄金巨像是伟大的成就——它不知道巨像已经失控。",
     image: "/assets/events/war_historian_repy.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "索要情报",
+        description: "获取存档中的疗愈代码",
         effects: [{ effectType: "heal", value: 20 }],
       },
       {
@@ -885,13 +885,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "waterlogged_scriptorium",
-    title: "水浸书阁",
-    description: "一座被水淹没的图书馆。里面可能还保存着珍贵的书籍。",
+    title: "龙语图书馆",
+    description: "一座收藏了无数龙语典籍的图书馆。虽然被时间侵蚀，但其中蕴含的知识仍闪闪发光。",
     image: "/assets/events/waterlogged_scriptorium.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "翻阅典籍",
+        description: "学习龙族秘术",
         effects: [{ effectType: "gold", value: 30 }, { effectType: "cardReward", cardReward: [] }],
       },
       {
@@ -903,13 +903,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "welcome_to_wongos",
-    title: "欢迎来到旺果",
-    description: "欢迎来到旺果的神秘商店。这里应有尽有。",
+    title: "流浪龙商",
+    description: "一位自称在轮回中穿梭了上百次的商人。他的货物来自不同的时间线，标签上有各种语言。",
     image: "/assets/events/welcome_to_wongos.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "浏览货物",
+        description: "买到治疗药剂",
         effects: [{ effectType: "heal", value: 10 }],
       },
       {
@@ -921,13 +921,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "wellspring",
-    title: "灵泉",
-    description: "一汪清澈的泉水散发着淡淡的蓝光。据说饮下泉水能净化身心。",
+    title: "龙泪泉",
+    description: "传说中仙龙落泪之处。她的泪水化为永不干涸的泉水，能治愈一切伤痛。",
     image: "/assets/events/wellspring.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "饮下泉水",
+        description: "承受龙泪中蕴含的悲伤",
         effects: [{ effectType: "damage", value: 8 }],
       },
       {
@@ -939,13 +939,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "whispering_hollow",
-    title: "低语山谷",
-    description: "一个会低语的山谷。风声中似乎隐藏着古老的秘密。",
+    title: "龙吟谷",
+    description: "当风吹过山谷时，岩石间的孔洞会发出龙吟般的声音。这是风暴龙留给世界的最后歌声。",
     image: "/assets/events/whispering_hollow.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "倾听龙吟",
+        description: "领悟风暴之力",
         effects: [{ effectType: "gold", value: 50 }],
       },
       {
@@ -957,13 +957,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "wood_carvings",
-    title: "木雕",
-    description: "一些精美的木雕作品。每一件都蕴含着独特的魔力。",
+    title: "龙骨雕刻",
+    description: "一件用龙骨雕刻而成的艺术品。即使千年过去，龙骨中仍然流淌着微弱的魔力。",
     image: "/assets/events/wood_carvings.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "吸收魔力",
+        description: "将龙骨之力转化为卡牌",
         effects: [{ effectType: "cardReward", cardReward: [] }],
       },
       {
@@ -975,13 +975,13 @@ export const EVENT_CONFIGS: EventConfig[] = [
   },
   {
     id: "zen_weaver",
-    title: "禅织者",
-    description: "一位禅织者正在编织命运之网。她可以为你编织新的未来。",
+    title: "命运织者",
+    description: "一位能看见时间线的织者。她用龙晶的能量丝线编织着命运之网——她可以帮助你改变轮回的走向。",
     image: "/assets/events/zen_weaver.png",
     choices: [
       {
-        label: "探索",
-        description: "深入探索这个事件",
+        label: "重织命运",
+        description: "改变因果，获得遗物",
         effects: [{ effectType: "relicReward", relicReward: [] }],
       },
       {

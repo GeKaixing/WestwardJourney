@@ -4,12 +4,12 @@ import { CharacterClass } from "@shared/enums/CharacterClass";
 
 export const RELIC_CONFIGS: RelicConfig[] = [
   {
-    id: "golden_circlet",
-    name: "金箍",
+    id: "skull_of_dead",
+    name: "亡者颅骨",
     description: "战斗开始时，获得2层力量",
     image: "/assets/relics/circlet.webp",
     rarity: Rarity.Basic,
-    characterClass: CharacterClass.SunWukong,
+    characterClass: CharacterClass.BoneDragon,
     effects: [
       {
         effectType: "buff",
@@ -19,12 +19,12 @@ export const RELIC_CONFIGS: RelicConfig[] = [
     unique: true,
   },
   {
-    id: "monk_robe",
-    name: "锦斓袈裟",
+    id: "heaven_scale_shard",
+    name: "天鳞碎片",
     description: "每回合获得3点格挡",
     image: "/assets/relics/distinctive_cape.webp",
     rarity: Rarity.Basic,
-    characterClass: CharacterClass.TangSanzang,
+    characterClass: CharacterClass.ImmortalDragon,
     effects: [
       {
         effectType: "block",
@@ -35,12 +35,12 @@ export const RELIC_CONFIGS: RelicConfig[] = [
     unique: true,
   },
   {
-    id: "nine_tooth_rake",
-    name: "九齿钉耙",
+    id: "dragon_core_shard",
+    name: "龙晶碎片",
     description: "每造成5点伤害，获得1点生命",
     image: "/assets/relics/archaic_tooth.webp",
     rarity: Rarity.Basic,
-    characterClass: CharacterClass.ZhuBajie,
+    characterClass: CharacterClass.Longsila,
     effects: [
       {
         effectType: "heal",
@@ -50,12 +50,12 @@ export const RELIC_CONFIGS: RelicConfig[] = [
     unique: true,
   },
   {
-    id: "demon_skull_necklace",
-    name: "降魔宝珠",
+    id: "abyss_brand",
+    name: "深渊烙印",
     description: "战斗开始时，对所有敌人施加1层易伤",
     image: "/assets/relics/red_skull.webp",
     rarity: Rarity.Basic,
-    characterClass: CharacterClass.ShaWujing,
+    characterClass: CharacterClass.DemonDragon,
     effects: [
       {
         effectType: "debuff",
@@ -65,12 +65,12 @@ export const RELIC_CONFIGS: RelicConfig[] = [
     unique: true,
   },
   {
-    id: "dragon_scale",
-    name: "龙鳞",
+    id: "eye_of_storm",
+    name: "风暴之眼",
     description: "每回合获得2点能量",
     image: "/assets/relics/ring_of_the_drake.webp",
     rarity: Rarity.Basic,
-    characterClass: CharacterClass.WhiteDragonHorse,
+    characterClass: CharacterClass.StormDragon,
     effects: [
       {
         effectType: "energy",

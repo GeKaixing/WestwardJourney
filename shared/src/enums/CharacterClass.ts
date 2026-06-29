@@ -1,7 +1,7 @@
 export enum CharacterClass {
-  SunWukong = "sun_wukong",
-  TangSanzang = "tang_sanzang",
-  ZhuBajie = "zhu_bajie",
-  ShaWujing = "sha_wujing",
-  WhiteDragonHorse = "white_dragon_horse",
+  BoneDragon = "bone_dragon",
+  ImmortalDragon = "immortal_dragon",
+  Longsila = "longsila",
+  DemonDragon = "demon_dragon",
+  StormDragon = "storm_dragon",
 }

@@ -9,7 +9,17 @@ interface Particle {
   alpha: number;
   life: number;
   maxLife: number;
+  color: string;
 }
+
+const COLORS = [
+  "rgba(200, 200, 220, {a})", // 骨龙 — 苍白
+  "rgba(255, 215, 100, {a})", // 仙龙 — 金色
+  "rgba(100, 130, 255, {a})", // 龙斯拉 — 深蓝
+  "rgba(255, 80, 80, {a})",   // 魔龙 — 赤红
+  "rgba(100, 220, 255, {a})", // 风暴龙 — 青
+  "rgba(180, 100, 255, {a})", // 龙晶 — 紫
+];
 
 export function Particles({ count = 60 }: { count?: number }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -48,7 +58,7 @@ export function Particles({ count = 60 }: { count?: number }) {
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(250, 204, 21, ${p.alpha})`;
+        ctx.fillStyle = p.color.replace("{a}", String(p.alpha));
         ctx.fill();
 
         if (p.life >= p.maxLife) {
@@ -85,5 +95,6 @@ function createParticle(w: number, h: number): Particle {
     alpha: 0,
     life: 0,
     maxLife: Math.random() * 200 + 100,
+    color: COLORS[Math.floor(Math.random() * COLORS.length)]!,
   };
 }

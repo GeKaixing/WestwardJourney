@@ -2,10 +2,10 @@ import { CharacterClass } from "@shared/enums/CharacterClass";
 import type { PlayerConfig } from "@shared/types/PlayerConfig";
 
 export const PLAYER_CONFIGS: Record<CharacterClass, PlayerConfig> = {
-  [CharacterClass.SunWukong]: {
-    characterClass: CharacterClass.SunWukong,
-    displayName: "孙悟空",
-    description: "齐天大圣。擅长高爆发攻击和连击，拥有独一无二的金箍棒和分身术。",
+  [CharacterClass.BoneDragon]: {
+    characterClass: CharacterClass.BoneDragon,
+    displayName: "骨龙",
+    description: "曾为生命之龙，被黄金巨像杀死后从尸骸中重生。操控死亡与白骨，龙骨上刻满战死龙族的名字。沉默寡言——死者无需言语。",
     avatar: "/head-portrait/wukong.png",
     stats: {
       maxHealth: 75,
@@ -23,15 +23,15 @@ export const PLAYER_CONFIGS: Record<CharacterClass, PlayerConfig> = {
       "defend",
       "defend",
       "defend",
-      "somersault_cloud",
+      "bone_spear",
     ],
-    startingRelic: "golden_circlet",
+    startingRelic: "skull_of_dead",
   },
 
-  [CharacterClass.TangSanzang]: {
-    characterClass: CharacterClass.TangSanzang,
-    displayName: "唐三藏",
-    description: "金蝉子转世。擅长治疗、护盾和咒语加持，引领团队走向胜利。",
+  [CharacterClass.ImmortalDragon]: {
+    characterClass: CharacterClass.ImmortalDragon,
+    displayName: "仙龙",
+    description: "天界之龙，万龙之灵。灵力散尽后跌落凡间。在轮回中逐渐找回记忆，以纯粹的光芒治愈和守护。唯一还相信救赎的龙。",
     avatar: "/head-portrait/tanseng.png",
     stats: {
       maxHealth: 65,
@@ -47,17 +47,17 @@ export const PLAYER_CONFIGS: Record<CharacterClass, PlayerConfig> = {
       "defend",
       "defend",
       "defend",
-      "blessing",
-      "meditation",
-      "sutra_shield",
+      "heavens_grace",
+      "divine_insight",
+      "scale_of_light",
     ],
-    startingRelic: "monk_robe",
+    startingRelic: "heaven_scale_shard",
   },
 
-  [CharacterClass.ZhuBajie]: {
-    characterClass: CharacterClass.ZhuBajie,
-    displayName: "猪八戒",
-    description: "天蓬元帅转世。皮糙肉厚，擅长格挡和嘲讽，用九齿钉耙撕裂敌人。",
+  [CharacterClass.Longsila]: {
+    characterClass: CharacterClass.Longsila,
+    displayName: "龙斯拉",
+    description: "远古龙族的末代龙王。牺牲自己铸造龙晶，在每次轮回中保留全部记忆。这份记忆是他的力量，也是他的诅咒。他不说话。他战斗。",
     avatar: "/head-portrait/zhubajie.png",
     stats: {
       maxHealth: 90,
@@ -74,16 +74,16 @@ export const PLAYER_CONFIGS: Record<CharacterClass, PlayerConfig> = {
       "defend",
       "defend",
       "defend",
-      "rake_strike",
-      "taunt",
+      "kings_wrath",
+      "dragon_majesty",
     ],
-    startingRelic: "nine_tooth_rake",
+    startingRelic: "dragon_core_shard",
   },
 
-  [CharacterClass.ShaWujing]: {
-    characterClass: CharacterClass.ShaWujing,
-    displayName: "沙悟净",
-    description: "卷帘大将转世。平衡型战士，利用流沙之力削弱敌人，稳固防守。",
+  [CharacterClass.DemonDragon]: {
+    characterClass: CharacterClass.DemonDragon,
+    displayName: "魔龙",
+    description: "被放逐的深渊之龙，身体由深渊物质构成，燃烧着地狱之火。它让黄金巨感到了恐惧。它不是为正义而战——它为自己的毁灭欲望而战。",
     avatar: "/head-portrait/sahesang.png",
     stats: {
       maxHealth: 80,
@@ -100,16 +100,16 @@ export const PLAYER_CONFIGS: Record<CharacterClass, PlayerConfig> = {
       "defend",
       "defend",
       "defend",
-      "quicksand",
-      "spirit_pearl",
+      "abyssal_sand",
+      "demon_core",
     ],
-    startingRelic: "demon_skull_necklace",
+    startingRelic: "abyss_brand",
   },
 
-  [CharacterClass.WhiteDragonHorse]: {
-    characterClass: CharacterClass.WhiteDragonHorse,
-    displayName: "白龙马",
-    description: "西海龙王三太子。兼具速度与力量，通过高速移动积累优势，龙息焚毁一切。",
+  [CharacterClass.StormDragon]: {
+    characterClass: CharacterClass.StormDragon,
+    displayName: "风暴龙",
+    description: "天空与雷霆之主，第一个陨落。灵魂化为永不停息的暴风雨，以风暴凝聚成躯体。它是五龙中最快的，每一次俯冲都带着万钧雷霆。",
     avatar: "/head-portrait/bailongma.png",
     stats: {
       maxHealth: 70,
@@ -124,10 +124,10 @@ export const PLAYER_CONFIGS: Record<CharacterClass, PlayerConfig> = {
       "defend",
       "defend",
       "defend",
-      "dragon_charge",
+      "thunder_strike",
       "wind_step",
-      "dragon_breath",
+      "storm_breath",
     ],
-    startingRelic: "dragon_scale",
+    startingRelic: "eye_of_storm",
   },
 };

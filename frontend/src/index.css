@@ -34,23 +34,7 @@ body {
   scrollbar-color: #16213e transparent;
 }
 
-[data-enemy-id].is-dragOver {
-  filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.6));
-  transform: scale(1.05);
-  transition: all 0.1s ease;
-}
-
-.Card--draggable {
-  cursor: grab;
-}
-.Card--draggable:active {
-  cursor: grabbing;
-}
-.Card--draggable[aria-disabled="true"] {
-  cursor: not-allowed;
-}
-
-.corner-border {
+.character-slot.is-dragOver {
   --c: #eab308;
   --w: 4px;
   --l: 20px;
@@ -63,4 +47,14 @@ body {
     linear-gradient(to top, var(--c) var(--l), transparent 0) 0 100% / var(--w) 100% no-repeat,
     linear-gradient(to left, var(--c) var(--l), transparent 0) 100% 100% / 100% var(--w) no-repeat,
     linear-gradient(to top, var(--c) var(--l), transparent 0) 100% 100% / var(--w) 100% no-repeat;
+}
+
+.Card--draggable {
+  cursor: grab;
+}
+.Card--draggable:active {
+  cursor: grabbing;
+}
+.Card--draggable[aria-disabled="true"] {
+  cursor: not-allowed;
 }

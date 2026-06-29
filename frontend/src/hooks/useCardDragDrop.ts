@@ -17,14 +17,18 @@ export function useCardDragDrop(
   const ghostRef = useRef<HTMLElement | null>(null);
   const draggingRef = useRef(false);
 
+  const clearHighlights = useCallback(() => {
+    document.querySelectorAll<HTMLElement>(".character-slot.is-dragOver").forEach((el) => el.classList.remove("is-dragOver"));
+  }, []);
+
   const cleanup = useCallback(() => {
     draggingRef.current = false;
     const g = ghostRef.current;
     ghostRef.current = null;
     dragRef.current = null;
     g?.remove();
-    document.querySelectorAll<HTMLElement>("[data-enemy-id]").forEach((el) => el.classList.remove("is-dragOver"));
-  }, []);
+    clearHighlights();
+  }, [clearHighlights]);
 
   // Global fallback: if mouseup/cancel fires anywhere during a drag, clean up
   useEffect(() => {
@@ -39,24 +43,20 @@ export function useCardDragDrop(
     };
   }, [cleanup]);
 
-  const getEnemyElements = useCallback(() => {
-    return document.querySelectorAll<HTMLElement>("[data-enemy-id]");
+  const getTargetElements = useCallback(() => {
+    return document.querySelectorAll<HTMLElement>("[data-enemy-id], [data-player-id]");
   }, []);
 
   const getDropTarget = useCallback((x: number, y: number): string | null => {
-    const enemies = getEnemyElements();
-    for (const el of enemies) {
+    const targets = getTargetElements();
+    for (const el of targets) {
       const r = el.getBoundingClientRect();
       if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) {
-        return el.dataset.enemyId ?? null;
+        return el.dataset.enemyId ?? el.dataset.playerId ?? null;
       }
     }
     return null;
-  }, [getEnemyElements]);
-
-  const clearHighlights = useCallback(() => {
-    getEnemyElements().forEach((el) => el.classList.remove("is-dragOver"));
-  }, [getEnemyElements]);
+  }, [getTargetElements]);
 
   const onPointerDown = useCallback((e: React.PointerEvent<HTMLElement>, cardInstanceId: string, disabled: boolean) => {
     if (disabled) return;
@@ -96,7 +96,8 @@ export function useCardDragDrop(
     clearHighlights();
     const targetId = getDropTarget(e.clientX, e.clientY);
     if (targetId) {
-      const el = document.querySelector<HTMLElement>(`[data-enemy-id="${targetId}"]`);
+      const sel = targetId === "player" ? `[data-player-id="${targetId}"]` : `[data-enemy-id="${targetId}"] .character-slot`;
+      const el = document.querySelector<HTMLElement>(sel);
       el?.classList.add("is-dragOver");
     }
   }, [clearHighlights, getDropTarget]);

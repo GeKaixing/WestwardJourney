@@ -274,7 +274,7 @@ export function BattleScene() {
 
         {/* Player Character */}
         <div className="relative flex flex-col items-center">
-          <div data-player-id="player" className="flex h-64 w-64 items-center justify-center">
+          <div data-player-id="player" className="corner-border flex h-64 w-64 items-center justify-center">
             {spineFailed && (
               <span className="text-[7rem] drop-shadow-[0_10px_25px_rgba(0,0,0,0.5)] filter">
                 {playerEmoji}
@@ -315,8 +315,8 @@ export function BattleScene() {
                )}
                
                {/* Character */}
-               <div className="flex h-64 w-64 items-center justify-center transition-transform hover:scale-105">
-                 {stage && <EnemyCharacter stage={stage} enemyId={enemy.id} />}
+<div className="corner-border flex h-64 w-64 items-center justify-center transition-transform hover:scale-105">
+                  {stage && <EnemyCharacter stage={stage} enemyId={enemy.id} />}
                </div>
                
                {/* HP Bar */}

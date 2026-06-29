@@ -3,7 +3,7 @@ import { Application, ImageSource, Container } from "pixi.js";
 import { Spine, SpineTexture } from "@esotericsoftware/spine-pixi-v8";
 import { SkeletonBinary, TextureAtlas, AtlasAttachmentLoader } from "@esotericsoftware/spine-core";
 
-const SPINEBOY_BASE = "https://raw.githubusercontent.com/pixijs/spine-v8/main/examples/assets";
+const SPINEBOY_BASE = "/assets/spine/spineboy";
 const SPINEBOY_SKEL = `${SPINEBOY_BASE}/spineboy-pro.skel`;
 const SPINEBOY_ATLAS_URL = `${SPINEBOY_BASE}/spineboy-pma.atlas`;
 

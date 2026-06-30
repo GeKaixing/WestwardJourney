@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { CharacterClass } from "@shared/enums/CharacterClass";
 import { PLAYER_CONFIGS } from "../data";
-import { MapGenerator, type MapNode } from "../systems/map";
+import { MapGenerator, DEFAULT_MAP_CONFIG, type MapNode } from "../systems/map";
 import type { CardInstance } from "../systems/cards";
 import type { RelicInstance } from "../systems/relics";
 
@@ -22,7 +22,6 @@ export interface RunState {
   potions: PotionInstance[];
   currentFloor: number;
   mapNodes: MapNode[];
-  mapFloors: number;
   inBattle: boolean;
 }
 
@@ -51,7 +50,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   startRun: (characterClass, deck, relic) => {
     const config = PLAYER_CONFIGS[characterClass];
-    const map = new MapGenerator().generate();
+    const map = new MapGenerator().generate(DEFAULT_MAP_CONFIG);
     set({
       run: {
         characterClass,
@@ -63,7 +62,6 @@ export const useGameStore = create<GameStore>((set, get) => ({
         potions: [],
         currentFloor: 0,
         mapNodes: map.nodes,
-        mapFloors: map.floors,
         inBattle: false,
       },
     });

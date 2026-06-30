@@ -1,33 +1,12 @@
-import { useEffect, useLayoutEffect, useMemo, useState, useRef, ReactNode } from "react";
-import {
-  GiGoblinHead,
-  GiOgre,
-  GiTripleSkulls,
-  GiCampfire,
-  GiScales,
-  GiCardRandom,
-  GiChest,
-  GiRollingDices,
-} from "react-icons/gi";
+import { useCallback, useEffect, useMemo, useRef, useState, ReactNode } from "react";
+import { GiGoblinHead, GiOgre, GiTripleSkulls, GiCampfire, GiScales, GiCardRandom, GiChest, GiRollingDices } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import clsx from "clsx";
+import { motion, AnimatePresence } from "framer-motion";
 import { MapNodeType } from "@shared/enums/MapNodeType";
-import { MapGenerator, type MapNode } from "../systems/map";
+import { MapGenerator, type MapNode, NodeVisibility } from "../systems/map";
 import { useGameStore } from "../store";
 import { pageEnter, buttonClick } from "../systems/sounds";
 import { GameHeader } from "../ui";
-
-const NODE_LABELS: Record<MapNodeType, string> = {
-  [MapNodeType.Monster]: "敌人",
-  [MapNodeType.Elite]: "精英",
-  [MapNodeType.Boss]: "首领",
-  [MapNodeType.Rest]: "休息",
-  [MapNodeType.Shop]: "商人",
-  [MapNodeType.Event]: "事件",
-  [MapNodeType.Treasure]: "宝箱",
-  [MapNodeType.Mystery]: "未知",
-};
 
 const NODE_ICONS: Record<MapNodeType, ReactNode> = {
   [MapNodeType.Monster]: <GiGoblinHead />,
@@ -41,113 +20,105 @@ const NODE_ICONS: Record<MapNodeType, ReactNode> = {
 };
 
 const NODE_COLORS: Record<MapNodeType, string> = {
-  [MapNodeType.Monster]: "text-[#6d1b1b]",
-  [MapNodeType.Elite]: "text-[#d32f2f]",
-  [MapNodeType.Boss]: "text-[#4a148c]",
-  [MapNodeType.Rest]: "text-[#2e7d32]",
-  [MapNodeType.Shop]: "text-[#ef6c00]",
-  [MapNodeType.Event]: "text-[#1565c0]",
-  [MapNodeType.Treasure]: "text-[#fbc02d]",
-  [MapNodeType.Mystery]: "text-[#455a64]",
+  [MapNodeType.Monster]: "#4a0e0e",
+  [MapNodeType.Elite]: "#b71c1c",
+  [MapNodeType.Boss]: "#31106b",
+  [MapNodeType.Rest]: "#1b5e20",
+  [MapNodeType.Shop]: "#e65100",
+  [MapNodeType.Event]: "#0d47a1",
+  [MapNodeType.Treasure]: "#f9a825",
+  [MapNodeType.Mystery]: "#263238",
 };
 
-const NODE_INTROS: Record<MapNodeType, string> = {
-  [MapNodeType.Monster]: "妖魔挡道！",
-  [MapNodeType.Elite]: "强敌当前！",
-  [MapNodeType.Boss]: "妖王降临！",
-  [MapNodeType.Rest]: "前方有篝火，可以歇息。",
-  [MapNodeType.Shop]: "路旁有家店铺。",
-  [MapNodeType.Event]: "前方似有异样...",
-  [MapNodeType.Treasure]: "发现宝箱！",
-  [MapNodeType.Mystery]: "前路未知...",
-};
 
 export function MapScene() {
   const navigate = useNavigate();
   const run = useGameStore((s) => s.run);
   const setFloor = useGameStore((s) => s.setFloor);
   const setMapNodes = useGameStore((s) => s.setMapNodes);
-  const [selectedIntro, setSelectedIntro] = useState<string | null>(null);
-  const nodeRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const containerRef = useRef<HTMLDivElement>(null);
-  const [lines, setLines] = useState<Array<{ key: string; x1: number; y1: number; x2: number; y2: number }>>([]);
-
-  const nodes = run?.mapNodes ?? [];
-  const mapFloors = run?.mapFloors ?? 0;
+  const [size, setSize] = useState({ w: 800, h: 600 });
   const generator = useMemo(() => new MapGenerator(), []);
 
+  const nodes = run?.mapNodes ?? [];
+
+  useEffect(() => { pageEnter(); if (!run) navigate("/select"); }, [run, navigate]);
+
   useEffect(() => {
-    setSelectedIntro(null);
+    const el = containerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => {
+      if (entry) setSize({ w: entry.contentRect.width, h: entry.contentRect.height });
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
   }, []);
 
-  useEffect(() => {
-    pageEnter();
-    if (!run) navigate("/select");
-  }, [run, navigate]);
+  const { minX, minY, rangeX, rangeY, scale, nodeSize } = useMemo(() => {
+    if (nodes.length === 0) return { minX: 0, minY: 0, rangeX: 1, rangeY: 1, scale: 100, nodeSize: 32 };
+    let mnX = Infinity, mxX = -Infinity, mnY = Infinity, mxY = -Infinity;
+    for (const n of nodes) {
+      if (n.position.x < mnX) mnX = n.position.x;
+      if (n.position.x > mxX) mxX = n.position.x;
+      if (n.position.y < mnY) mnY = n.position.y;
+      if (n.position.y > mxY) mxY = n.position.y;
+    }
+    const rx = mxX - mnX || 1;
+    const ry = mxY - mnY || 1;
+    const pad = 80;
+    const s = Math.min((size.w - pad * 2) / rx, (size.h - pad * 2) / ry);
+    return { minX: mnX, minY: mnY, rangeX: rx, rangeY: ry, scale: s, nodeSize: Math.max(32, Math.min(72, s * 2.2)) };
+  }, [nodes, size]);
 
-  useLayoutEffect(() => {
-    if (!containerRef.current) return;
-    const newLines: typeof lines = [];
+  const STRETCH_X = 1.4;
+  const STRETCH_Y = 1;
+  const toPx = useCallback((pos: { x: number; y: number }) => ({
+    x: (pos.x - minX) * scale * STRETCH_X + (size.w - rangeX * scale * STRETCH_X) / 2,
+    y: (minY + rangeY - pos.y) * scale * STRETCH_Y + (size.h - rangeY * scale * STRETCH_Y) / 2,
+  }), [minX, minY, scale, rangeX, rangeY, size]);
+
+  const lines = useMemo(() => {
+    const out: { key: string; x1: number; y1: number; x2: number; y2: number; active: boolean }[] = [];
     for (const node of nodes) {
-      for (const cIndex of node.connections) {
-        const target = nodes[cIndex];
+      const from = toPx(node.position);
+      for (const outIdx of node.outgoing) {
+        const target = nodes[outIdx];
         if (!target) continue;
-        const nodeEl = nodeRefs.current[node.id];
-        const targetEl = nodeRefs.current[target.id];
-        if (!nodeEl || !targetEl) continue;
-
-        const nodeRect = nodeEl.getBoundingClientRect();
-        const targetRect = targetEl.getBoundingClientRect();
-        const containerRect = containerRef.current.getBoundingClientRect();
-
-        const x1 = nodeRect.left - containerRect.left + nodeRect.width / 2;
-        const y1 = nodeRect.top - containerRect.top + nodeRect.height / 2;
-        const x2 = targetRect.left - containerRect.left + targetRect.width / 2;
-        const y2 = targetRect.top - containerRect.top + targetRect.height / 2;
-
-        const dx = x2 - x1;
-        const dy = y2 - y1;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance === 0) continue;
-
-        const padding = nodeRect.width / 2 + 8;
-        const ux = dx / distance;
-        const uy = dy / distance;
-
-        newLines.push({
+        const to = toPx(target.position);
+        const dx = to.x - from.x;
+        const dy = to.y - from.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 1) continue;
+        const pad = nodeSize / 2 + 6;
+        const ux = dx / dist;
+        const uy = dy / dist;
+        const active = node.visited && (target.available || target.visited);
+        out.push({
           key: `${node.id}-${target.id}`,
-          x1: x1 + ux * padding,
-          y1: y1 + uy * padding,
-          x2: x2 - ux * padding,
-          y2: y2 - uy * padding,
+          x1: from.x + ux * pad,
+          y1: from.y + uy * pad,
+          x2: to.x - ux * pad,
+          y2: to.y - uy * pad,
+          active,
         });
       }
     }
-    setLines(newLines);
-  }, [nodes]);
+    return out;
+  }, [nodes, toPx]);
 
-  const floors = useMemo(() => {
-    const groups: MapNode[][] = [];
-    for (let f = 0; f < mapFloors; f++) {
-      groups.push(nodes.filter((n) => n.floor === f));
-    }
-    return groups;
-  }, [nodes, mapFloors]);
-
-  const handleNodeClick = (node: MapNode) => {
+  const handleNodeClick = useCallback((node: MapNode) => {
     if (!node.available || node.visited) return;
     buttonClick();
-
-    const nextNodes = nodes.map((entry) => ({
-      ...entry,
-      connections: [...entry.connections],
+    const nextNodes = nodes.map(n => ({
+      ...n,
+      outgoing: [...n.outgoing],
+      incoming: [...n.incoming],
     }));
     generator.visitNode(nextNodes, node.id);
     setMapNodes(nextNodes);
     setFloor(node.floor);
-    setSelectedIntro(NODE_INTROS[node.type]);
 
-    const pathMap: Partial<Record<MapNodeType, string>> = {
+    const routes: Partial<Record<MapNodeType, string>> = {
       [MapNodeType.Monster]: "/battle",
       [MapNodeType.Elite]: "/battle",
       [MapNodeType.Boss]: "/battle",
@@ -157,114 +128,100 @@ export function MapScene() {
       [MapNodeType.Mystery]: "/event",
       [MapNodeType.Treasure]: "/event",
     };
+    const path = routes[node.type];
+    if (path) navigate(path);
+  }, [nodes, generator, setMapNodes, setFloor, navigate]);
 
-    const path = pathMap[node.type];
-    if (path) {
-      navigate(path);
-    }
-  };
-
-  if (!run) {
-    return null;
-  }
+  if (!run) return null;
 
   return (
-    <div className="relative flex h-screen w-full flex-col items-center overflow-hidden bg-dark-950 font-sans text-gray-200 select-none">
-
+    <div className="relative flex h-screen w-full flex-col bg-dark-950 overflow-hidden select-none">
       <GameHeader />
 
-      {/* Intro Text */}
-       <div className="absolute top-14 z-40 text-center pointer-events-none">
-        <h1 className="font-display text-4xl text-gold-500 drop-shadow-md">龙骸之路</h1>
-        {selectedIntro && (
-          <motion.p
-            className="mt-2 text-lg text-gray-300 drop-shadow"
-            initial={{ opacity: 0, y: 5 }}
-            animate={{ opacity: 1, y: 0 }}
-            key={selectedIntro}
-          >
-            {selectedIntro}
-          </motion.p>
-        )}
-      </div>
+      {/* Scrollable map area */}
+      <div ref={containerRef} className="relative flex-1 m-4 rounded-xl bg-[#0f0a08] border border-amber-900/20 overflow-auto">
+        <div className="relative w-full h-full min-h-[500px]">
+          {/* Background layer tint */}
+          <div className="absolute inset-0 bg-gradient-to-b from-amber-950/10 to-transparent pointer-events-none" />
 
-      {/* Legend Bar */}
-       <div className="absolute left-0 right-0 top-24 z-40 flex h-16 w-full items-center justify-center bg-[#cba474]/90 px-6 text-sm text-amber-950 border-y-2 border-amber-900/30">
-         <div className="flex items-center gap-4 font-bold">
-          {Object.entries(NODE_LABELS).map(([type, label]) => (
-            <div key={type} className="flex items-center gap-1">
-              <span className={clsx("text-lg", NODE_COLORS[type as MapNodeType])}>{NODE_ICONS[type as MapNodeType]}</span>
-              <span>{label}</span>
-            </div>
-          ))}
-         </div>
-      </div>
+          {/* Connection lines */}
+          <svg className="absolute inset-0 pointer-events-none z-0" style={{ width: '100%', height: '100%' }}>
+            {lines.map(line => (
+                  <line
+                    key={line.key}
+                    x1={line.x1} y1={line.y1}
+                    x2={line.x2} y2={line.y2}
+                    stroke={line.active ? "#fbbf24" : "#a16207"}
+                    strokeWidth={4}
+                    strokeDasharray="8 5"
+                  strokeLinecap="round"
+                  opacity={line.active ? 1 : 0.7}
+                />
 
-      {/* Scrollable Map Container */}
-       <div className="relative z-10 mt-40 h-full w-full rounded-md shadow-2xl bg-[#e3d5ca] border-8 border-[#cba474] p-8 overflow-hidden">
-         <div ref={containerRef} className="relative flex h-full w-full items-center justify-around px-2 ">
-            <svg className="absolute inset-0 pointer-events-none z-0" style={{ width: '100%', height: '100%' }}>
-             {lines.map(line => (
-               <line
-                 key={line.key}
-                 x1={line.x1}
-                 y1={line.y1}
-                 x2={line.x2}
-                 y2={line.y2}
-                 stroke="#6b4729"
-                 strokeWidth="2"
-                 strokeDasharray="4 4"
-               />
-             ))}
-           </svg>
-           {floors.map((floorNodes) => (
-             <div key={floorNodes[0]?.floor ?? 0} className="flex flex-col h-full items-center justify-between relative py-4">
+            ))}
+          </svg>
 
-               <span className="text-sm font-bold text-[#6b4729] opacity-50 pointer-events-none">
-                 {floorNodes[0]?.floor}
-               </span>
+          {/* Nodes */}
+          <AnimatePresence>
+              {nodes.map(node => {
+                const revealed = true; // ponytail: forced true for debug
+                if (node.incoming.length === 0 && node.outgoing.length === 0) return null;
+                if (!revealed && node.visibility === NodeVisibility.Hidden) return null;
 
-               <div className="flex flex-col h-full justify-around items-center">
-                 {floorNodes.map((node) => {
-                   const isFuture = !node.visited && !node.available;
-                   const isAvailable = node.available && !node.visited;
+                const pos = toPx(node.position);
+                const available = node.available && !node.visited;
+                const visited = node.visited;
+                const locked = !visited && !available;
+                const color = NODE_COLORS[node.type] ?? "#fff"; // ponytail: force white if unknown
 
-                   return (
-                     <motion.button
-                       key={node.id}
-                       ref={(el) => { nodeRefs.current[node.id] = el; }}
-                       className={clsx(
-                         "relative flex h-20 w-20 items-center justify-center text-5xl transition-all my-4",
-                         NODE_COLORS[node.type],
-                         isFuture ? "opacity-40" : "opacity-100",
-                         node.visited ? "opacity-30" : "",
-                         isAvailable ? "cursor-pointer scale-110 drop-shadow-[0_0_10px_rgba(0,0,0,0.5)]" : "cursor-default"
-                       )}
-                       whileHover={isAvailable ? { scale: 1.3, x: -5 } : {}}
-                       whileTap={isAvailable ? { scale: 0.95 } : {}}
-                       onClick={() => handleNodeClick(node)}
-                       title={NODE_LABELS[node.type]}
-                     >
-                       {NODE_ICONS[node.type]}
+                return (
+                  <motion.button
+                    key={node.id}
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    animate={{ opacity: locked ? (node.visibility === NodeVisibility.Blurred ? 0.3 : 0.45) : 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.5 }}
 
-                       {isAvailable && (
-                         <div className="absolute -inset-2 rounded-full border-2 border-dashed border-gold-600 animate-spin-slow opacity-50 pointer-events-none"></div>
-                       )}
+                  transition={{ duration: 0.2 }}
+                  className="absolute z-10 flex items-center justify-center rounded-full cursor-pointer outline-none"
+                  style={{
+                    left: pos.x - nodeSize / 2,
+                    top: pos.y - nodeSize / 2,
+                    width: nodeSize,
+                    height: nodeSize,
+                    fontSize: revealed ? nodeSize * 0.65 : nodeSize * 0.5,
+                    color: visited ? "#aaa" : locked ? "#666" : color,
+                    background: visited
+                      ? "rgba(255,255,255,0.1)"
+                      : available
+                        ? "rgba(255,255,255,0.15)"
+                        : "transparent",
+                    boxShadow: available ? `0 0 15px ${color}88` : "none",
+                    border: available ? `2px solid ${color}88` : "none",
+                  }}
+                  whileHover={available ? { scale: 1.25 } : {}}
+                  whileTap={available ? { scale: 0.9 } : {}}
+                  onClick={() => handleNodeClick(node)}
+                >
+                  {revealed ? (NODE_ICONS[node.type] ?? <span className="font-black text-white">?</span>) : <span className="font-black text-white">?</span>}
 
-                       {node.visited && (
-                         <span className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-green-600 text-[10px] text-white shadow-md ring-1 ring-[#cba474]">
-                           ✓
-                         </span>
-                       )}
-                     </motion.button>
-                   );
-                 })}
-               </div>
-             </div>
-           ))}
+                  {visited && (
+                    <span className="absolute -right-1 -top-1 w-4 h-4 flex items-center justify-center rounded-full bg-green-600 text-[9px] text-white shadow ring-1 ring-black/30">
+                      ✓
+                    </span>
+                  )}
+
+                  {available && (
+                    <>
+                      <span className="absolute inset-0 rounded-full border-2 border-dashed border-amber-400 animate-spin-slow pointer-events-none" />
+                      <span className="absolute inset-0 rounded-full animate-ping opacity-40 pointer-events-none" style={{ background: color }} />
+                    </>
+                  )}
+                </motion.button>
+              );
+            })}
+          </AnimatePresence>
         </div>
       </div>
-
     </div>
   );
 }

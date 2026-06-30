@@ -7,8 +7,17 @@ import { CharacterClass } from "@shared/enums/CharacterClass";
 import { PLAYER_CONFIGS, CARD_CONFIGS, RELIC_CONFIGS } from "../data";
 import { useGameStore } from "../store";
 import { buttonClick, startGame } from "../systems/sounds";
+import { Particles } from "../ui";
 import type { CardInstance } from "../systems/cards";
 import type { RelicInstance } from "../systems/relics";
+
+const CHAR_PARTICLE_COLOR: Record<CharacterClass, string> = {
+  [CharacterClass.BoneDragon]: "#c8c8dc",
+  [CharacterClass.ImmortalDragon]: "#ffd764",
+  [CharacterClass.Longsila]: "#4ade80",
+  [CharacterClass.DemonDragon]: "#60a5fa",
+  [CharacterClass.StormDragon]: "#c084fc",
+};
 
 const CHARACTER_ORDER = [
   CharacterClass.BoneDragon,
@@ -76,6 +85,8 @@ export function CharacterSelectScene() {
 
   return (
     <div className="relative flex h-screen w-full overflow-hidden bg-dark-900 text-gray-200 select-none" style={{ backgroundImage: `url(${CHAR_BG[selectedChar]})`, backgroundSize: "cover", backgroundPosition: "center" }}>
+      {/* Particle effects */}
+      <Particles key={selectedChar} count={80} color={CHAR_PARTICLE_COLOR[selectedChar]} />
       {/* Vignette overlay */}
       <div className="absolute inset-0 z-[1] bg-gradient-to-r from-dark-950/90 via-dark-950/40 to-transparent" />
 

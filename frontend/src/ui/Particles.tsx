@@ -9,19 +9,20 @@ interface Particle {
   alpha: number;
   life: number;
   maxLife: number;
-  color: string;
+  r: number;
+  g: number;
+  b: number;
 }
 
 const COLORS = [
-  "rgba(200, 200, 220, {a})", // 骨龙 — 苍白
-  "rgba(255, 215, 100, {a})", // 仙龙 — 金色
-  "rgba(100, 130, 255, {a})", // 龙斯拉 — 深蓝
-  "rgba(255, 80, 80, {a})",   // 魔龙 — 赤红
-  "rgba(100, 220, 255, {a})", // 风暴龙 — 青
-  "rgba(180, 100, 255, {a})", // 龙晶 — 紫
+  { r: 200, g: 200, b: 220 }, // 骨龙 — 苍白
+  { r: 255, g: 215, b: 100 }, // 仙龙 — 金色
+  { r: 100, g: 130, b: 255 }, // 龙斯拉 — 深蓝
+  { r: 255, g: 80, b: 80 },   // 魔龙 — 赤红
+  { r: 100, g: 220, b: 255 }, // 风暴龙 — 青
 ];
 
-export function Particles({ count = 60 }: { count?: number }) {
+export function Particles({ count = 60, color }: { count?: number; color?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -40,8 +41,10 @@ export function Particles({ count = 60 }: { count?: number }) {
     resize();
     window.addEventListener("resize", resize);
 
+    const baseColor = color ? parseColor(color) : null;
+
     for (let i = 0; i < count; i++) {
-      particles.push(createParticle(canvas.width, canvas.height));
+      particles.push(createParticle(canvas.width, canvas.height, baseColor));
     }
 
     const animate = () => {
@@ -58,11 +61,11 @@ export function Particles({ count = 60 }: { count?: number }) {
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = p.color.replace("{a}", String(p.alpha));
+        ctx.fillStyle = `rgba(${p.r},${p.g},${p.b},${p.alpha})`;
         ctx.fill();
 
         if (p.life >= p.maxLife) {
-          particles[i] = createParticle(canvas.width, canvas.height);
+          particles[i] = createParticle(canvas.width, canvas.height, baseColor);
         }
       }
 
@@ -75,7 +78,7 @@ export function Particles({ count = 60 }: { count?: number }) {
       cancelAnimationFrame(animId);
       window.removeEventListener("resize", resize);
     };
-  }, [count]);
+  }, [count, color]);
 
   return (
     <canvas
@@ -85,7 +88,17 @@ export function Particles({ count = 60 }: { count?: number }) {
   );
 }
 
-function createParticle(w: number, h: number): Particle {
+function parseColor(hex: string): { r: number; g: number; b: number } {
+  const h = hex.replace("#", "");
+  return {
+    r: parseInt(h.substring(0, 2), 16),
+    g: parseInt(h.substring(2, 4), 16),
+    b: parseInt(h.substring(4, 6), 16),
+  };
+}
+
+function createParticle(w: number, h: number, baseColor: { r: number; g: number; b: number } | null): Particle {
+  const c = baseColor ?? COLORS[Math.floor(Math.random() * COLORS.length)]!;
   return {
     x: Math.random() * w,
     y: Math.random() * h,
@@ -95,6 +108,8 @@ function createParticle(w: number, h: number): Particle {
     alpha: 0,
     life: 0,
     maxLife: Math.random() * 200 + 100,
-    color: COLORS[Math.floor(Math.random() * COLORS.length)]!,
+    r: c.r,
+    g: c.g,
+    b: c.b,
   };
 }

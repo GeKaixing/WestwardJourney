@@ -16,5 +16,8 @@
     "frontend",
     "backend",
     "shared"
-  ]
+  ],
+  "devDependencies": {
+    "sharp": "^0.35.2"
+  }
 }

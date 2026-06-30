@@ -9,13 +9,28 @@ interface ManifestData {
   };
 }
 
+type OffsetData = Record<string, { dx: number; dy: number }>;
+type OffsetMap = Record<string, OffsetData>;
+
 let manifestCache: ManifestData | null = null;
+let offsetCache: OffsetMap | null = null;
 
 async function loadManifest(): Promise<ManifestData> {
   if (manifestCache) return manifestCache;
   const res = await fetch(`${BASE}/manifest.json`);
   manifestCache = (await res.json()) as ManifestData;
   return manifestCache;
+}
+
+async function loadOffsets(): Promise<OffsetMap> {
+  if (offsetCache) return offsetCache;
+  try {
+    const res = await fetch(`${BASE}/anim-offsets.json`);
+    offsetCache = (await res.json()) as OffsetMap;
+  } catch {
+    offsetCache = {};
+  }
+  return offsetCache;
 }
 
 async function loadTexture(url: string): Promise<Texture> {
@@ -58,6 +73,10 @@ export class FrameSequenceSprite {
       promises.push(this.loadFrames(characterId, animName, frames));
     }
     await Promise.all(promises);
+
+    // Pre-load animation offset data
+    await loadOffsets();
+
     this._loaded = true;
   }
 
@@ -94,12 +113,22 @@ export class FrameSequenceSprite {
     } else {
       this.sprite.textures = textures;
       this.sprite.currentFrame = 0;
+      this.sprite.anchor.set(0.5);
+    }
+
+    // Apply per-animation offset so character visual center stays consistent
+    const charOffsets = offsetCache?.[this._characterId];
+    const offset = charOffsets?.[animName];
+    if (offset) {
+      this.sprite.position.set(offset.dx, offset.dy);
+    } else {
+      this.sprite.position.set(0, 0);
     }
 
     this.sprite.loop = loop;
     this.sprite.onComplete = loop ? undefined : () => {
-      this._currentAnim = "";
       this.onComplete?.();
+      this._currentAnim = "";
     };
     this.sprite.play();
   }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { GiHearts, GiCoins, GiCampfire } from "react-icons/gi";
+import { GiHearts, GiCoins, GiCampfire, GiCycle } from "react-icons/gi";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
@@ -70,14 +70,20 @@ export function CharacterSelectScene() {
   const navigate = useNavigate();
   const startRun = useGameStore((s) => s.startRun);
   const [selectedChar, setSelectedChar] = useState<CharacterClass>(CharacterClass.BoneDragon);
+  const [mapSeed, setMapSeed] = useState(Math.floor(Math.random() * 2147483647));
+  const [showSeed, setShowSeed] = useState(false);
 
   const handleStartRun = () => {
     const deck = buildStartingDeck(selectedChar);
     const relic = buildStartingRelic(selectedChar);
     if (!relic) return;
-    startRun(selectedChar, deck, relic);
+    startRun(selectedChar, deck, relic, mapSeed);
     startGame();
     navigate("/map");
+  };
+
+  const randomizeSeed = () => {
+    setMapSeed(Math.floor(Math.random() * 2147483647));
   };
 
   const config = PLAYER_CONFIGS[selectedChar];
@@ -170,15 +176,50 @@ export function CharacterSelectScene() {
       </div>
 
       {/* Start Button (Bottom Right) */}
-      <div className="absolute bottom-10 right-12 z-20">
-        <button
-          onClick={handleStartRun}
+      <div className="absolute bottom-10 right-12 z-20 flex flex-col items-end gap-3">
+        <motion.button
           className="group flex h-16 w-32 items-center justify-center rounded-lg bg-sky-900/90 border border-sky-600/50 hover:bg-sky-800 hover:shadow-[0_0_25px_rgba(14,165,233,0.4)] transition-all"
+          onClick={handleStartRun}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
           <svg className="h-10 w-10 text-sky-200/80 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3.5} d="M5 13l4 4L19 7" />
           </svg>
-        </button>
+        </motion.button>
+        {/* ponytail: seed input, collapsible */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => { buttonClick(); setShowSeed(!showSeed); }}
+            className="text-xs text-gray-500 hover:text-gray-300 transition-colors"
+          >
+            {showSeed ? "隐藏种子" : "地图种子"}
+          </button>
+        </div>
+        <AnimatePresence>
+          {showSeed && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              className="flex items-center gap-2 rounded-xl bg-dark-800/80 px-3 py-2 border border-gray-700"
+            >
+              <input
+                type="number"
+                value={mapSeed}
+                onChange={(e) => setMapSeed(Number(e.target.value) || 0)}
+                className="w-28 rounded-lg bg-dark-900 px-2 py-1.5 text-center text-sm text-gold-400 font-mono border border-gray-600 focus:border-gold-500 focus:outline-none"
+              />
+              <button
+                onClick={randomizeSeed}
+                className="flex h-7 w-7 items-center justify-center rounded bg-dark-700 text-gray-400 hover:text-gold-400 hover:bg-dark-600 transition-colors"
+                title="随机"
+              >
+                <GiCycle className="text-sm" />
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

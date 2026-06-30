@@ -16,4 +16,5 @@ export enum BuffType {
   Taunt = "taunt",
   Chi = "chi",
   Meditation = "meditation",
+  Burn = "burn",
 }

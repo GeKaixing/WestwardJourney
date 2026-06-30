@@ -9,6 +9,8 @@ export interface RelicEffect {
   effectType: string;
   value?: number;
   target?: string;
+  buffType?: string;
+  duration?: number;
   condition?: RelicTriggerCondition;
 }
 

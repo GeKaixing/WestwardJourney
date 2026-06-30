@@ -4,3 +4,4 @@ export { BattleEffects } from "./BattleEffects";
 export { PlayerCharacter } from "./PlayerCharacter";
 export type { PlayerCharacterHandle } from "./PlayerCharacter";
 export { EnemyCharacter } from "./EnemyCharacter";
+export { Tooltip } from "./Tooltip";

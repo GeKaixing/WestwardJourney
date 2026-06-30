@@ -4,6 +4,7 @@ import { PLAYER_CONFIGS } from "../data";
 import { MapGenerator, DEFAULT_MAP_CONFIG, type MapNode } from "../systems/map";
 import type { CardInstance } from "../systems/cards";
 import type { RelicInstance } from "../systems/relics";
+import { MapNodeType } from "@shared/enums/MapNodeType";
 
 export interface PotionInstance {
   configId: string;
@@ -23,11 +24,14 @@ export interface RunState {
   currentFloor: number;
   mapNodes: MapNode[];
   inBattle: boolean;
+  currentNodeType?: MapNodeType;
+  encounteredEnemyIds: string[];
+  mapSeed: number;
 }
 
 interface GameStore {
   run: RunState | null;
-  startRun: (characterClass: CharacterClass, deck: CardInstance[], relic: RelicInstance) => void;
+  startRun: (characterClass: CharacterClass, deck: CardInstance[], relic: RelicInstance, seed?: number) => void;
   setHealth: (hp: number) => void;
   heal: (amount: number) => void;
   takeDamage: (amount: number) => void;
@@ -42,15 +46,18 @@ interface GameStore {
   setFloor: (floor: number) => void;
   setMapNodes: (nodes: MapNode[]) => void;
   setInBattle: (val: boolean) => void;
+  setCurrentNodeType: (type: MapNodeType) => void;
+  addEncounteredEnemy: (id: string) => void;
   reset: () => void;
 }
 
 export const useGameStore = create<GameStore>((set, get) => ({
   run: null,
 
-  startRun: (characterClass, deck, relic) => {
+  startRun: (characterClass, deck, relic, seed) => {
     const config = PLAYER_CONFIGS[characterClass];
-    const map = new MapGenerator().generate(DEFAULT_MAP_CONFIG);
+    const finalSeed = seed ?? Math.floor(Math.random() * 2147483647);
+    const map = new MapGenerator(finalSeed).generate(DEFAULT_MAP_CONFIG);
     set({
       run: {
         characterClass,
@@ -62,7 +69,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
         potions: [],
         currentFloor: 0,
         mapNodes: map.nodes,
+        encounteredEnemyIds: [],
         inBattle: false,
+        mapSeed: finalSeed,
       },
     });
   },
@@ -159,6 +168,18 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const run = get().run;
     if (!run) return;
     set({ run: { ...run, inBattle: val } });
+  },
+
+  setCurrentNodeType: (type) => {
+    const run = get().run;
+    if (!run) return;
+    set({ run: { ...run, currentNodeType: type } });
+  },
+
+  addEncounteredEnemy: (id) => {
+    const run = get().run;
+    if (!run) return;
+    set({ run: { ...run, encounteredEnemyIds: [...run.encounteredEnemyIds, id] } });
   },
 
   reset: () => set({ run: null }),

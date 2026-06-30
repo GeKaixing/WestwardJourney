@@ -1,4 +1,5 @@
 import { MapNodeType } from "@shared/enums/MapNodeType";
+import { createRng, shuffleArray } from "../../utils/seededRandom";
 
 export enum NodeVisibility { Visible, Blurred, Hidden }
 export enum RoutePersonality { Balanced, Combat, Wealth, Event }
@@ -41,19 +42,8 @@ export interface GeneratedMap {
   config: MapConfig;
 }
 
-function shuffleArray<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    const tmp = a[i] as T;
-    a[i] = a[j] as T;
-    a[j] = tmp;
-  }
-  return a;
-}
-
-function rndRange(min: number, max: number): number {
-  return min + Math.random() * (max - min);
+function rndRange(rng: () => number, min: number, max: number): number {
+  return min + rng() * (max - min);
 }
 
 export const DEFAULT_MAP_CONFIG: MapConfig = {
@@ -90,6 +80,17 @@ export class MapGenerator {
   private config!: MapConfig;
   private nodes: MapNode[] = [];
   private layerYs: number[] = [];
+  private rng: () => number;
+  private seed: number;
+
+  constructor(seed?: number) {
+    this.seed = seed ?? Date.now();
+    this.rng = createRng(this.seed);
+  }
+
+  getSeed(): number {
+    return this.seed;
+  }
 
   generate(config?: MapConfig): GeneratedMap {
     this.config = config ?? DEFAULT_MAP_CONFIG;
@@ -99,7 +100,7 @@ export class MapGenerator {
     // 1. Calculate layer Y positions with random spread (mirrors Unity's FloatMinMax)
     for (let f = 0; f < this.config.layers.length; f++) {
       const l = this.config.layers[f]!;
-      const dist = l.distanceFromPreviousLayer + rndRange(-l.distanceSpread, l.distanceSpread);
+      const dist = l.distanceFromPreviousLayer + rndRange(this.rng, -l.distanceSpread, l.distanceSpread);
       this.layerYs.push(f === 0 ? 0 : (this.layerYs[f - 1]! + Math.max(0.5, dist)));
     }
 
@@ -147,8 +148,8 @@ export class MapGenerator {
   }
 
   private pickNodeType(layer: MapLayerConfig): MapNodeType {
-    if (Math.random() < layer.randomizeNodes) {
-      return this.config.randomNodes[Math.floor(Math.random() * this.config.randomNodes.length)]!;
+    if (this.rng() < layer.randomizeNodes) {
+      return this.config.randomNodes[Math.floor(this.rng() * this.config.randomNodes.length)]!;
     }
     return layer.nodeType;
   }
@@ -165,7 +166,7 @@ export class MapGenerator {
     const lastFloor = this.config.layers.length - 1;
     const mid = Math.floor(this.config.gridWidth / 2);
     if (this.config.gridWidth % 2 === 1) return { col: mid, floor: lastFloor };
-    return Math.random() < 0.5
+    return this.rng() < 0.5
       ? { col: mid, floor: lastFloor }
       : { col: mid - 1, floor: lastFloor };
   }
@@ -175,11 +176,11 @@ export class MapGenerator {
     const bossPoint = this.getFinalBossPoint();
 
     let cols = Array.from({ length: this.config.gridWidth }, (_, i) => i);
-    cols = shuffleArray(cols);
+    cols = shuffleArray(this.rng, cols);
     const startingCols = cols.slice(0, this.config.numOfStartingNodes);
     const startingPoints = startingCols.map(c => ({ col: c, floor: 0 }));
 
-    cols = shuffleArray(cols);
+    cols = shuffleArray(this.rng, cols);
     const preBossCols = cols.slice(0, this.config.numOfPreBossNodes);
     const preBossPoints = preBossCols.map(c => ({ col: c, floor: lastFloor - 1 }));
 
@@ -208,7 +209,7 @@ export class MapGenerator {
         if (cc < 0 || cc >= this.config.gridWidth) continue;
         if (Math.abs(to.col - cc) <= verticalDistance) candidates.push(cc);
       }
-      const chosen = candidates.length > 0 ? candidates[Math.floor(Math.random() * candidates.length)]! : lastCol;
+      const chosen = candidates.length > 0 ? candidates[Math.floor(this.rng() * candidates.length)]! : lastCol;
       path.push({ col: chosen, floor: row });
       lastCol = chosen;
     }
@@ -240,8 +241,8 @@ export class MapGenerator {
 
       for (const node of floorNodes) {
         // Exact mirror of Unity's RandomizeNodePositions
-        const xRnd = Math.random() - 0.5;
-        const yRnd = Math.random() - 0.5;
+        const xRnd = this.rng() - 0.5;
+        const yRnd = this.rng() - 0.5;
         const dx = xRnd * layer.nodesApartDistance;
         const dy = yRnd < 0 ? distToPrev * yRnd : distToNext * yRnd;
         node.position.x += dx * layer.randomizePosition;
@@ -277,7 +278,7 @@ export class MapGenerator {
         tr.incoming.push(ri);
 
         // Randomly remove cross connections (mirrors Unity)
-        const rnd = Math.random();
+        const rnd = this.rng();
         if (rnd < 0.2) {
           this.removeEdge(ni, tri);
           this.removeEdge(ri, ti);

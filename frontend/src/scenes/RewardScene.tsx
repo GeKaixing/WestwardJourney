@@ -3,13 +3,23 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CARD_CONFIGS, RELIC_CONFIGS, POTION_CONFIGS } from "../data";
 import { useGameStore } from "../store";
+import type { RunState } from "../store";
 import { GiCoins, GiCheckMark, GiCardRandom, GiCampfire, GiHealthPotion, GiTreasureMap } from "react-icons/gi";
 import { playCoin, selectCard } from "../systems/sounds";
 import { cardImageGenerator } from "../utils/cardImageGenerator";
 import { GameHeader } from "../ui";
 import type { CardConfig } from "@shared/types/CardConfig";
+import { MapNodeType } from "@shared/enums/MapNodeType";
 
-const REWARD_GOLD = 25;
+function getRewardGold(run: RunState | null): number {
+  if (!run) return 15;
+  const base = run.currentNodeType === MapNodeType.Boss ? 80
+    : run.currentNodeType === MapNodeType.Elite ? 35
+    : run.currentFloor <= 3 ? 12
+    : run.currentFloor <= 11 ? 20
+    : 30;
+  return base + Math.floor(run.currentFloor * 1.5);
+}
 
 export function RewardScene() {
   const navigate = useNavigate();
@@ -78,7 +88,7 @@ export function RewardScene() {
   };
 
   const handleDone = () => {
-    addGold(REWARD_GOLD);
+    addGold(getRewardGold(run));
     if (relicDrop) {
       addRelic({ configId: relicDrop.id, obtainedAtFloor: run?.currentFloor ?? 0 });
     }
@@ -106,7 +116,7 @@ export function RewardScene() {
           <div className="flex flex-col w-full gap-4">
             <div className="flex items-center gap-4 bg-dark-800/80 p-4 rounded-xl border border-gray-700 w-full shadow-inner">
               <GiCoins className="text-4xl text-gold-400" />
-              <p className="text-xl font-bold text-gray-200">+{REWARD_GOLD} 金币</p>
+              <p className="text-xl font-bold text-gray-200">+{getRewardGold(run)} 金币</p>
             </div>
             
             {relicDrop && (
@@ -218,7 +228,7 @@ export function RewardScene() {
           whileTap={{ scale: 0.95 }}
           onClick={handleDone}
         >
-          继续西行
+          继续征战
         </motion.button>
       </motion.div>
     </div>

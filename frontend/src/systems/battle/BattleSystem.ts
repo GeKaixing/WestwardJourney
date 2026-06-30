@@ -1,5 +1,7 @@
 import { BuffType } from "@shared/enums/BuffType";
+import { PotionType } from "@shared/enums/PotionType";
 import type { EnemyAction, EnemyConfig } from "@shared/types/EnemyConfig";
+import type { PotionConfig } from "@shared/types/PotionConfig";
 import { CardSystem, type CardInstance, type PlayCardContext } from "../cards/CardSystem";
 import { BuffSystem } from "../buffs/BuffSystem";
 import { ActionQueue, ActionPriority } from "../actions/ActionQueue";
@@ -108,6 +110,11 @@ export class BattleSystem {
         }
         this.buffSystem.processTurnEnd(this.player.id);
         this.discardHand();
+        this.relicSystem.triggerEvent(
+          "turn_end",
+          { playerId: this.player.id, event: "turn_end" },
+          this.createRelicContext(),
+        );
         this.emitState();
       },
 
@@ -127,6 +134,11 @@ export class BattleSystem {
       playerId: this.player.id,
       healPlayer: (amount: number) => {
         this.player.health = Math.min(this.player.maxHealth, this.player.health + amount);
+        this.relicSystem.triggerEvent(
+          "heal_received",
+          { playerId: this.player.id, event: "heal_received", value: amount },
+          this.createRelicContext(),
+        );
       },
       gainGold: (_amount: number) => {},
       drawCards: (count: number) => this.drawCards(count),
@@ -137,6 +149,18 @@ export class BattleSystem {
         this.player.block += amount;
       },
       dealDamage: (_targetId: string, _amount: number) => 0,
+      addBuff: (targetId: string, type: string, stacks: number, duration: number) => {
+        this.buffSystem.addBuff(targetId, type as BuffType, stacks, duration, this.player.id);
+      },
+      addDebuff: (targetId: string, type: string, stacks: number, duration: number) => {
+        if (targetId === "enemies") {
+          for (const e of this.enemies) {
+            this.buffSystem.addBuff(e.id, type as BuffType, stacks, duration, this.player.id);
+          }
+        } else {
+          this.buffSystem.addBuff(targetId, type as BuffType, stacks, duration, this.player.id);
+        }
+      },
     };
   }
 
@@ -158,19 +182,27 @@ export class BattleSystem {
       isAlive: true,
     };
 
-    this.enemies = enemyConfigs.map((ec) => ({
-      id: ec.id,
-      name: ec.name,
-      health: ec.health,
-      maxHealth: ec.health,
-      block: ec.block ?? 0,
-      energy: 0,
-      maxEnergy: 0,
-      isPlayer: false,
-      isAlive: true,
-      actions: ec.actions,
-      intentPattern: ec.intentPattern,
-    }));
+    this.enemies = enemyConfigs.map((ec) => {
+      const enemy: EnemyState = {
+        id: ec.id,
+        name: ec.name,
+        health: ec.health,
+        maxHealth: ec.health,
+        block: ec.block ?? 0,
+        energy: 0,
+        maxEnergy: 0,
+        isPlayer: false,
+        isAlive: true,
+        actions: ec.actions,
+        intentPattern: ec.intentPattern,
+      };
+      if (ec.buffs) {
+        for (const b of ec.buffs) {
+          this.buffSystem.addBuff(enemy.id, b.buffType as BuffType, b.amount, b.duration, enemy.id);
+        }
+      }
+      return enemy;
+    });
 
     this.drawPile = [...playerConfig.deck];
     this.shuffleArray(this.drawPile);
@@ -282,6 +314,11 @@ export class BattleSystem {
     if (enemy.health <= 0) {
       enemy.health = 0;
       enemy.isAlive = false;
+      this.relicSystem.triggerEvent(
+        "enemy_defeated",
+        { playerId: this.player.id, event: "enemy_defeated", targetId },
+        this.createRelicContext(),
+      );
       this.checkBattleEnd();
     }
 
@@ -301,6 +338,11 @@ export class BattleSystem {
       : this.enemies.find((e) => e.id === targetId);
     if (!target) return;
     target.block += amount;
+    this.relicSystem.triggerEvent(
+      "block_gained",
+      { playerId: this.player.id, event: "block_gained", value: amount, targetId },
+      this.createRelicContext(),
+    );
     this.emitState();
   }
 
@@ -556,6 +598,32 @@ export class BattleSystem {
       arr[i] = arr[j];
       arr[j] = tmp;
     }
+  }
+
+  usePotion(config: PotionConfig): void {
+    switch (config.type) {
+      case PotionType.Health:
+        this.player.health = Math.min(this.player.maxHealth, this.player.health + config.value);
+        break;
+      case PotionType.Energy:
+        this.player.energy += config.value;
+        break;
+      case PotionType.Strength:
+        this.buffSystem.addBuff(this.player.id, BuffType.Strength, config.value, 99, this.player.id);
+        break;
+      case PotionType.Block:
+        this.player.block += config.value;
+        break;
+      case PotionType.DrawCards:
+        this.drawCards(config.value);
+        break;
+      case PotionType.Poison:
+        for (const enemy of this.enemies) {
+          this.buffSystem.addBuff(enemy.id, BuffType.Poison, config.value, 99, this.player.id);
+        }
+        break;
+    }
+    this.emitState();
   }
 
   reset(): void {

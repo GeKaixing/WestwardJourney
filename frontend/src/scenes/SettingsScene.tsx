@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGameStore, useSettingsStore } from "../store";
 import { buttonClick, updateBGMVolume } from "../systems/sounds";
+import { MapGenerator, DEFAULT_MAP_CONFIG } from "../systems/map";
 import {
   GiCog,
   GiBrokenSkull,
@@ -16,6 +17,7 @@ import {
   GiCycle,
   GiSpeedometer,
   GiCardRandom,
+  GiSeedling,
 } from "react-icons/gi";
 
 type TabId = "game" | "video" | "audio" | "controls";
@@ -156,6 +158,42 @@ function GameTab({ onAbandon }: { onAbandon: () => void }) {
         <ToggleRow label="显示手牌计数" value={showHandCount} onChange={setShowHandCount} icon={<GiCardRandom />} />
       </SectionCard>
 
+      {/* ponytail: map seed export/import */}
+      {run && (
+        <SectionCard>
+          <SectionLabel icon={<GiSeedling />} text="地图种子" />
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <span className="font-mono text-lg text-gold-400">{run.mapSeed}</span>
+            <button
+              onClick={() => navigator.clipboard.writeText(String(run.mapSeed))}
+              className="flex items-center gap-1 rounded-lg bg-dark-700 px-3 py-1.5 text-sm text-gray-300 hover:text-gold-400 hover:bg-dark-600 transition-colors"
+            >
+              复制
+            </button>
+            <div className="flex items-center gap-2 ml-2 border-l border-gray-700 pl-3">
+              <input
+                id="seed-import"
+                type="number"
+                placeholder="粘贴种子..."
+                className="w-28 rounded-lg bg-dark-900 px-2 py-1.5 text-sm text-gold-400 font-mono border border-gray-600 focus:border-gold-500 focus:outline-none"
+              />
+              <button
+                onClick={() => {
+                  const input = document.getElementById("seed-import") as HTMLInputElement;
+                  const v = Number(input?.value);
+                  if (!v || isNaN(v)) return;
+                  const map = new MapGenerator(v).generate(DEFAULT_MAP_CONFIG);
+                  useGameStore.getState().setMapNodes(map.nodes);
+                }}
+                className="rounded-lg bg-dark-700 px-3 py-1.5 text-sm text-gray-300 hover:text-gold-400 hover:bg-dark-600 transition-colors"
+              >
+                导入并重新生成地图
+              </button>
+            </div>
+          </div>
+        </SectionCard>
+      )}
+
       <motion.button
         className="group flex items-center justify-center gap-3 rounded-2xl bg-dark-900/60 px-10 py-4 text-xl font-bold text-gray-500 transition-all hover:text-gold-400 w-full"
         onClick={resetToDefaults}
@@ -190,10 +228,12 @@ function VideoTab() {
   const supported = typeof document !== "undefined" && !!document.documentElement.requestFullscreen;
 
   useEffect(() => {
+    const actual = document.fullscreenElement ? "fullscreen" : "windowed";
+    if (windowMode !== actual) setWindowMode(actual);
     const handler = () => setWindowMode(document.fullscreenElement ? "fullscreen" : "windowed");
     document.addEventListener("fullscreenchange", handler);
     return () => document.removeEventListener("fullscreenchange", handler);
-  }, [setWindowMode]);
+  }, []);
 
   const isFullscreen = windowMode === "fullscreen";
 
@@ -209,7 +249,7 @@ function VideoTab() {
               onChange={(v) => {
                 setWindowMode(v ? "fullscreen" : "windowed");
                 try {
-                  const p = v ? document.documentElement.requestFullscreen() : document.exitFullscreen();
+                  const p = v ? document.documentElement.requestFullscreen({ navigationUI: "hide" }) : document.exitFullscreen();
                   p.catch(() => setWindowMode(v ? "windowed" : "fullscreen"));
                 } catch {
                   setWindowMode(v ? "windowed" : "fullscreen");
@@ -224,7 +264,11 @@ function VideoTab() {
 
       <motion.button
         className="group flex items-center justify-center gap-3 rounded-2xl bg-dark-900/60 px-10 py-4 text-xl font-bold text-gray-500 transition-all hover:text-gold-400 w-full"
-        onClick={resetToDefaults}
+        onClick={() => {
+          resetToDefaults();
+          const actual = document.fullscreenElement ? "fullscreen" : "windowed";
+          setWindowMode(actual);
+        }}
         whileHover={{ scale: 1.01 }}
         whileTap={{ scale: 0.98 }}
       >

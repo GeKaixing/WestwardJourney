@@ -50,7 +50,7 @@ const DEFAULTS = {
   musicVolume: 100,
   sfxVolume: 100,
   resolution: "1920x1080" as ResolutionOption,
-  windowMode: "fullscreen" as WindowMode,
+  windowMode: "windowed" as WindowMode,
   quality: "high" as QualityPreset,
   language: "zh" as Language,
   showDamageNumbers: true,

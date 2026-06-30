@@ -36,6 +36,7 @@ export function MapScene() {
   const run = useGameStore((s) => s.run);
   const setFloor = useGameStore((s) => s.setFloor);
   const setMapNodes = useGameStore((s) => s.setMapNodes);
+  const setCurrentNodeType = useGameStore((s) => s.setCurrentNodeType);
   const containerRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: 800, h: 600 });
   const generator = useMemo(() => new MapGenerator(), []);
@@ -117,6 +118,7 @@ export function MapScene() {
     generator.visitNode(nextNodes, node.id);
     setMapNodes(nextNodes);
     setFloor(node.floor);
+    setCurrentNodeType(node.type);
 
     const routes: Partial<Record<MapNodeType, string>> = {
       [MapNodeType.Monster]: "/battle",
@@ -130,7 +132,7 @@ export function MapScene() {
     };
     const path = routes[node.type];
     if (path) navigate(path);
-  }, [nodes, generator, setMapNodes, setFloor, navigate]);
+  }, [nodes, generator, setMapNodes, setFloor, setCurrentNodeType, navigate]);
 
   if (!run) return null;
 

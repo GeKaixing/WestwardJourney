@@ -86,6 +86,8 @@ describe('RelicSystem', () => {
       gainEnergy: vi.fn(),
       addBlock: vi.fn(),
       dealDamage: vi.fn().mockReturnValue(0),
+      addBuff: vi.fn(),
+      addDebuff: vi.fn(),
     };
 
     // Trigger turn_start -> should do nothing for these relics

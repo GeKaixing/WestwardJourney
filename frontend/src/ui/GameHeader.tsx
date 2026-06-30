@@ -12,6 +12,7 @@ import {
 } from "react-icons/gi";
 import { PLAYER_CONFIGS, RELIC_CONFIGS } from "../data";
 import { useGameStore } from "../store";
+import { Tooltip } from "./Tooltip";
 
 interface GameHeaderProps {
   playerName?: string;
@@ -56,26 +57,30 @@ export function GameHeader({ playerName, currentHealth, maxHealth, hideAvatar }:
           {run.relics.map((r, i) => {
             const relicConfig = RELIC_CONFIGS.find((rc) => rc.id === r.configId);
             return (
-              <div key={i} className="flex h-8 w-8 items-center justify-center cursor-help transition-transform hover:scale-110" title={relicConfig?.name}>
-                {relicConfig?.image ? (
-                  <img src={relicConfig.image} alt={relicConfig.name} className="h-8 w-8 object-contain" />
-                ) : (
-                  <GiCampfire className="text-xl text-orange-500" />
-                )}
-              </div>
+              <Tooltip key={i} content={relicConfig?.description ?? relicConfig?.name ?? ""}>
+                <div className="flex h-8 w-8 items-center justify-center cursor-pointer transition-transform hover:scale-110">
+                  {relicConfig?.image ? (
+                    <img src={relicConfig.image} alt={relicConfig.name} className="h-8 w-8 object-contain" />
+                  ) : (
+                    <GiCampfire className="text-xl text-orange-500" />
+                  )}
+                </div>
+              </Tooltip>
             );
           })}
         </div>
 
         <div className="flex gap-2 border-l border-gray-600/50 pl-4">
           {run.potions.length > 0 ? run.potions.map((p, i) => (
-            <div key={i} className="flex h-8 w-8 items-center justify-center cursor-help transition-transform hover:scale-110" title={p.name}>
-              {p.image ? (
-                <img src={p.image} alt={p.name} className="h-8 w-8 object-contain" />
-              ) : (
-                <GiHealthPotion className="text-xl text-green-400" />
-              )}
-            </div>
+            <Tooltip key={i} content={`${p.name}：${p.description}`}>
+              <div className="flex h-8 w-8 items-center justify-center cursor-pointer transition-transform hover:scale-110">
+                {p.image ? (
+                  <img src={p.image} alt={p.name} className="h-8 w-8 object-contain" />
+                ) : (
+                  <GiHealthPotion className="text-xl text-green-400" />
+                )}
+              </div>
+            </Tooltip>
           )) : (
             <>
               <div className="h-8 w-8 rounded bg-black/20 border border-gray-600/50 border-dashed opacity-50" />

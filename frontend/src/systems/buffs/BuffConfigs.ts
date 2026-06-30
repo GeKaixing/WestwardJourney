@@ -136,6 +136,18 @@ export const BUFF_CONFIGS: Record<BuffType, BuffConfig> = {
     stackBehavior: BuffStackBehavior.Additive,
     maxStacks: 10,
   },
+  [BuffType.Burn]: {
+    type: BuffType.Burn,
+    name: "灼烧",
+    description: "回合开始时受到等同于层数的伤害，层数减半",
+    isDebuff: true,
+    stackBehavior: BuffStackBehavior.Additive,
+    onTurnEnd: {
+      effectType: "damage",
+      valuePerStack: 1,
+      removeOnTrigger: true,
+    },
+  },
   [BuffType.Meditation]: {
     type: BuffType.Meditation,
     name: "禅定",

@@ -34,6 +34,8 @@ export interface RelicExecutionContext {
   gainEnergy: (amount: number) => void;
   addBlock: (amount: number) => void;
   dealDamage: (targetId: string, amount: number) => number | undefined;
+  addBuff: (targetId: string, type: string, stacks: number, duration: number) => void;
+  addDebuff: (targetId: string, type: string, stacks: number, duration: number) => void;
 }
 
 export class RelicSystem {
@@ -135,6 +137,12 @@ export class RelicSystem {
         }
         break;
       }
+      case "buff":
+        context.addBuff("player", effect.buffType ?? "strength", value, effect.duration ?? 99);
+        break;
+      case "debuff":
+        context.addDebuff("enemies", effect.buffType ?? "vulnerable", value, effect.duration ?? 99);
+        break;
     }
   }
 

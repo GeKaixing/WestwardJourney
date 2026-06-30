@@ -18,7 +18,7 @@ export function RestScene() {
   const [cardImages, setCardImages] = useState<Record<string, string>>({});
   const loadingRef = useRef<Set<string>>(new Set());
 
-  const healAmount = run ? Math.floor(run.maxHealth * 0.3) : 0;
+  const healAmount = run ? Math.floor(run.maxHealth * 0.3) + (run.relics.some(r => r.configId === "lotus_flower") ? 10 : 0) : 0;
   const canHeal = run ? run.currentHealth < run.maxHealth : false;
 
   useEffect(() => {

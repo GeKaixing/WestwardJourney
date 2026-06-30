@@ -17,13 +17,14 @@ import { BattleSystem, type BattleState } from "../systems/battle";
 import { BuffSystem } from "../systems/buffs";
 import { CardSystem, type CardInstance } from "../systems/cards";
 import { RelicSystem } from "../systems/relics";
-import { CARD_CONFIGS, ENEMY_CONFIGS, PLAYER_CONFIGS, RELIC_CONFIGS } from "../data";
+import { CARD_CONFIGS, ENEMY_CONFIGS, PLAYER_CONFIGS, RELIC_CONFIGS, POTION_CONFIGS, pickEnemiesForNode } from "../data";
 import { useGameStore } from "../store";
 import { cardImageGenerator } from "../utils/cardImageGenerator";
 import { startTurn, endTurn as playEndTurn, playBattleBGM } from "../systems/sounds";
 import { useCardDragDrop } from "../hooks/useCardDragDrop";
 import { CardType } from "@shared/enums/CardType";
-import { GameHeader, BattleEffects, PlayerCharacter, EnemyCharacter } from "../ui";
+import { MapNodeType } from "@shared/enums/MapNodeType";
+import { GameHeader, BattleEffects, PlayerCharacter, EnemyCharacter, Tooltip } from "../ui";
 import type { PlayerCharacterHandle } from "../ui";
 
 const buffSystem = new BuffSystem();
@@ -87,6 +88,8 @@ export function BattleScene() {
   const addGold = useGameStore((s) => s.addGold);
   const setHealth = useGameStore((s) => s.setHealth);
   const setInBattle = useGameStore((s) => s.setInBattle);
+  const addEncounteredEnemy = useGameStore((s) => s.addEncounteredEnemy);
+  const removePotion = useGameStore((s) => s.removePotion);
 
   const baseEnergy = run ? (PLAYER_CONFIGS[run.characterClass]?.stats.baseEnergy ?? 3) : 3;
 
@@ -166,7 +169,10 @@ export function BattleScene() {
     }
 
     try {
-      const enemyConfig = ENEMY_CONFIGS[Math.floor(Math.random() * ENEMY_CONFIGS.length)];
+      const nodeType = currentRun.currentNodeType ?? MapNodeType.Monster;
+      const excludeSet = new Set(currentRun.encounteredEnemyIds);
+      const enemyConfig = pickEnemiesForNode(currentRun.currentFloor, nodeType, excludeSet)[0] ?? null;
+      if (enemyConfig) addEncounteredEnemy(enemyConfig.id);
       relicSystem.clearPlayer("player");
       for (const relic of currentRun.relics) {
         relicSystem.addRelic("player", relic.configId, relic.obtainedAtFloor);
@@ -215,7 +221,7 @@ export function BattleScene() {
       setInBattle(false);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [battleSystem, navigate, addGold, setHealth, setInBattle]);
+  }, [battleSystem, navigate, addGold, setHealth, setInBattle, addEncounteredEnemy]);
 
   if (error) {
     return (
@@ -347,6 +353,33 @@ export function BattleScene() {
           <span className="font-display text-3xl font-bold text-orange-400 drop-shadow-lg">
             {player.energy}/{baseEnergy}
           </span>
+        </div>
+
+        {/* Potions */}
+        <div className="pointer-events-auto absolute bottom-32 left-8 flex flex-col gap-2 z-40">
+          {run?.potions.map((p, i) => {
+            const config = POTION_CONFIGS.find(c => c.id === p.configId);
+            const usable = config && battleState.phase === 2;
+            return (
+              <Tooltip key={i} content={`${p.name}：${config?.description ?? ""}`}>
+                <button
+                  disabled={!usable}
+                  onClick={() => {
+                    if (!config) return;
+                    battleSystem.usePotion(config);
+                    removePotion(i);
+                  }}
+                  className={`flex h-11 w-11 items-center justify-center rounded-full text-lg font-bold shadow-lg transition-all ${
+                    usable
+                      ? "bg-purple-800 text-white ring-2 ring-purple-400 hover:bg-purple-700 hover:scale-110 cursor-pointer"
+                      : "bg-gray-800 text-gray-500 ring-1 ring-gray-600 cursor-not-allowed opacity-50"
+                  }`}
+                >
+                  药
+                </button>
+              </Tooltip>
+            );
+          })}
         </div>
 
         {/* Draw Pile (Bottom Left Corner) */}

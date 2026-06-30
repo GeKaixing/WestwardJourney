@@ -13,6 +13,10 @@ export const RELIC_CONFIGS: RelicConfig[] = [
     effects: [
       {
         effectType: "buff",
+        buffType: "strength",
+        value: 2,
+        duration: 99,
+        target: "player",
         condition: { event: "battle_start" },
       },
     ],
@@ -37,13 +41,14 @@ export const RELIC_CONFIGS: RelicConfig[] = [
   {
     id: "dragon_core_shard",
     name: "龙晶碎片",
-    description: "每造成5点伤害，获得1点生命",
+    description: "每造成1次伤害，恢复1点生命",
     image: "/assets/relics/archaic_tooth.webp",
     rarity: Rarity.Basic,
     characterClass: CharacterClass.Longsila,
     effects: [
       {
         effectType: "heal",
+        value: 1,
         condition: { event: "damage_dealt" },
       },
     ],
@@ -59,6 +64,10 @@ export const RELIC_CONFIGS: RelicConfig[] = [
     effects: [
       {
         effectType: "debuff",
+        buffType: "vulnerable",
+        value: 1,
+        duration: 99,
+        target: "enemies",
         condition: { event: "battle_start" },
       },
     ],
@@ -83,12 +92,13 @@ export const RELIC_CONFIGS: RelicConfig[] = [
   {
     id: "jade_pearl",
     name: "定风珠",
-    description: "受到伤害时，有50%几率只承受一半",
+    description: "受到伤害时，获得3点格挡",
     image: "/assets/relics/golden_pearl.webp",
     rarity: Rarity.Common,
     effects: [
       {
         effectType: "block",
+        value: 3,
         condition: { event: "damage_taken" },
       },
     ],
@@ -96,12 +106,13 @@ export const RELIC_CONFIGS: RelicConfig[] = [
   {
     id: "purple_gourd",
     name: "紫金葫芦",
-    description: "每击败3个敌人，获得1张随机牌",
+    description: "每击败1个敌人，抽1张牌",
     image: "/assets/relics/demon_tongue.webp",
     rarity: Rarity.Uncommon,
     effects: [
       {
         effectType: "draw_card",
+        value: 1,
         condition: { event: "enemy_defeated" },
       },
     ],
